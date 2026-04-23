@@ -1,5 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Prisma Schema for Peatland Water Table Monitoring System
+// Models: Station, Device, Readings, Alert, User, AIInsight, AdminLog, SystemConfig
 
 generator client {
   provider = "prisma-client-js"
@@ -9,11 +9,339 @@ datasource db {
   provider = "postgresql"
 }
 
-model SensorReading {
-  id          String   @id @default(uuid())
-  moisture    Float
-  temperature Float
-  phLevel     Float?
-  timestamp   DateTime @default(now())
-  location    String?
+// ============================================
+// USER & ACCESS CONTROL
+// ============================================
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  password      String    // Hashed password
+  companyName   String?   @map("company_name")
+  role          UserRole  @default(ADMIN_LOCATION)
+  status        UserStatus @default(AKTIF)
+
+  // Admin Lokasi can only manage ONE station
+  // Super Admin has null stationId
+  stationId     String?   @map("station_id")
+
+  // Security auditing
+  lastLoginAt   DateTime? @map("last_login_at")
+
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  station       Station?  @relation(fields: [stationId], references: [id], onDelete: SetNull)
+  alertsResolved Alert[]  @relation("AlertResolvedBy")
+  adminLogs     AdminLog[]
+  systemConfigUpdates SystemConfig[] @relation("SystemConfigUpdatedBy")
+
+  @@map("users")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN_LOCATION
+}
+
+enum UserStatus {
+  AKTIF
+  NONAKTIF
+}
+
+// ============================================
+// STATION
+// ============================================
+
+model Station {
+  id            String    @id @default(uuid())
+  name          String
+  provinsi      String
+  kabupaten     String
+  kecamatan     String
+  desa          String?
+  latitude      Float
+  longitude     Float
+  mapsLink      String?   @map("maps_link") // Computed: https://maps.google.com/?q=${lat},${lng}
+  imageUrl      String?   @map("image_url")
+  status        StationStatus @default(AKTIF)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  devices       Device[]
+  alerts        Alert[]
+  aiInsights    AIInsight[]
+  admins        User[]
+  adminLogs     AdminLog[]
+
+  @@map("stations")
+}
+
+// ============================================
+// DEVICE
+// ============================================
+
+model Device {
+  id              String       @id @default(uuid())
+  deviceId        String       @unique @map("device_id") // Hardware ID, e.g., LPA-ESP3201-P1234
+  deviceName      String       @map("device_name")       // Display name, not unique
+  stationId       String?      @map("station_id")
+  status          DeviceStatus @default(BEROPERASI)
+
+  // Sensor configuration (JSON keyed by measurement column name)
+  sensorConfig    Json?        @map("sensor_config")
+
+  // Battery thresholds - per device (different hardware = different voltage curves)
+  batteryWarning  Float        @default(20) @map("battery_warning") // % threshold
+  batteryCritical Float        @default(10) @map("battery_critical") // % threshold
+
+  // Sampling configuration
+  samplingInterval Int         @default(300) @map("sampling_interval") // In seconds
+
+  // Calibration parameters (for water_level sensor only, in cm)
+  pipeLength      Float?       @map("pipe_length")      // Total pipe length
+  remainingPipe   Float?       @map("remaining_pipe")  // Pipe from surface to datalogger
+
+  description     String?
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+
+  // Relations
+  station         Station?     @relation(fields: [stationId], references: [id])
+  readings        Readings[]
+  alerts          Alert[]
+
+  @@map("devices")
+}
+
+enum DeviceStatus {
+  BEROPERASI
+  MAINTENANCE
+  MATI
+}
+
+enum StationStatus {
+  AKTIF
+  NONAKTIF
+}
+
+// ============================================
+// READINGS (Time-series sensor data)
+// ============================================
+
+model Readings {
+  id                String   @id @default(uuid())
+  deviceId          String   @map("device_id")
+
+  unixTime          BigInt   @map("unix_time")
+  dateTime          DateTime @map("date_time")
+
+  // Raw sensor readings (exactly what device sends)
+  rawWaterLevel        Float?   @map("raw_water_level")
+  rawRainMeter         Float?   @map("raw_rain_meter")
+  rawSoilMoisture      Float?   @map("raw_soil_moisture")
+  rawSoilTemperature   Float?   @map("raw_soil_temperature")
+  rawSoilConductivity  Float?   @map("raw_soil_conductivity")
+  rawPhValue           Float?   @map("raw_ph_value")
+
+  // Calibrated sensor values (computed at ingestion time)
+  waterLevel           Float?   @map("water_level")        // cm
+  rainMeter            Float?   @map("rain_meter")         // mm
+  soilMoisture         Float?   @map("soil_moisture")      // %
+  soilTemperature      Float?   @map("soil_temperature")   // °C
+  soilConductivity     Float?   @map("soil_conductivity")  // µS/cm
+  phValue              Float?   @map("ph_value")           // unitless
+
+  // Calibration tracking
+  calibrationVersion   Int      @default(1) @map("calibration_version")
+
+  // Device telemetry
+  battery           Float?   // Percentage (0-100)
+  signalStrength    Float?   @map("signal_strength") // dBm
+  panelTemperature  Float?   @map("panel_temperature") // °C
+
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  // Relations
+  device            Device   @relation(fields: [deviceId], references: [id])
+  alerts            Alert[]
+
+  @@index([deviceId, dateTime])
+  // Deduplication constraint for flaky connections (device retries)
+  @@unique([deviceId, unixTime])
+  @@map("readings")
+}
+
+// ============================================
+// ALERT SYSTEM
+// ============================================
+
+model Alert {
+  id              String        @id @default(uuid())
+  stationId       String        @map("station_id")
+  deviceId        String?       @map("device_id")         // Direct FK for device-based alerts
+  alertType       AlertType     @map("alert_type")
+  priority        AlertPriority @default(MEDIUM)
+  status          AlertStatus   @default(OPEN)
+
+  // Source reference - polymorphic via two nullable FKs
+  readingId       String?       @map("reading_id")
+  aiInsightId     String?       @map("ai_insight_id")
+  sourceType      SourceType    @map("source_type")
+
+  // Alert message (pre-built for notifications)
+  message         String?
+
+  // Threshold that was breached
+  thresholdValue  Float?        @map("threshold_value")
+  actualValue     Float?        @map("actual_value")
+
+  // Resolution
+  resolvedById    String?       @map("resolved_by_id")
+  resolvedAt      DateTime?     @map("resolved_at")
+  resolutionNote  String?       @map("resolution_note")
+
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  // Relations
+  station         Station       @relation(fields: [stationId], references: [id], onDelete: Cascade)
+  device          Device?       @relation(fields: [deviceId], references: [id])
+  reading         Readings?     @relation(fields: [readingId], references: [id])
+  aiInsight       AIInsight?    @relation(fields: [aiInsightId], references: [id])
+  resolvedBy      User?         @relation("AlertResolvedBy", fields: [resolvedById], references: [id])
+
+  @@index([stationId, status])
+  @@index([deviceId])
+  @@index([alertType, status])
+  @@index([createdAt])
+  @@map("alerts")
+}
+
+enum AlertType {
+  SOIL_MOISTURE
+  LOW_BATTERY
+  PEATLAND_LIFESPAN
+}
+
+enum AlertPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum AlertStatus {
+  OPEN
+  PENDING
+  IN_PROGRESS
+  RESOLVED
+}
+
+enum SourceType {
+  READING
+  AI_INSIGHT
+}
+
+// ============================================
+// AI INSIGHT
+// ============================================
+
+model AIInsight {
+  id                  String    @id @default(uuid())
+  stationId           String    @map("station_id")
+
+  // Time window for analysis
+  analysisStart       DateTime  @map("analysis_start")
+  analysisEnd         DateTime  @map("analysis_end")
+
+  // ML results
+  peatlandLifespanYears Float?  @map("peatland_lifespan_years")
+  soilHealthScore     Float?    @map("soil_health_score")
+  waterTableTrend     WaterTableTrend? @map("water_table_trend") // enum: RISING, STABLE, DECLINING
+  riskAssessment      Json?     @map("risk_assessment") // Structured JSON
+  recommendations     Json?     @map("recommendations") // Structured JSON array
+
+  // ML metadata
+  modelVersion        String?   @map("model_version")   // e.g., "v1.2.0"
+  confidenceScore     Float?    @map("confidence_score") // 0.0 - 1.0
+
+  // Raw ML output (unstructured)
+  rawOutput           Json?     @map("raw_output")
+
+  createdAt           DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  station             Station   @relation(fields: [stationId], references: [id], onDelete: Cascade)
+  alerts              Alert[]
+
+  @@index([stationId, analysisStart])
+  @@map("ai_insights")
+}
+
+enum WaterTableTrend {
+  RISING
+  STABLE
+  DECLINING
+}
+
+// ============================================
+// ADMIN LOG (Audit Trail)
+// ============================================
+
+model AdminLog {
+  id          String    @id @default(uuid())
+  userId      String?   @map("user_id") // Nullable to preserve logs when user is deleted
+  stationId   String?   @map("station_id")
+
+  action      String    // e.g., "DEVICE_CREATED", "ALERT_RESOLVED"
+  entityType  String    @map("entity_type") // e.g., "DEVICE", "ALERT", "USER"
+  entityId    String?   @map("entity_id")
+
+  oldValues   Json?     @map("old_values")
+  newValues   Json?     @map("new_values")
+
+  ipAddress   String?   @map("ip_address")
+  userAgent   String?   @map("user_agent")
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  // Relations - user is nullable to preserve logs when user is deleted
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  station     Station?  @relation(fields: [stationId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([stationId, createdAt])
+  @@index([action])
+  @@map("admin_logs")
+}
+
+// ============================================
+// SYSTEM CONFIGURATION
+// ============================================
+
+// IMPORTANT: This table has exactly ONE row. Created by seed script, never inserted manually.
+model SystemConfig {
+  id                String   @id @default(uuid())
+
+  // Alert thresholds (universal across all stations)
+  soilMoistureMin   Float    @default(20) @map("soil_moisture_min")
+  soilMoistureMax   Float    @default(80) @map("soil_moisture_max")
+
+  // Peatland lifespan threshold (years)
+  peatlandLifespanMin Float  @default(10) @map("peatland_lifespan_min")
+
+  // Universal calibration formulas (JSON)
+  calibrationFormulas Json   @map("calibration_formulas")
+
+  // Audit fields
+  updatedById       String?  @map("updated_by_id")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  updatedBy         User?    @relation("SystemConfigUpdatedBy", fields: [updatedById], references: [id])
+
+  @@map("system_config")
 }
