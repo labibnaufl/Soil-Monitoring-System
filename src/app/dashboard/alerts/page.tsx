@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { AlertActions } from "./_components/alert-actions";
 import { MockAlertModal } from "./_components/mock-alert-modal";
-import { Bell, AlertTriangle, CheckCircle2, Clock, AlertCircle, Filter } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Clock, Filter } from "lucide-react";
 
 export default async function AlertsPage({
   searchParams,
@@ -82,16 +82,14 @@ export default async function AlertsPage({
   const totalPages = Math.ceil(total / perPage);
 
   const stats = [
-    { label: "Total Notifikasi", value: totalAlerts, icon: Bell, color: "bg-blue-50 text-blue-600" },
-    { label: "Terbuka", value: openAlerts, icon: AlertCircle, color: "bg-amber-50 text-amber-600", urgent: openAlerts > 0 },
     { label: "Prioritas Tinggi", value: highPriority, icon: AlertTriangle, color: "bg-red-50 text-red-600", urgent: highPriority > 0 },
     { label: "Prioritas Medium", value: mediumPriority, icon: Clock, color: "bg-orange-50 text-orange-600" },
-    { label: "Selesai", value: resolvedAlerts, icon: CheckCircle2, color: "bg-emerald-50 text-emerald-600" },
+    { label: "Selesai", value: resolvedAlerts, icon: CheckCircle2, color: "bg-green-50 text-green-600" },
   ];
 
   const statusOptions = [
     { value: "", label: "Semua Status" },
-    { value: "OPEN", label: "Terbuka" },
+    { value: "OPEN", label: "Baru" },
     { value: "PENDING", label: "Pending" },
     { value: "IN_PROGRESS", label: "Sedang Dikerjakan" },
     { value: "RESOLVED", label: "Selesai" },
@@ -114,13 +112,13 @@ export default async function AlertsPage({
   function getStatusBadge(s: string) {
     switch (s) {
       case "OPEN":
-        return "bg-amber-100 text-amber-700";
+        return "bg-red-100 text-red-700";
       case "PENDING":
-        return "bg-blue-100 text-blue-700";
+        return "bg-gray-100 text-gray-600";
       case "IN_PROGRESS":
-        return "bg-purple-100 text-purple-700";
+        return "bg-orange-100 text-orange-700";
       case "RESOLVED":
-        return "bg-emerald-100 text-emerald-700";
+        return "bg-green-100 text-green-700";
       default:
         return "bg-gray-100 text-gray-600";
     }
@@ -129,7 +127,7 @@ export default async function AlertsPage({
   function getStatusLabel(s: string) {
     switch (s) {
       case "OPEN":
-        return "Terbuka";
+        return "Baru";
       case "PENDING":
         return "Pending";
       case "IN_PROGRESS":
@@ -148,7 +146,7 @@ export default async function AlertsPage({
       case "MEDIUM":
         return "bg-orange-100 text-orange-700";
       case "LOW":
-        return "bg-blue-100 text-blue-700";
+        return "bg-green-100 text-green-700";
       default:
         return "bg-gray-100 text-gray-600";
     }
@@ -195,7 +193,7 @@ export default async function AlertsPage({
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
         {stats.map((stat) => (
           <div key={stat.label} className={`rounded-xl border p-4 ${stat.urgent ? "border-red-200 bg-red-50/50" : "bg-card"}`}>
             <div className="flex items-center gap-2 mb-3">

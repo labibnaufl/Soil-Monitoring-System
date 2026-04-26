@@ -74,10 +74,8 @@ export default async function UsersPage({
 
   const stats = [
     { label: "Total Pengguna", value: totalUsers, icon: Users, color: "bg-blue-50 text-blue-600" },
-    { label: "Pengguna Aktif", value: activeUsers, icon: UserCheck, color: "bg-emerald-50 text-emerald-600" },
-    { label: "Nonaktif / Diblokir", value: inactiveUsers, icon: UserX, color: "bg-red-50 text-red-600", urgent: inactiveUsers > 0 },
-    { label: "Admin Lokasi", value: adminLokasi, icon: MapPin, color: "bg-purple-50 text-purple-600" },
-    { label: "Super Admin", value: totalUsers - adminLokasi, icon: Shield, color: "bg-indigo-50 text-indigo-600" },
+    { label: "Pengguna Aktif", value: activeUsers, icon: UserCheck, color: "bg-green-50 text-green-600" },
+    { label: "Admin Lokasi", value: adminLokasi, icon: MapPin, color: "bg-orange-50 text-orange-600" },
   ];
 
   const statusOptions = [
@@ -112,15 +110,17 @@ export default async function UsersPage({
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
         {stats.map((stat) => (
-          <div key={stat.label} className={`rounded-xl border p-4 ${stat.urgent ? "border-red-200 bg-red-50/50" : "bg-card"}`}>
+          <div key={stat.label} className="rounded-xl border bg-card p-4">
             <div className="flex items-center gap-2 mb-3">
               <div className={`p-1.5 rounded-lg ${stat.color}`}>
                 <stat.icon className="size-4" />
               </div>
             </div>
-            <p className="text-2xl font-bold font-heading text-foreground">{stat.value}</p>
+            <p className="text-2xl font-bold font-heading text-foreground">
+              {stat.value}
+            </p>
             <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
           </div>
         ))}
@@ -133,7 +133,7 @@ export default async function UsersPage({
           type="text"
           placeholder="Cari nama, email, atau stasiun..."
           defaultValue={search}
-          className="flex-1 min-w-[200px] px-3 py-2 text-sm border rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring"
+          className="flex-1 min-w-50 px-3 py-2 text-sm border rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring"
         />
         <select
           name="status"
@@ -141,7 +141,9 @@ export default async function UsersPage({
           className="px-3 py-2 text-sm border rounded-lg bg-background"
         >
           {statusOptions.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
           ))}
         </select>
         <button
@@ -166,27 +168,52 @@ export default async function UsersPage({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b bg-muted/50 text-left">
-                <th className="px-4 py-3 font-medium text-muted-foreground">Nama</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Email</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Role</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Status</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Lokasi Stasiun</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Tgl Daftar</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Aksi</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Nama
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Email
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Role
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Status
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Lokasi Stasiun
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Tgl Daftar
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Aksi
+                </th>
               </tr>
             </thead>
             <tbody>
               {users.map((user) => (
-                <tr key={user.id} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
+                <tr
+                  key={user.id}
+                  className="border-b last:border-0 hover:bg-muted/30 transition-colors"
+                >
                   <td className="px-4 py-3 font-medium">{user.name}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{user.email}</td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    {user.email}
+                  </td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getRoleBadge(user.role)}`}>
-                      {user.role === "SUPER_ADMIN" ? "Super Admin" : "Admin Lokasi"}
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getRoleBadge(user.role)}`}
+                    >
+                      {user.role === "SUPER_ADMIN"
+                        ? "Super Admin"
+                        : "Admin Lokasi"}
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${user.status === "AKTIF" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${user.status === "AKTIF" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}
+                    >
                       {user.status === "AKTIF" ? "Aktif" : "Nonaktif"}
                     </span>
                   </td>
@@ -207,7 +234,10 @@ export default async function UsersPage({
               ))}
               {users.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
+                  <td
+                    colSpan={7}
+                    className="px-4 py-8 text-center text-muted-foreground"
+                  >
                     Tidak ada pengguna ditemukan.
                   </td>
                 </tr>

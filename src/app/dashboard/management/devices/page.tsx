@@ -4,7 +4,15 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { DeviceActions } from "./_components/device-actions";
 import { DeviceFormModal } from "./_components/device-form-modal";
-import { Cpu, CheckCircle2, XCircle, Wrench, Power, MapPin, Activity } from "lucide-react";
+import {
+  Cpu,
+  CheckCircle2,
+  XCircle,
+  Wrench,
+  Power,
+  MapPin,
+  Activity,
+} from "lucide-react";
 
 export default async function DevicesPage({
   searchParams,
@@ -73,15 +81,19 @@ export default async function DevicesPage({
     }),
   ]);
 
-  const [totalDevices, operatingDevices, maintenanceDevices, offlineDevices, unassignedDevices] = statsData;
+  const [
+    totalDevices,
+    operatingDevices,
+    maintenanceDevices,
+    offlineDevices,
+    unassignedDevices,
+  ] = statsData;
   const totalPages = Math.ceil(total / perPage);
 
   const stats = [
     { label: "Total Perangkat", value: totalDevices, icon: Cpu, color: "bg-blue-50 text-blue-600" },
-    { label: "Beroperasi", value: operatingDevices, icon: CheckCircle2, color: "bg-emerald-50 text-emerald-600" },
-    { label: "Maintenance", value: maintenanceDevices, icon: Wrench, color: "bg-amber-50 text-amber-600" },
     { label: "Mati/Offline", value: offlineDevices, icon: Power, color: "bg-red-50 text-red-600", urgent: offlineDevices > 0 },
-    { label: "Belum Terpasang", value: unassignedDevices, icon: MapPin, color: "bg-purple-50 text-purple-600" },
+    { label: "Belum Terpasang", value: unassignedDevices, icon: MapPin, color: "bg-orange-50 text-orange-600" },
   ];
 
   const statusOptions = [
@@ -132,15 +144,20 @@ export default async function DevicesPage({
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
         {stats.map((stat) => (
-          <div key={stat.label} className={`rounded-xl border p-4 ${stat.urgent ? "border-red-200 bg-red-50/50" : "bg-card"}`}>
+          <div
+            key={stat.label}
+            className={`rounded-xl border p-4 ${stat.urgent ? "border-red-200 bg-red-50/50" : "bg-card"}`}
+          >
             <div className="flex items-center gap-2 mb-3">
               <div className={`p-1.5 rounded-lg ${stat.color}`}>
                 <stat.icon className="size-4" />
               </div>
             </div>
-            <p className="text-2xl font-bold font-heading text-foreground">{stat.value}</p>
+            <p className="text-2xl font-bold font-heading text-foreground">
+              {stat.value}
+            </p>
             <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
           </div>
         ))}
@@ -153,7 +170,7 @@ export default async function DevicesPage({
           type="text"
           placeholder="Cari nama, ID perangkat, atau stasiun..."
           defaultValue={search}
-          className="flex-1 min-w-[200px] px-3 py-2 text-sm border rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring"
+          className="flex-1 min-w-50 px-3 py-2 text-sm border rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring"
         />
         <select
           name="status"
@@ -161,7 +178,9 @@ export default async function DevicesPage({
           className="px-3 py-2 text-sm border rounded-lg bg-background"
         >
           {statusOptions.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
           ))}
         </select>
         <button
@@ -186,22 +205,43 @@ export default async function DevicesPage({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b bg-muted/50 text-left">
-                <th className="px-4 py-3 font-medium text-muted-foreground">Nama Perangkat</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">ID Perangkat</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Status</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Stasiun</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Interval (detik)</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Data</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Aksi</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Nama Perangkat
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  ID Perangkat
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Status
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Stasiun
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Interval (detik)
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Data
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Aksi
+                </th>
               </tr>
             </thead>
             <tbody>
               {devices.map((device) => (
-                <tr key={device.id} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
+                <tr
+                  key={device.id}
+                  className="border-b last:border-0 hover:bg-muted/30 transition-colors"
+                >
                   <td className="px-4 py-3 font-medium">{device.deviceName}</td>
-                  <td className="px-4 py-3 text-muted-foreground text-xs font-mono">{device.deviceId}</td>
+                  <td className="px-4 py-3 text-muted-foreground text-xs font-mono">
+                    {device.deviceId}
+                  </td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getStatusBadge(device.status)}`}>
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getStatusBadge(device.status)}`}
+                    >
                       {getStatusLabel(device.status)}
                     </span>
                   </td>
@@ -225,7 +265,10 @@ export default async function DevicesPage({
               ))}
               {devices.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
+                  <td
+                    colSpan={7}
+                    className="px-4 py-8 text-center text-muted-foreground"
+                  >
                     Tidak ada perangkat ditemukan.
                   </td>
                 </tr>

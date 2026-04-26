@@ -6,9 +6,9 @@ import { revalidatePath } from "next/cache";
 
 async function requireSuperAdmin() {
   const session = await auth();
-  if (!session?.user) throw new Error("Anda Tidak Memiliki Izin Untuk Mengakses Halaman Ini");
-  if (session.user.role !== "SUPER_ADMIN" && session.user.role !== "ADMIN") {
-    throw new Error("Anda Tidak Memiliki Izin Untuk Mengakses Halaman Ini");
+  if (!session?.user) throw new Error("Tidak terautentikasi");
+  if (session.user.role !== "SUPER_ADMIN") {
+    throw new Error("Tidak memiliki izin");
   }
   return session;
 }

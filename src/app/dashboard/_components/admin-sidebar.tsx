@@ -3,6 +3,7 @@
 import * as React from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import {
   LayoutDashboard,
   Droplets,
@@ -14,7 +15,6 @@ import {
   Bell,
   Brain,
   CloudRain,
-  Layers,
 } from "lucide-react";
 
 import { NavUser } from "./nav-user";
@@ -37,17 +37,21 @@ const mainNav = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
 ];
 
-const managementNavBase = [
+const managementNavSuperAdmin = [
   { title: "Stasiun", url: "/dashboard/management/stations", icon: MapPin },
   { title: "Alat", url: "/dashboard/management/devices", icon: Cpu },
   { title: "Notifikasi", url: "/dashboard/alerts", icon: Bell, showBadge: true },
 ];
 
+const managementNavAdminLokasi = [
+  { title: "Notifikasi", url: "/dashboard/alerts", icon: Bell, showBadge: true },
+];
+
 const monitoringNav = [
-  { title: "Water Level", url: "/dashboard/water-level", icon: Droplets },
-  { title: "Soil Monitoring", url: "/dashboard/soil-monitoring", icon: Activity },
-  { title: "Prediksi AI", url: "/dashboard/ai-insights", icon: Brain },
-  { title: "Curah Hujan", url: "/dashboard/rainfall", icon: CloudRain },
+  { title: "Tingkat Air", url: "/dashboard/monitoring/water-level", icon: Droplets },
+  { title: "Curah Hujan", url: "/dashboard/monitoring/curah-hujan", icon: CloudRain },
+  { title: "Monitoring Tanah", url: "/dashboard/monitoring/soil-monitoring", icon: Activity },
+  { title: "Prediksi AI", url: "/dashboard/monitoring/prediksi-ai", icon: Brain },
 ];
 
 const systemNav = [
@@ -81,12 +85,12 @@ export function AdminSidebar({
     return () => clearInterval(interval);
   }, []);
 
-  const managementNav = [
-    ...managementNavBase,
-    ...(isSuperAdmin
-      ? [{ title: "Kelola Pengguna", url: "/dashboard/management/users", icon: Users }]
-      : []),
-  ];
+  const managementNav = isSuperAdmin
+    ? [
+        ...managementNavSuperAdmin,
+        { title: "Kelola Pengguna", url: "/dashboard/management/users", icon: Users },
+      ]
+    : managementNavAdminLokasi;
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -95,8 +99,14 @@ export function AdminSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/dashboard">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-emerald-500 text-sidebar-primary-foreground">
-                  <Layers className="size-4 text-white" />
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg overflow-hidden">
+                  <Image
+                    src="/Images/Logo_HD.png"
+                    alt="NYAWIT Logo"
+                    width={32}
+                    height={32}
+                    className="size-8 object-contain"
+                  />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">NYAWIT</span>

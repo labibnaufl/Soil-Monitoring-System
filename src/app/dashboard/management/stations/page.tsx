@@ -4,7 +4,14 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { StationActions } from "./_components/station-actions";
 import { StationFormModal } from "./_components/station-form-modal";
-import { MapPin, Radio, Users, Activity, CheckCircle2, XCircle } from "lucide-react";
+import {
+  MapPin,
+  Radio,
+  Users,
+  Activity,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
 
 export default async function StationsPage({
   searchParams,
@@ -66,15 +73,19 @@ export default async function StationsPage({
     ]),
   ]);
 
-  const [totalStations, activeStations, inactiveStations, totalDevices, totalAdmins] = statsData;
+  const [
+    totalStations,
+    activeStations,
+    inactiveStations,
+    totalDevices,
+    totalAdmins,
+  ] = statsData;
   const totalPages = Math.ceil(total / perPage);
 
   const stats = [
     { label: "Total Stasiun", value: totalStations, icon: MapPin, color: "bg-blue-50 text-blue-600" },
-    { label: "Stasiun Aktif", value: activeStations, icon: CheckCircle2, color: "bg-emerald-50 text-emerald-600" },
-    { label: "Nonaktif", value: inactiveStations, icon: XCircle, color: "bg-red-50 text-red-600", urgent: inactiveStations > 0 },
-    { label: "Total Perangkat", value: totalDevices, icon: Radio, color: "bg-purple-50 text-purple-600" },
-    { label: "Total Admin", value: totalAdmins, icon: Users, color: "bg-indigo-50 text-indigo-600" },
+    { label: "Total Perangkat", value: totalDevices, icon: Radio, color: "bg-green-50 text-green-600" },
+    { label: "Total Admin", value: totalAdmins, icon: Users, color: "bg-orange-50 text-orange-600" },
   ];
 
   const statusOptions = [
@@ -104,15 +115,17 @@ export default async function StationsPage({
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
         {stats.map((stat) => (
-          <div key={stat.label} className={`rounded-xl border p-4 ${stat.urgent ? "border-red-200 bg-red-50/50" : "bg-card"}`}>
+          <div key={stat.label} className="rounded-xl border bg-card p-4">
             <div className="flex items-center gap-2 mb-3">
               <div className={`p-1.5 rounded-lg ${stat.color}`}>
                 <stat.icon className="size-4" />
               </div>
             </div>
-            <p className="text-2xl font-bold font-heading text-foreground">{stat.value}</p>
+            <p className="text-2xl font-bold font-heading text-foreground">
+              {stat.value}
+            </p>
             <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
           </div>
         ))}
@@ -125,7 +138,7 @@ export default async function StationsPage({
           type="text"
           placeholder="Cari nama, provinsi, atau kabupaten..."
           defaultValue={search}
-          className="flex-1 min-w-[200px] px-3 py-2 text-sm border rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring"
+          className="flex-1 min-w-50 px-3 py-2 text-sm border rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring"
         />
         <select
           name="status"
@@ -133,7 +146,9 @@ export default async function StationsPage({
           className="px-3 py-2 text-sm border rounded-lg bg-background"
         >
           {statusOptions.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
           ))}
         </select>
         <button
@@ -158,27 +173,47 @@ export default async function StationsPage({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b bg-muted/50 text-left">
-                <th className="px-4 py-3 font-medium text-muted-foreground">Nama</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Lokasi</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Koordinat</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Status</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Perangkat</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Admin</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Aksi</th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Nama
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Lokasi
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Koordinat
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Status
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Perangkat
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Admin
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Aksi
+                </th>
               </tr>
             </thead>
             <tbody>
               {stations.map((station) => (
-                <tr key={station.id} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
+                <tr
+                  key={station.id}
+                  className="border-b last:border-0 hover:bg-muted/30 transition-colors"
+                >
                   <td className="px-4 py-3 font-medium">{station.name}</td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {station.kabupaten}, {station.provinsi}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground text-xs">
-                    {station.latitude.toFixed(6)}, {station.longitude.toFixed(6)}
+                    {station.latitude.toFixed(6)},{" "}
+                    {station.longitude.toFixed(6)}
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(station.status)}`}>
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(station.status)}`}
+                    >
                       {station.status === "AKTIF" ? "Aktif" : "Nonaktif"}
                     </span>
                   </td>
@@ -195,7 +230,10 @@ export default async function StationsPage({
               ))}
               {stations.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
+                  <td
+                    colSpan={7}
+                    className="px-4 py-8 text-center text-muted-foreground"
+                  >
                     Tidak ada stasiun ditemukan.
                   </td>
                 </tr>
