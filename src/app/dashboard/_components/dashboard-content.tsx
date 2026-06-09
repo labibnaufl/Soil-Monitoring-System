@@ -14,9 +14,7 @@ import {
   MapPin,
   Cpu,
   Users,
-  AlertTriangle,
   Bell,
-  Clock,
   CheckCircle2,
   ChevronDown,
   TrendingUp,
@@ -186,29 +184,35 @@ export function DashboardContent({ data }: { data: DashboardData }) {
     },
   ];
 
-  // Notification summary
-  const notifStats = [
+  // Peat land type distribution (front-end slicing)
+  const totalPeatStations = data.totalStations + 7; // include mock stations
+  const peatDistribution = [
     {
-      label: "Prioritas Tinggi",
-      value: data.criticalAlerts,
-      icon: AlertTriangle,
-      color: "text-red-600",
-      bg: "bg-red-50",
-      urgent: data.criticalAlerts > 0,
+      label: "Fibric",
+      description: "Gambut mentah, serat tinggi",
+      value: Math.round(totalPeatStations * 0.35) || 3,
+      color: "text-teal-600",
+      bg: "bg-teal-50",
+      barColor: "bg-teal-500",
+      dotColor: "bg-teal-500",
     },
     {
-      label: "Prioritas Medium",
-      value: data.warningAlerts,
-      icon: Clock,
+      label: "Hemic",
+      description: "Gambut setengah matang",
+      value: Math.round(totalPeatStations * 0.4) || 4,
       color: "text-amber-600",
       bg: "bg-amber-50",
+      barColor: "bg-amber-500",
+      dotColor: "bg-amber-500",
     },
     {
-      label: "Total Selesai",
-      value: data.resolvedAlerts,
-      icon: CheckCircle2,
-      color: "text-emerald-600",
-      bg: "bg-emerald-50",
+      label: "Sapric",
+      description: "Gambut matang, serat rendah",
+      value: totalPeatStations - (Math.round(totalPeatStations * 0.35) || 3) - (Math.round(totalPeatStations * 0.4) || 4),
+      color: "text-rose-800",
+      bg: "bg-rose-50",
+      barColor: "bg-rose-800",
+      dotColor: "bg-rose-800",
     },
   ];
 
@@ -419,42 +423,49 @@ export function DashboardContent({ data }: { data: DashboardData }) {
           </div>
         </div>
 
-        {/* Notification Stats */}
+        {/* Peat Land Type Distribution */}
         <div className="xl:col-span-1 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-semibold text-foreground">
-              Ringkasan Notifikasi
+              Persebaran Jenis Lahan Gambut
             </h2>
-            <Link
-              href="/dashboard/alerts"
-              className="text-xs font-medium text-emerald-600 hover:text-emerald-700 transition-colors"
-            >
-              Lihat Semua →
-            </Link>
           </div>
           <div className="space-y-3">
-            {notifStats.map((stat) => (
-              <div
-                key={stat.label}
-                className={`rounded-xl border p-4 flex items-center gap-4 ${
-                  stat.urgent
-                    ? "border-red-200 bg-red-50/40 animate-pulse"
-                    : "bg-card"
-                }`}
-              >
-                <div className={`p-2 rounded-lg ${stat.bg}`}>
-                  <stat.icon className={`size-5 ${stat.color}`} />
+            {peatDistribution.map((peat) => {
+              const percentage = totalPeatStations > 0 ? Math.round((peat.value / totalPeatStations) * 100) : 0;
+              return (
+                <div
+                  key={peat.label}
+                  className="rounded-xl border bg-card p-4"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className={`w-3 h-3 rounded-full shrink-0 ${peat.dotColor}`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground">
+                        {peat.label}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground">
+                        {peat.description}
+                      </p>
+                    </div>
+                    <span className={`text-2xl font-bold font-heading ${peat.color}`}>
+                      {peat.value}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${peat.barColor} transition-all duration-500`}
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-muted-foreground font-medium w-9 text-right">
+                      {percentage}%
+                    </span>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground">
-                    {stat.label}
-                  </p>
-                </div>
-                <span className={`text-2xl font-bold font-heading ${stat.color}`}>
-                  {stat.value}
-                </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

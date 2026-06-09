@@ -8,10 +8,110 @@ import {
   MapPin,
   Radio,
   Users,
-  Activity,
-  CheckCircle2,
-  XCircle,
 } from "lucide-react";
+
+const PEAT_TYPES = ["Fibric", "Hemic", "Sapric"] as const;
+
+function getPeatType(name: string): (typeof PEAT_TYPES)[number] {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return PEAT_TYPES[Math.abs(hash) % PEAT_TYPES.length];
+}
+
+function getPeatColor(type: string) {
+  switch (type) {
+    case "Fibric":
+      return "bg-teal-100 text-teal-700";
+    case "Hemic":
+      return "bg-amber-100 text-amber-700";
+    case "Sapric":
+      return "bg-rose-100 text-rose-800";
+    default:
+      return "bg-gray-100 text-gray-700";
+  }
+}
+
+const MOCK_STATIONS = [
+  {
+    id: "mock-1",
+    name: "Stasiun Gambut Siak",
+    kabupaten: "Siak",
+    provinsi: "Riau",
+    latitude: 1.3912,
+    longitude: 102.1458,
+    status: "AKTIF",
+    createdAt: new Date(),
+    _count: { devices: 4, admins: 2 },
+  },
+  {
+    id: "mock-2",
+    name: "Stasiun Gambut Kubu Raya",
+    kabupaten: "Kubu Raya",
+    provinsi: "Kalimantan Barat",
+    latitude: -0.1352,
+    longitude: 109.4813,
+    status: "AKTIF",
+    createdAt: new Date(),
+    _count: { devices: 3, admins: 1 },
+  },
+  {
+    id: "mock-3",
+    name: "Stasiun Gambut Pulang Pisau",
+    kabupaten: "Pulang Pisau",
+    provinsi: "Kalimantan Tengah",
+    latitude: -2.6932,
+    longitude: 114.1731,
+    status: "NONAKTIF",
+    createdAt: new Date(),
+    _count: { devices: 2, admins: 1 },
+  },
+  {
+    id: "mock-4",
+    name: "Stasiun Gambut Ogan Komering",
+    kabupaten: "Ogan Komering Ilir",
+    provinsi: "Sumatera Selatan",
+    latitude: -3.2156,
+    longitude: 105.2341,
+    status: "AKTIF",
+    createdAt: new Date(),
+    _count: { devices: 5, admins: 3 },
+  },
+  {
+    id: "mock-5",
+    name: "Stasiun Gambut Merauke",
+    kabupaten: "Merauke",
+    provinsi: "Papua Selatan",
+    latitude: -8.4932,
+    longitude: 140.4018,
+    status: "AKTIF",
+    createdAt: new Date(),
+    _count: { devices: 2, admins: 1 },
+  },
+  {
+    id: "mock-6",
+    name: "Stasiun Gambut Indragiri Hilir",
+    kabupaten: "Indragiri Hilir",
+    provinsi: "Riau",
+    latitude: -0.3261,
+    longitude: 103.1782,
+    status: "NONAKTIF",
+    createdAt: new Date(),
+    _count: { devices: 1, admins: 1 },
+  },
+  {
+    id: "mock-7",
+    name: "Stasiun Gambut Kayong Utara",
+    kabupaten: "Kayong Utara",
+    provinsi: "Kalimantan Barat",
+    latitude: -1.1073,
+    longitude: 109.9621,
+    status: "AKTIF",
+    createdAt: new Date(),
+    _count: { devices: 3, admins: 2 },
+  },
+];
 
 export default async function StationsPage({
   searchParams,
@@ -80,6 +180,9 @@ export default async function StationsPage({
     totalDevices,
     totalAdmins,
   ] = statsData;
+  // Merge mock stations for front-end slicing
+  const allStations = [...stations, ...MOCK_STATIONS];
+
   const totalPages = Math.ceil(total / perPage);
 
   const stats = [
@@ -192,46 +295,59 @@ export default async function StationsPage({
                   Admin
                 </th>
                 <th className="px-4 py-3 font-medium text-muted-foreground">
+                  Jenis Lahan Gambut
+                </th>
+                <th className="px-4 py-3 font-medium text-muted-foreground">
                   Aksi
                 </th>
               </tr>
             </thead>
             <tbody>
-              {stations.map((station) => (
-                <tr
-                  key={station.id}
-                  className="border-b last:border-0 hover:bg-muted/30 transition-colors"
-                >
-                  <td className="px-4 py-3 font-medium">{station.name}</td>
-                  <td className="px-4 py-3 text-muted-foreground">
-                    {station.kabupaten}, {station.provinsi}
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground text-xs">
-                    {station.latitude.toFixed(6)},{" "}
-                    {station.longitude.toFixed(6)}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(station.status)}`}
-                    >
-                      {station.status === "AKTIF" ? "Aktif" : "Nonaktif"}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground">
-                    {station._count.devices}
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground">
-                    {station._count.admins}
-                  </td>
-                  <td className="px-4 py-3">
-                    <StationActions station={station} />
-                  </td>
-                </tr>
-              ))}
+              {allStations.map((station) => {
+                const peatType = getPeatType(station.name);
+                return (
+                  <tr
+                    key={station.id}
+                    className="border-b last:border-0 hover:bg-muted/30 transition-colors"
+                  >
+                    <td className="px-4 py-3 font-medium">{station.name}</td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {station.kabupaten}, {station.provinsi}
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground text-xs">
+                      {station.latitude.toFixed(6)},{" "}
+                      {station.longitude.toFixed(6)}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(station.status)}`}
+                      >
+                        {station.status === "AKTIF" ? "Aktif" : "Nonaktif"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {station._count.devices}
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {station._count.admins}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getPeatColor(peatType)}`}
+                      >
+                        {peatType}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <StationActions station={station} />
+                    </td>
+                  </tr>
+                );
+              })}
               {stations.length === 0 && (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={8}
                     className="px-4 py-8 text-center text-muted-foreground"
                   >
                     Tidak ada stasiun ditemukan.

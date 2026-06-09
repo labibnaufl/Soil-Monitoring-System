@@ -49,7 +49,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen flex">
+    <main className="min-h-screen flex bg-white">
       {/* ─── Left Panel: Login Form ─── */}
       <div className="w-full lg:w-[52%] flex flex-col items-center justify-center px-6 sm:px-12 lg:px-20 xl:px-28 py-10 bg-white relative">
         {/* Subtle grain texture overlay */}
@@ -256,30 +256,71 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* ─── Right Panel: Placeholder ─── */}
-      <div className="hidden lg:flex lg:w-[48%] bg-slate-100 items-center justify-center relative overflow-hidden">
-        {/* Subtle decorative elements */}
+      {/* ─── Right Panel: Hero Visual ─── */}
+      <div className="hidden lg:flex lg:w-[48%] p-4">
+      <div className="w-full bg-emerald-500 flex flex-col justify-center relative overflow-hidden rounded-3xl">
+        {/* Background texture & glow effects */}
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 right-0 h-full bg-linear-to-br from-slate-100 via-slate-50 to-slate-100" />
-          <div className="absolute top-[20%] left-[15%] w-72 h-72 bg-emerald-100/40 rounded-full blur-[80px]" />
-          <div className="absolute bottom-[20%] right-[10%] w-80 h-80 bg-emerald-50/60 rounded-full blur-[100px]" />
+          <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-emerald-400/30 rounded-full blur-[120px]" />
+          <div className="absolute bottom-[-15%] left-[-5%] w-[400px] h-[400px] bg-emerald-600/40 rounded-full blur-[100px]" />
+          <div
+            className="absolute inset-0 opacity-[0.04]"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+            }}
+          />
         </div>
 
-        {/* Placeholder content */}
-        <div className="relative z-10 text-center px-12">
-          <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center mx-auto mb-5">
-            <Image
-              src="/Images/Logo_HD.png"
-              alt="NYAWIT Logo"
-              width={32}
-              height={32}
-              className="w-8 h-8 object-contain opacity-60"
-            />
+        {/* Content */}
+        <div className="relative z-10 px-12 xl:px-16 2xl:px-20">
+          {/* Heading */}
+          <div className="mb-10">
+            <h2 className="text-[32px] xl:text-[38px] 2xl:text-[42px] font-extrabold text-white leading-[1.15] tracking-tight">
+              Menghubungkan Teknologi dan Alam dalam Satu Sistem.
+            </h2>
+            <p className="text-emerald-100/80 text-base xl:text-lg mt-4 leading-relaxed max-w-md">
+              Masuk untuk mengakses dashboard Anda dan mulai lakukan pemantauan.
+            </p>
           </div>
-          <p className="text-slate-400 text-sm font-medium tracking-wide uppercase">
-            Panel Kanan — Segera Hadir
-          </p>
+
+          {/* Dashboard Preview Cards */}
+          <div className="relative h-[380px] xl:h-[420px]">
+            {/* Main dashboard card - back */}
+            <div
+              className="absolute top-0 left-0 w-[90%] xl:w-[85%] rounded-2xl shadow-2xl shadow-black/20 overflow-hidden border border-white/10"
+              style={{
+                transform: "perspective(1200px) rotateY(4deg) rotateX(2deg)",
+              }}
+            >
+              <Image
+                src="/Images/dashboard-preview-main.png"
+                alt="Dashboard monitoring data preview"
+                width={600}
+                height={400}
+                className="w-full h-auto object-cover"
+                priority
+              />
+            </div>
+
+            {/* Rainfall chart card - front, overlapping */}
+            <div
+              className="absolute top-[30%] right-[-8%] xl:right-[-5%] w-[65%] xl:w-[60%] rounded-2xl shadow-2xl shadow-black/25 overflow-hidden border border-white/10"
+              style={{
+                transform: "perspective(1200px) rotateY(-3deg) rotateX(1deg)",
+              }}
+            >
+              <Image
+                src="/Images/dashboard-preview-chart.png"
+                alt="Dashboard rainfall chart preview"
+                width={450}
+                height={350}
+                className="w-full h-auto object-cover"
+                priority
+              />
+            </div>
+          </div>
         </div>
+      </div>
       </div>
     </main>
   );
