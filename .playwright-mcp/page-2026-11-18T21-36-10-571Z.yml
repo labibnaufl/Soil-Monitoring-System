@@ -1,0 +1,33 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e7]: "N"
+      - generic [ref=e8]:
+        - paragraph [ref=e9]: NNA DMS
+        - paragraph [ref=e10]: PT Niaga Nusa Abadi
+    - generic [ref=e11]:
+      - heading "Selamat datang kembali." [level=1] [ref=e12]
+      - paragraph [ref=e13]: Distribution Management System untuk operasional distribusi nasional. Masuk untuk mulai bekerja.
+    - paragraph [ref=e14]: © 2026 PT Niaga Nusa Abadi · Powered by Azura Labs
+  - generic [ref=e16]:
+    - generic [ref=e17]:
+      - heading "Masuk ke DMS" [level=2] [ref=e18]
+      - paragraph [ref=e19]: Gunakan NIK atau Email karyawan Anda.
+    - tablist [ref=e20]:
+      - tab "NIK" [ref=e21] [cursor=pointer]
+      - tab "Email" [active] [selected] [ref=e27] [cursor=pointer]
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - generic [ref=e32]: Email
+        - textbox "Email" [ref=e55]:
+          - /placeholder: nama@nna.co.id
+      - generic [ref=e40]:
+        - generic [ref=e41]: Password
+        - generic [ref=e42]:
+          - textbox "Password" [ref=e45]:
+            - /placeholder: Masukkan password
+          - button "Tampilkan password" [ref=e46] [cursor=pointer]
+      - link "Lupa password?" [ref=e50] [cursor=pointer]:
+        - /url: /forgot-password
+      - button "Masuk" [ref=e51] [cursor=pointer]
+    - paragraph [ref=e52]: Belum punya akses? Hubungi admin untuk pendaftaran email & password.
