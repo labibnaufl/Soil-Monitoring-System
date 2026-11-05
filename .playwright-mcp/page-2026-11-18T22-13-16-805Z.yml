@@ -1,0 +1,28 @@
+- generic [ref=e3]:
+  - generic [ref=e6]:
+    - generic [ref=e7]:
+      - img "NNA" [ref=e9]
+      - generic [ref=e10]:
+        - paragraph [ref=e11]: NNA DMS
+        - generic [ref=e12]: Operation
+    - textbox "Cari menu…" [ref=e18]
+    - list [ref=e19]:
+      - progressbar [ref=e21]
+    - generic [ref=e24]:
+      - paragraph [ref=e26]: A
+      - generic [ref=e27]:
+        - paragraph [ref=e28]: Admin
+        - paragraph [ref=e29]: Administrator
+      - button "Logout" [ref=e30] [cursor=pointer]
+  - main [ref=e34]:
+    - generic [ref=e36]:
+      - button "Ganti modul aplikasi" [ref=e38] [cursor=pointer]
+      - generic [ref=e41]:
+        - generic [ref=e42]: Development
+        - generic [ref=e43] [cursor=pointer]:
+          - generic [ref=e44]: A
+          - generic [ref=e45]:
+            - paragraph [ref=e46]: Admin
+            - paragraph [ref=e47]: Administrator
+    - status "Memuat akses" [ref=e52]:
+      - progressbar [ref=e53]
