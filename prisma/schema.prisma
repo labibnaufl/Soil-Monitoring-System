@@ -67,6 +67,7 @@ model Station {
   mapsLink      String?   @map("maps_link") // Computed: https://maps.google.com/?q=${lat},${lng}
   imageUrl      String?   @map("image_url")
   status        StationStatus @default(AKTIF)
+  peatType      PeatType? @map("peat_type")
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
 
@@ -126,6 +127,12 @@ enum DeviceStatus {
 enum StationStatus {
   AKTIF
   NONAKTIF
+}
+
+enum PeatType {
+  FIBRIC
+  HEMIC
+  SAPRIC
 }
 
 // ============================================
