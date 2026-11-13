@@ -8,8 +8,6 @@ import { toast } from "sonner";
 import {
   EnvelopeSimple,
   LockKey,
-  Eye,
-  EyeSlash,
   CircleNotch,
   WarningCircle,
 } from "@phosphor-icons/react";
@@ -19,7 +17,6 @@ export default function LoginCredentialsForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
@@ -43,6 +40,7 @@ export default function LoginCredentialsForm() {
       const result = await signIn("credentials", {
         email,
         password,
+        rememberMe: rememberMe ? "1" : "0",
         redirect: false,
       });
 
@@ -60,213 +58,177 @@ export default function LoginCredentialsForm() {
   }
 
   return (
-    <section className="flex flex-col gap-4 p-6 md:p-10 min-h-svh lg:h-svh lg:overflow-hidden bg-white">
-      <div className="flex flex-1 items-center justify-center">
-      <div className="w-full max-w-[497px] flex flex-col justify-center py-4">
-        <div className="flex items-center gap-[14px]">
+    <section className="relative flex min-h-svh flex-col px-6 py-6 md:px-[48px] lg:h-svh lg:overflow-y-auto lg:px-[70px] lg:pt-[142px] lg:pb-6 xl:px-[118px] xl:pt-[175px]">
+      <div className="relative z-10 mx-auto flex w-full max-w-[525px] flex-1 flex-col justify-center py-2 lg:mx-0 lg:justify-start lg:py-0">
+        <div className="flex items-center gap-[12px]">
           <Image
             src="/Images/Logo_HD.png"
             alt="NYAWIT Logo"
             width={108}
             height={80}
-            className="w-[64px] h-[48px] xl:w-[108px] xl:h-[80px] object-contain"
+            className="h-[60px] w-[80px] object-contain"
             priority
           />
           <div>
-            <span className="text-[24px] xl:text-[28px] font-bold text-[#007A00] tracking-tight block leading-[1.2] font-sans">
+            <p className="text-[28px] leading-none font-semibold tracking-tight text-[#02CC01]">
               NYAWIT
-            </span>
-            <span className="text-[13px] xl:text-[15px] text-[#666666] tracking-wide font-sans">
+            </p>
+            <p className="mt-[4px] text-[14px] font-medium text-[#666666]">
               Powered by PT. Lestari Prima AgriTech
-            </span>
+            </p>
           </div>
         </div>
 
-        <div className="mt-[3vh]">
-          <h1 className="w-[378px] max-w-full text-[26px] xl:text-[32px] font-bold text-[#007A00] tracking-tight leading-[1.2] font-sans">
-            Masuk ke Akun Anda
-          </h1>
-          <p className="text-[#666666] text-[15px] mt-1 font-sans">
-            Masukkan kredensial akun
-          </p>
-        </div>
+        <h1 className="mt-[28px] text-[30px] leading-[1.3] font-medium text-[#02CC01]">
+          Masuk ke Akun Anda
+        </h1>
+        <p className="text-[14px] font-medium text-[#666666]">Masukkan kredensial akun</p>
 
         {/* Error Alert */}
         {error && (
           <div
             role="alert"
-            className="flex items-start gap-3 bg-red-50 border border-red-100 text-red-600 px-4 py-3.5 rounded-xl mb-6 text-sm leading-snug animate-in fade-in slide-in-from-top-1 duration-200"
+            className="mt-4 flex items-start gap-3 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm leading-snug text-red-600"
           >
-            <WarningCircle className="w-4.5 h-4.5 shrink-0 mt-0.5" />
+            <WarningCircle className="mt-0.5 h-[18px] w-[18px] shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="mt-[3vh] space-y-4">
-          <div className="space-y-1.5">
-            <label
-              htmlFor="login-email"
-              className="block text-sm font-semibold text-[#666666]"
-            >
-              Email
-            </label>
-            <div className="relative">
-              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9F9F9F]">
-                <EnvelopeSimple className="w-4.5 h-4.5" />
-              </div>
-              <input
-                id="login-email"
-                name="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@nyawit.id"
-                required
-                autoComplete="email"
-                aria-invalid={Boolean(fieldErrors.email)}
-                aria-describedby={fieldErrors.email ? "login-email-error" : undefined}
-                className="w-full min-h-[44px] pl-11 pr-4 py-2.5 bg-white border border-[#E5E5E5] rounded-xl text-[#333333] text-[15px] placeholder:text-[#767676]
-                         focus:outline-none focus-visible:ring-2 focus-visible:ring-[#007A00]/40 focus:border-[#007A00]
-                         transition-all duration-200 hover:border-[#CCCCCC]"
-              />
-            </div>
-            {fieldErrors.email && (
-              <p id="login-email-error" role="alert" className="text-sm text-red-600">
-                {fieldErrors.email}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-1.5">
-            <label
-              htmlFor="login-password"
-              className="block text-sm font-semibold text-[#666666]"
-            >
-              Password
-            </label>
-            <div className="relative">
-              <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9F9F9F]">
-                <LockKey className="w-4.5 h-4.5" />
-              </div>
-              <input
-                id="login-password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                minLength={8}
-                autoComplete="current-password"
-                aria-invalid={Boolean(fieldErrors.password)}
-                aria-describedby={fieldErrors.password ? "login-password-error" : undefined}
-                className="w-full min-h-[44px] pl-11 pr-12 py-2.5 bg-white border border-[#E5E5E5] rounded-xl text-[#333333] text-[15px] placeholder:text-[#767676]
-                         focus:outline-none focus-visible:ring-2 focus-visible:ring-[#007A00]/40 focus:border-[#007A00]
-                         transition-all duration-200 hover:border-[#CCCCCC]"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center text-[#767676] hover:text-[#333333] transition-colors p-2 rounded-md hover:bg-[#F5F5F5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#007A00]/40"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                aria-pressed={showPassword}
-              >
-                {showPassword ? (
-                  <EyeSlash className="w-4.5 h-4.5" />
-                ) : (
-                  <Eye className="w-4.5 h-4.5" />
-                )}
-              </button>
-            </div>
-            {fieldErrors.password && (
-              <p id="login-password-error" role="alert" className="text-sm text-red-600">
-                {fieldErrors.password}
-              </p>
-            )}
-          </div>
-
-          <div className="flex items-center justify-between pt-1">
-            <label className="flex items-center gap-2.5 cursor-pointer group">
-              <div className="relative">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="peer sr-only"
-                  aria-label="Ingat saya selama 30 hari"
-                />
-                <div
-                  className={`w-[22px] h-[22px] rounded-[5px] border-2 transition-all duration-200 flex items-center justify-center peer-focus-visible:ring-2 peer-focus-visible:ring-[#007A00]/40 ${
-                    rememberMe
-                      ? "bg-[#007A00] border-[#007A00]"
-                      : "border-[#CCCCCC] bg-white group-hover:border-[#999999]"
-                  }`}
-                >
-                  <svg
-                    className={`w-3 h-3 text-white transition-opacity duration-150 ${
-                      rememberMe ? "opacity-100" : "opacity-0"
-                    }`}
-                    viewBox="0 0 12 12"
-                    fill="none"
-                  >
-                    <path
-                      d="M2.5 6L5 8.5L9.5 3.5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+        <form onSubmit={handleSubmit} className="mt-[28px]" noValidate>
+          <div className="space-y-[18px]">
+            <div>
+              <label htmlFor="login-email" className="block text-[14px] font-medium text-[#666666]">
+                Email
+              </label>
+              <div className="relative mt-[6px]">
+                <div className="pointer-events-none absolute top-1/2 left-[14px] -translate-y-1/2 text-[#666666]">
+                  <EnvelopeSimple className="h-[24px] w-[24px]" />
                 </div>
+                <input
+                  id="login-email"
+                  name="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@nyawit.id"
+                  required
+                  autoComplete="email"
+                  aria-invalid={Boolean(fieldErrors.email)}
+                  aria-describedby={fieldErrors.email ? "login-email-error" : undefined}
+                  className="h-[48px] w-full rounded-[9px] border border-[#E5E5E5] bg-white pr-4 pl-[52px] text-[15px] font-medium text-[#333333] placeholder:text-[#9F9F9F] focus:border-[#02CC01] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#02CC01]/40"
+                />
               </div>
-              <span className="text-sm text-[#666666] select-none">
-                Ingat saya selama 30 hari
-              </span>
-            </label>
+              {fieldErrors.email && (
+                <p id="login-email-error" role="alert" className="mt-1 text-sm text-red-600">
+                  {fieldErrors.email}
+                </p>
+              )}
+            </div>
 
-            <button
-              type="button"
-              onClick={() => toast.info("Reset password segera hadir — hubungi admin NYAWIT.")}
-              className="min-h-[44px] px-2 text-sm font-semibold text-[#007A00] hover:text-[#006400] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#007A00]/40 rounded-md"
-            >
-              Lupa Password?
-            </button>
+            <div>
+              <label
+                htmlFor="login-password"
+                className="block text-[14px] font-medium text-[#666666]"
+              >
+                Password
+              </label>
+              <div className="relative mt-[6px]">
+                <div className="pointer-events-none absolute top-1/2 left-[14px] -translate-y-1/2 text-[#666666]">
+                  <LockKey className="h-[24px] w-[22px]" />
+                </div>
+                <input
+                  id="login-password"
+                  name="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  minLength={8}
+                  autoComplete="current-password"
+                  aria-invalid={Boolean(fieldErrors.password)}
+                  aria-describedby={fieldErrors.password ? "login-password-error" : undefined}
+                  className="h-[48px] w-full rounded-[9px] border border-[#E5E5E5] bg-white pr-4 pl-[52px] text-[15px] font-medium text-[#333333] placeholder:text-[#9F9F9F] focus:border-[#02CC01] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#02CC01]/40"
+                />
+              </div>
+              {fieldErrors.password && (
+                <p id="login-password-error" role="alert" className="mt-1 text-sm text-red-600">
+                  {fieldErrors.password}
+                </p>
+              )}
+            </div>
           </div>
+
+          <label className="mt-[18px] flex cursor-pointer items-center gap-[10px]">
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="peer sr-only"
+              aria-label="Ingat saya selama 30 hari"
+            />
+            <span
+              aria-hidden="true"
+              className="flex h-[25px] w-[25px] shrink-0 items-center justify-center rounded-[5px] border border-[#666666] bg-white transition-colors peer-checked:border-[#02CC01] peer-checked:bg-[#02CC01] peer-focus-visible:ring-2 peer-focus-visible:ring-[#02CC01]/40"
+            >
+              <svg
+                viewBox="0 0 12 12"
+                fill="none"
+                className={`h-3 w-3 text-white transition-opacity ${rememberMe ? "opacity-100" : "opacity-0"}`}
+              >
+                <path
+                  d="M2.5 6L5 8.5L9.5 3.5"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+            <span className="text-[14px] font-medium text-[#666666] select-none">
+              Ingat saya selama 30 hari
+            </span>
+          </label>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full min-h-[44px] py-2.5 px-4 bg-[#007A00] hover:bg-[#006400] active:bg-[#005A00]
-                     text-white font-semibold text-[15px] rounded-xl shadow-lg shadow-[#007A00]/20
-                     disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-[#007A00]
-                     transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#007A00]/40 focus-visible:ring-offset-2
-                     flex items-center justify-center gap-2"
+            className="relative mt-[16px] flex h-[52px] w-full items-center justify-center gap-2 rounded-[9px] bg-[#02CC01] text-[15px] font-semibold text-white transition-colors hover:bg-[#00B400] focus-visible:ring-2 focus-visible:ring-[#02CC01]/40 focus-visible:ring-offset-2 focus-visible:outline-none active:bg-[#009E00] disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {isLoading ? (
-              <>
-                <CircleNotch className="w-5 h-5 animate-spin" />
-                <span>Memeriksa...</span>
-              </>
-            ) : (
-              <span>Masuk</span>
+            <span className={isLoading ? "invisible" : undefined}>Masuk</span>
+            {isLoading && (
+              <span className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+                <CircleNotch className="h-5 w-5 animate-spin" />
+              </span>
             )}
           </button>
-        </form>
+          <span className="sr-only" role="status">
+            {isLoading ? "Memeriksa kredensial…" : ""}
+          </span>
 
-        <div className="mt-[3vh]">
-          <p className="text-[13px] xl:text-[15px] text-[#666666] font-sans">
-            Dengan masuk, anda sudah menyetujui{" "}
+          <div className="mt-[8px] flex justify-end">
             <button
               type="button"
-              onClick={() => toast.info("Ketentuan penggunaan segera hadir — hubungi admin NYAWIT.")}
-              className="text-[#007A00] hover:text-[#006400] font-medium transition-colors font-sans focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#007A00]/40 rounded"
+              onClick={() => toast.info("Reset password segera hadir — hubungi admin NYAWIT.")}
+              className="min-h-[44px] px-1 text-[14px] font-medium text-[#02CC01] transition-colors hover:text-[#00B400] focus-visible:rounded focus-visible:ring-2 focus-visible:ring-[#02CC01]/40 focus-visible:outline-none"
             >
-              ketentuan penggunaan
+              Lupa Password?
             </button>
-          </p>
-        </div>
+          </div>
+        </form>
       </div>
-      </div>
+
+      <p className="relative z-10 pb-2 text-center text-[14px] font-medium text-[#666666]">
+          Dengan masuk, anda sudah menyetujui{" "}
+          <button
+            type="button"
+            onClick={() => toast.info("Ketentuan penggunaan segera hadir — hubungi admin NYAWIT.")}
+            className="font-medium text-[#02CC01] transition-colors hover:text-[#00B400] focus-visible:rounded focus-visible:ring-2 focus-visible:ring-[#02CC01]/40 focus-visible:outline-none"
+          >
+            ketentuan penggunaan
+          </button>
+        </p>
     </section>
   );
 }
