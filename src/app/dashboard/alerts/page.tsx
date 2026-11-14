@@ -59,8 +59,6 @@ export default async function AlertsPage({
       skip: (page - 1) * perPage,
       take: perPage,
       include: {
-        station: { select: { name: true, provinsi: true, kabupaten: true } },
-        device: { select: { deviceName: true, deviceId: true } },
         resolvedBy: { select: { name: true } },
       },
     }),
@@ -131,7 +129,7 @@ export default async function AlertsPage({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold font-heading text-foreground">
             Notifikasi & Peringatan
@@ -210,25 +208,23 @@ export default async function AlertsPage({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b bg-muted/50 text-left">
-                <th className="px-4 py-3 font-medium text-muted-foreground">Tipe</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Prioritas</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Status</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Pesan</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Stasiun</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Perangkat</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Waktu</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Aksi</th>
+                <th className="px-3 py-2 font-medium text-muted-foreground">Tipe</th>
+                <th className="px-3 py-2 font-medium text-muted-foreground">Prioritas</th>
+                <th className="px-3 py-2 font-medium text-muted-foreground">Status</th>
+                <th className="px-3 py-2 font-medium text-muted-foreground">Pesan</th>
+                <th className="px-3 py-2 font-medium text-muted-foreground">Waktu</th>
+                <th className="px-3 py-2 font-medium text-muted-foreground">Aksi</th>
               </tr>
             </thead>
             <tbody>
               {alerts.map((alert) => (
                 <tr key={alert.id} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
-                  <td className="px-4 py-3">
+                  <td className="px-3 py-2.5">
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
                       {getTypeLabel(alert.alertType)}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-3 py-2.5">
                     {(() => {
                       const priorityBadge = getPriorityBadge(alert.priority);
                       const label = getPriorityLabel(alert.priority);
@@ -244,7 +240,7 @@ export default async function AlertsPage({
                       );
                     })()}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-3 py-2.5">
                     {(() => {
                       const statusBadge = getStatusBadge(alert.status);
                       const label = getStatusLabel(alert.status);
@@ -260,18 +256,12 @@ export default async function AlertsPage({
                       );
                     })()}
                   </td>
-                  <td className="px-4 py-3 max-w-xs">
+                  <td className="px-3 py-2.5 max-w-xs">
                     <p className="truncate" title={alert.message || "-"}>
                       {alert.message || "-"}
                     </p>
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">
-                    {alert.station ? alert.station.name : "-"}
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground text-xs">
-                    {alert.device ? alert.device.deviceName : "-"}
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground text-xs">
+                  <td className="px-3 py-2.5 text-muted-foreground text-xs">
                     {alert.createdAt.toLocaleString("id-ID", {
                       day: "numeric",
                       month: "short",
@@ -280,14 +270,14 @@ export default async function AlertsPage({
                       minute: "2-digit",
                     })}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-3 py-2.5">
                     <AlertActions alert={alert} />
                   </td>
                 </tr>
               ))}
               {alerts.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="px-4 py-8 text-center text-muted-foreground">
+                  <td colSpan={6} className="px-3 py-6 text-center text-muted-foreground">
                     Tidak ada notifikasi ditemukan.
                   </td>
                 </tr>
