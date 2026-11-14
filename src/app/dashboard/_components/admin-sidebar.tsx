@@ -13,7 +13,6 @@ import {
   MapPin,
   Cpu,
   Bell,
-  Brain,
   CloudRain,
 } from "@phosphor-icons/react";
 
@@ -29,8 +28,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
 } from "@/components/ui/sidebar";
-import { StatusBadge } from "@/components/ui/status-badge";
 import { useEffect, useState } from "react";
 import { getAlertCounts } from "../alerts/_components/actions/alert";
 
@@ -52,7 +51,6 @@ const monitoringNav = [
   { title: "Tingkat Air", url: "/dashboard/monitoring/water-level", icon: Drop },
   { title: "Curah Hujan", url: "/dashboard/monitoring/curah-hujan", icon: CloudRain },
   { title: "Monitoring Tanah", url: "/dashboard/monitoring/soil-monitoring", icon: Heartbeat },
-  { title: "Prediksi AI", url: "/dashboard/monitoring/prediksi-ai", icon: Brain },
 ];
 
 const systemNav = [
@@ -94,7 +92,7 @@ export function AdminSidebar({
     : managementNavAdminLokasi;
 
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar variant="inset" collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -127,6 +125,7 @@ export function AdminSidebar({
       <SidebarFooter>
         <NavUser user={user} />
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }
@@ -180,7 +179,7 @@ function NavGroup({
                       <span>{item.title}</span>
                     </span>
                     {item.showBadge && alertCounts && alertCounts.open > 0 && (
-                      <span className={`ml-auto text-xs px-2 py-0.5 rounded-full ${alertCounts.high > 0 ? 'bg-red-500 text-white' : 'bg-amber-500 text-white'}`}>
+                      <span role="status" aria-label={`${alertCounts.open} notifikasi belum selesai`} className={`ml-auto text-xs px-2 py-0.5 rounded-full group-data-[collapsible=icon]:hidden ${alertCounts.high ? 'bg-red-500 text-white' : 'bg-amber-500 text-white'}`}>
                         {alertCounts.open}
                       </span>
                     )}
