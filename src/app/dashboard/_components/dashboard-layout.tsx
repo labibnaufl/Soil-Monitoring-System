@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, type CSSProperties } from "react";
 import { AdminSidebar } from "./admin-sidebar";
 import { SiteHeader } from "./site-header";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
@@ -9,9 +9,13 @@ import { AutoRefresh } from "./auto-refresh";
 
 interface DashboardLayoutProps {
   children: ReactNode;
+  defaultOpen?: boolean;
 }
 
-function DashboardLayoutContent({ children }: DashboardLayoutProps) {
+function DashboardLayoutContent({
+  children,
+  defaultOpen = true,
+}: DashboardLayoutProps) {
   const { data: session } = useSession();
 
   const user = {
@@ -22,13 +26,20 @@ function DashboardLayoutContent({ children }: DashboardLayoutProps) {
   };
 
   return (
-    <SidebarProvider>
+    <SidebarProvider
+      defaultOpen={defaultOpen}
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+        } as CSSProperties
+      }
+    >
       <AutoRefresh />
       <AdminSidebar user={user} />
       <SidebarInset>
         <SiteHeader />
-        <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2">
+        <div className="flex min-w-0 flex-1 flex-col">
+          <div className="@container/main flex min-w-0 flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
               {children}
             </div>
@@ -39,10 +50,15 @@ function DashboardLayoutContent({ children }: DashboardLayoutProps) {
   );
 }
 
-export function DashboardLayout({ children }: DashboardLayoutProps) {
+export function DashboardLayout({
+  children,
+  defaultOpen = true,
+}: DashboardLayoutProps) {
   return (
     <SessionProvider>
-      <DashboardLayoutContent>{children}</DashboardLayoutContent>
+      <DashboardLayoutContent defaultOpen={defaultOpen}>
+        {children}
+      </DashboardLayoutContent>
     </SessionProvider>
   );
 }
