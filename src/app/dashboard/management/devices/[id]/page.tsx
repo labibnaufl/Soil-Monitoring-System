@@ -3,13 +3,17 @@ import { auth } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { DeviceDetailActions } from "./device-detail-actions";
+import { DevicePredictionPanel } from "./_components/device-prediction-panel";
 import { EditDeviceModal } from "./_components/edit-device-modal";
-import { ArrowLeft, Cpu, Radio, BatteryFull, CellSignalHigh, Heartbeat, Calendar, Clock, CheckCircle, XCircle, Wrench, Power, MapPin, Gear, Hash } from "@/components/icons";
+import { cn } from "@/lib/utils";
+import { ArrowLeft, Cpu, BatteryFull, CellSignalHigh, Heartbeat, Calendar, Clock, CheckCircle, XCircle, Wrench, Power, MapPin, Gear, Hash } from "@/components/icons";
 
 export default async function DeviceDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }) {
   const session = await auth();
 
@@ -22,6 +26,19 @@ export default async function DeviceDetailPage({
   }
 
   const { id } = await params;
+  const tab = (await searchParams)?.tab ?? "informasi";
+  const validTab = ["informasi", "ai"].includes(tab) ? tab : "informasi";
+
+  const tabs = [
+    { key: "informasi", label: "Informasi" },
+    { key: "ai", label: "AI Insight" },
+  ];
+
+  function tabHref(key: string) {
+    return key === "informasi"
+      ? `/dashboard/management/devices/${id}`
+      : `/dashboard/management/devices/${id}?tab=${key}`;
+  }
 
   const device = await prisma.device.findUnique({
     where: { id },
@@ -244,29 +261,61 @@ export default async function DeviceDetailPage({
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Info Card */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Basic Info */}
-          <div className="rounded-xl border bg-card p-6">
-            <h2 className="font-semibold font-heading text-foreground mb-4 flex items-center gap-2">
-              <Radio className="size-4" />
-              Informasi Perangkat
-            </h2>
-            <dl className="space-y-3">
-              {infoRows.map((row) => (
-                <div key={row.label} className="flex items-start gap-4">
-                  <dt className="w-40 shrink-0 text-sm text-muted-foreground flex items-center gap-2">
-                    <row.icon className="size-4" />
-                    {row.label}
-                  </dt>
-                  <dd className="text-sm font-medium text-foreground">
-                    {row.value}
-                  </dd>
-                </div>
-              ))}
-            </dl>
+      <div className="space-y-4 lg:space-y-5">
+        <nav className="border-b">
+          <div className="flex overflow-x-auto -mb-px">
+            {tabs.map((t) => {
+              const active = t.key === validTab;
+              return (
+                <Link
+                  key={t.key}
+                  href={tabHref(t.key)}
+                  className={cn(
+                    "inline-flex shrink-0 items-center px-4 py-2.5 text-sm font-medium border-b-2 transition-colors",
+                    active
+                      ? "border-primary text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {t.label}
+                </Link>
+              );
+            })}
           </div>
+        </nav>
+
+        {validTab === "informasi" && (
+          <div className="grid gap-4 lg:gap-5 xl:grid-cols-5">
+            <div className="xl:col-span-3 space-y-4 lg:space-y-5">
+              <section className="rounded-xl border bg-card p-5 md:p-6">
+                <h2 className="font-semibold font-heading text-foreground mb-4 flex items-center gap-2">
+                  <Cpu className="size-4" />
+                  Identitas
+                </h2>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                  {infoRows.slice(0, 4).map((row) => (
+                    <div key={row.label}>
+                      <p className="text-xs text-muted-foreground">{row.label}</p>
+                      <p className="text-sm font-medium text-foreground">{row.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="rounded-xl border bg-card p-5 md:p-6">
+                <h2 className="font-semibold font-heading text-foreground mb-4 flex items-center gap-2">
+                  <Gear className="size-4" />
+                  Konfigurasi & Waktu
+                </h2>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                  {infoRows.slice(4).map((row) => (
+                    <div key={row.label}>
+                      <p className="text-xs text-muted-foreground">{row.label}</p>
+                      <p className="text-sm font-medium text-foreground">{row.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
 
           {/* Recent Readings */}
           <div className="rounded-xl border bg-card p-6">
@@ -381,43 +430,42 @@ export default async function DeviceDetailPage({
               </Link>
             </div>
           </div>
-        </div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Stats */}
-          <div className="rounded-xl border bg-card p-6">
-            <h2 className="font-semibold font-heading text-foreground mb-4">
-              Statistik
-            </h2>
-            <div className="space-y-3">
-              {stats.map((stat) => (
-                <div key={stat.label} className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${stat.color}`}>
-                    <stat.icon className="size-4" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{stat.label}</p>
-                    <p className="text-lg font-semibold">{stat.value}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
 
-          {/* Actions */}
-          <div className="rounded-xl border bg-card p-6">
-            <h2 className="font-semibold font-heading text-foreground mb-4">
-              Aksi
-            </h2>
-            <DeviceDetailActions
-              deviceId={device.id}
-              deviceName={device.deviceName}
-              currentStatus={device.status}
-              hasReadings={device._count.readings > 0}
-            />
+          <div className="xl:col-span-2 space-y-4 lg:space-y-5">
+            <section className="rounded-xl border bg-card p-5 md:p-6">
+              <h2 className="font-semibold font-heading text-foreground mb-4">
+                Statistik
+              </h2>
+              <div className="space-y-3">
+                {stats.map((stat) => (
+                  <div key={stat.label} className="flex items-center gap-3">
+                    <div className={`p-2 rounded-lg ${stat.color}`}>
+                      <stat.icon className="size-4" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">{stat.label}</p>
+                      <p className="text-lg font-semibold">{stat.value}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 border-t pt-4">
+                <DeviceDetailActions
+                  deviceId={device.id}
+                  deviceName={device.deviceName}
+                  currentStatus={device.status}
+                  hasReadings={device._count.readings > 0}
+                />
+              </div>
+            </section>
           </div>
         </div>
+        )}
+
+        {validTab === "ai" && (
+          <DevicePredictionPanel hardwareId={device.deviceId} />
+        )}
       </div>
     </div>
   );
