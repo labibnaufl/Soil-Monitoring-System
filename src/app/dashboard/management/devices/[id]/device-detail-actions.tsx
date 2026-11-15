@@ -31,8 +31,8 @@ export function DeviceDetailActions({
       try {
         await updateDeviceStatus(deviceId, "BEROPERASI");
         toast.success("Status perangkat diubah ke Beroperasi");
-      } catch (err: any) {
-        toast.error(err.message || "Gagal mengubah status");
+      } catch (err: unknown) {
+        toast.error(err instanceof Error ? err.message : "Gagal mengubah status");
       }
     });
   }
@@ -43,8 +43,8 @@ export function DeviceDetailActions({
       try {
         await updateDeviceStatus(deviceId, "MAINTENANCE");
         toast.success("Status perangkat diubah ke Maintenance");
-      } catch (err: any) {
-        toast.error(err.message || "Gagal mengubah status");
+      } catch (err: unknown) {
+        toast.error(err instanceof Error ? err.message : "Gagal mengubah status");
       }
     });
   }
@@ -55,8 +55,8 @@ export function DeviceDetailActions({
       try {
         await updateDeviceStatus(deviceId, "MATI");
         toast.success("Status perangkat diubah ke Mati");
-      } catch (err: any) {
-        toast.error(err.message || "Gagal mengubah status");
+      } catch (err: unknown) {
+        toast.error(err instanceof Error ? err.message : "Gagal mengubah status");
       }
     });
   }
@@ -151,8 +151,8 @@ export function DeviceDetailActions({
                       toast.success("Perangkat berhasil dihapus");
                       // Redirect to devices list
                       window.location.href = "/dashboard/management/devices";
-                    } catch (err: any) {
-                      toast.error(err.message || "Gagal menghapus perangkat");
+                    } catch (err: unknown) {
+                      toast.error(err instanceof Error ? err.message : "Gagal menghapus perangkat");
                     }
                   });
                 }}
