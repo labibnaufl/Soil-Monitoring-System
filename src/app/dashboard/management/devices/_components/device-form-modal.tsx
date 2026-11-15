@@ -76,8 +76,8 @@ export function DeviceFormModal({
           batteryCritical,
         });
         closeModal();
-      } catch (err: any) {
-        setError(err.message || "Gagal membuat perangkat");
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Gagal membuat perangkat");
       }
     });
   }
@@ -85,9 +85,9 @@ export function DeviceFormModal({
   return (
     <>
       {/* Trigger Button */}
-      <Button onClick={() => setIsOpen(true)} className="gap-2">
-        <Plus weight="regular" className="size-4" aria-hidden="true" />
-        Tambah Perangkat
+      <Button onClick={() => setIsOpen(true)} size="sm" className="gap-1.5">
+        <Plus weight="regular" className="size-3.5" aria-hidden="true" />
+        Tambah
       </Button>
 
       {/* Modal Overlay */}
@@ -195,7 +195,7 @@ export function DeviceFormModal({
               <div className="border-t pt-4 mt-4 space-y-4">
                 <h3 className="text-sm font-medium">Konfigurasi</h3>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="samplingInterval">Interval Sampling (detik)</Label>
                     <Input
