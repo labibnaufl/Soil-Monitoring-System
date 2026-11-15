@@ -66,8 +66,8 @@ export function EditDeviceModal({ device }: { device: Device }) {
           remainingPipe,
         });
         setIsOpen(false);
-      } catch (err: any) {
-        setError(err.message || "Gagal memperbarui perangkat");
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Gagal memperbarui perangkat");
       }
     });
   }
@@ -157,7 +157,7 @@ export function EditDeviceModal({ device }: { device: Device }) {
                   Konfigurasi
                 </h3>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="edit-samplingInterval">Interval Sampling (detik)</Label>
                     <Input
@@ -209,7 +209,7 @@ export function EditDeviceModal({ device }: { device: Device }) {
                   Kalibrasi (cm)
                 </h3>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="edit-pipeLength">Panjang Pipa Total</Label>
                     <Input
