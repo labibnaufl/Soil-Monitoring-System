@@ -5,7 +5,7 @@ import { updateStation } from "../actions/station";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PencilSimple, X, MapPin, LinkSimple } from "@phosphor-icons/react";
+import { PencilSimple, X, LinkSimple } from "@phosphor-icons/react";
 
 type Station = {
   id: string;
@@ -16,6 +16,7 @@ type Station = {
   desa: string | null;
   latitude: number;
   longitude: number;
+  peatType?: "FIBRIC" | "HEMIC" | "SAPRIC" | null;
 };
 
 export function EditStationModal({ station }: { station: Station }) {
@@ -32,6 +33,7 @@ export function EditStationModal({ station }: { station: Station }) {
     desa: station.desa || "",
     latitude: station.latitude.toString(),
     longitude: station.longitude.toString(),
+    peatType: station.peatType || "",
   });
   
   const [mapsLink, setMapsLink] = useState(
@@ -122,10 +124,13 @@ export function EditStationModal({ station }: { station: Station }) {
           desa: formData.desa || undefined,
           latitude: lat,
           longitude: lng,
+          peatType: (["FIBRIC", "HEMIC", "SAPRIC"] as const).includes(formData.peatType as "FIBRIC" | "HEMIC" | "SAPRIC")
+            ? (formData.peatType as "FIBRIC" | "HEMIC" | "SAPRIC")
+            : null,
         });
         setIsOpen(false);
-      } catch (err: any) {
-        setError(err.message || "Gagal memperbarui stasiun");
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Gagal memperbarui stasiun");
       }
     });
   }
@@ -184,7 +189,7 @@ export function EditStationModal({ station }: { station: Station }) {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="edit-provinsi">Provinsi</Label>
                   <Input
@@ -209,7 +214,7 @@ export function EditStationModal({ station }: { station: Station }) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="edit-kecamatan">Kecamatan</Label>
                   <Input
@@ -231,6 +236,22 @@ export function EditStationModal({ station }: { station: Station }) {
                     disabled={isPending}
                   />
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="edit-peatType">Jenis Lahan Gambut</Label>
+                <select
+                  id="edit-peatType"
+                  value={formData.peatType}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, peatType: e.target.value }))}
+                  disabled={isPending}
+                  className="h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2 text-base transition-colors outline-none focus-visible:border-ring disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30"
+                >
+                  <option value="">Belum ditentukan</option>
+                  <option value="FIBRIC">Fibric — gambut mentah, serat tinggi</option>
+                  <option value="HEMIC">Hemic — gambut setengah matang</option>
+                  <option value="SAPRIC">Sapric — gambut matang, serat rendah</option>
+                </select>
               </div>
 
               <div className="border-t pt-4 mt-4 space-y-4">
@@ -260,7 +281,7 @@ export function EditStationModal({ station }: { station: Station }) {
                   <div className="h-px flex-1 bg-border" />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="edit-latitude">Latitude</Label>
                     <Input
