@@ -2,16 +2,20 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { StationMapLoader } from "./_components/station-map-loader";
 import { StationDetailActions } from "./station-detail-actions";
 import { DeviceAssignmentSection } from "./_components/device-assignment-section";
 import { AdminAssignmentSection } from "./_components/admin-assignment-section";
 import { EditStationModal } from "../_components/edit-station-modal";
-import { ArrowLeft, MapPin, Radio, Users, Heartbeat, CheckCircle, XCircle, ArrowSquareOut } from "@/components/icons";
+import { ArrowLeft, MapPin, Radio, Users, Heartbeat, CheckCircle, XCircle, ArrowSquareOut, TrendUp } from "@/components/icons";
 
 export default async function StationDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }) {
   const session = await auth();
 
@@ -24,6 +28,8 @@ export default async function StationDetailPage({
   }
 
   const { id } = await params;
+  const tab = (await searchParams)?.tab ?? "informasi";
+  const validTab = ["informasi", "ai"].includes(tab) ? tab : "informasi";
 
   const station = await prisma.station.findUnique({
     where: { id },
@@ -63,6 +69,65 @@ export default async function StationDetailPage({
     orderBy: { name: "asc" },
   });
 
+  // Latest AI prediction snapshot per device (persisted by GET /api/ews/predict).
+  const snapshots = await prisma.aIInsight.findMany({
+    where: { stationId: id },
+    orderBy: { createdAt: "desc" },
+    take: 20,
+    select: {
+      id: true,
+      analysisEnd: true,
+      riskAssessment: true,
+    },
+  });
+
+  const deviceByHardwareId = new Map(devices.map((d) => [d.deviceId, d]));
+  const perDeviceInsight: {
+    key: string;
+    deviceId: string;
+    deviceName: string;
+    detailId: string | null;
+    availability: string;
+    at: Date | null;
+    methodSummary: string | null;
+  }[] = [];
+  const seenDevice = new Set<string>();
+  for (const s of snapshots) {
+    const r = s.riskAssessment as {
+      deviceId?: unknown;
+      availability?: unknown;
+      methodPerSensor?: unknown;
+    } | null;
+    const hw = typeof r?.deviceId === "string" ? r.deviceId : null;
+    if (!hw || seenDevice.has(hw)) continue;
+    seenDevice.add(hw);
+    const d = deviceByHardwareId.get(hw);
+    const methods = r?.methodPerSensor;
+    perDeviceInsight.push({
+      key: s.id,
+      deviceId: hw,
+      deviceName: d?.deviceName ?? hw,
+      detailId: d?.id ?? null,
+      availability:
+        typeof r?.availability === "string" ? r.availability : "unknown",
+      at: s.analysisEnd,
+      methodSummary:
+        methods && typeof methods === "object"
+          ? Object.entries(methods as Record<string, string>)
+              .map(([k, v]) => `${k}=${v}`)
+              .join(" · ")
+          : null,
+    });
+  }
+
+  function insightBadge(availability: string) {
+    if (availability === "ready")
+      return "bg-emerald-100 text-emerald-700 border-emerald-200";
+    if (availability === "stale_data" || availability === "insufficient_history")
+      return "bg-amber-100 text-amber-700 border-amber-200";
+    return "bg-red-100 text-red-700 border-red-200";
+  }
+
   const isActive = station.status === "AKTIF";
 
   function getStatusColor(status: string) {
@@ -71,51 +136,11 @@ export default async function StationDetailPage({
       : "bg-red-100 text-red-700 border-red-200";
   }
 
-  const infoRows = [
-    { label: "Provinsi", value: station.provinsi },
-    { label: "Kabupaten/Kota", value: station.kabupaten },
-    { label: "Kecamatan", value: station.kecamatan },
-    { label: "Desa", value: station.desa || "-" },
-    {
-      label: "Koordinat",
-      value: `${station.latitude.toFixed(6)}, ${station.longitude.toFixed(6)}`,
-    },
-    {
-      label: "Google Maps",
-      value: station.mapsLink ? (
-        <a
-          href={station.mapsLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-primary hover:underline"
-        >
-          Buka di Maps <ArrowSquareOut className="size-3" />
-        </a>
-      ) : (
-        "-"
-      ),
-    },
-    {
-      label: "Dibuat",
-      value: station.createdAt.toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    },
-    {
-      label: "Diperbarui",
-      value: station.updatedAt.toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    },
-  ];
+  const peatTypeLabel =
+    station.peatType === "FIBRIC" ? "Fibric — gambut mentah, serat tinggi"
+    : station.peatType === "HEMIC" ? "Hemic — gambut setengah matang"
+    : station.peatType === "SAPRIC" ? "Sapric — gambut matang, serat rendah"
+    : "Belum ditentukan";
 
   const stats = [
     {
@@ -137,6 +162,17 @@ export default async function StationDetailPage({
       color: "text-indigo-600 bg-indigo-50",
     },
   ];
+
+  const tabs = [
+    { key: "informasi", label: "Informasi" },
+    { key: "ai", label: "AI Insight" },
+  ];
+
+  function tabHref(key: string) {
+    return key === "informasi"
+      ? `/dashboard/management/stations/${id}`
+      : `/dashboard/management/stations/${id}?tab=${key}`;
+  }
 
   return (
     <div>
@@ -171,7 +207,7 @@ export default async function StationDetailPage({
             {isActive ? <CheckCircle className="size-3 mr-1" /> : <XCircle className="size-3 mr-1" />}
             {station.status}
           </span>
-          <EditStationModal 
+          <EditStationModal
             station={{
               id: station.id,
               name: station.name,
@@ -181,84 +217,247 @@ export default async function StationDetailPage({
               desa: station.desa,
               latitude: station.latitude,
               longitude: station.longitude,
-            }} 
+              peatType: station.peatType,
+            }}
           />
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Info Card */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Basic Info */}
-          <div className="rounded-xl border bg-card p-6">
+      <div className="space-y-4 lg:space-y-5">
+        <nav className="border-b">
+          <div className="flex overflow-x-auto -mb-px">
+                {tabs.map((t) => {
+                  const active = t.key === validTab;
+                  return (
+                    <Link
+                      key={t.key}
+                      href={tabHref(t.key)}
+                      className={cn(
+                        "inline-flex shrink-0 items-center px-4 py-2.5 text-sm font-medium border-b-2 transition-colors",
+                        active
+                          ? "border-primary text-foreground"
+                          : "border-transparent text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {t.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </nav>
+
+            {validTab === "informasi" && (
+              <div className="grid gap-4 lg:gap-5 xl:grid-cols-5">
+                <div className="xl:col-span-3 space-y-4 lg:space-y-5">
+                <section className="rounded-xl border bg-card p-5 md:p-6">
+                  <h2 className="font-semibold font-heading text-foreground mb-4 flex items-center gap-2">
+                    <MapPin className="size-4" />
+                    Wilayah
+                  </h2>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                    <div>
+                      <p className="text-xs text-muted-foreground">Provinsi</p>
+                      <p className="text-sm font-medium text-foreground">{station.provinsi}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Kabupaten/Kota</p>
+                      <p className="text-sm font-medium text-foreground">{station.kabupaten}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Kecamatan</p>
+                      <p className="text-sm font-medium text-foreground">{station.kecamatan}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Desa</p>
+                      <p className="text-sm font-medium text-foreground">{station.desa || "-"}</p>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="rounded-xl border bg-card p-5 md:p-6">
+                  <h2 className="font-semibold font-heading text-foreground mb-4 flex items-center gap-2">
+                    <Heartbeat className="size-4" />
+                    Lahan & Posisi
+                  </h2>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                    <div>
+                      <p className="text-xs text-muted-foreground">Jenis Lahan Gambut</p>
+                      <p className="text-sm font-medium text-foreground">{peatTypeLabel}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Koordinat</p>
+                      <p className="text-sm font-medium font-mono text-foreground">
+                        {station.latitude.toFixed(6)}, {station.longitude.toFixed(6)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Google Maps</p>
+                      <p className="text-sm font-medium text-foreground">
+                        {station.mapsLink ? (
+                          <a
+                            href={station.mapsLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-primary hover:underline"
+                          >
+                            Buka di Maps <ArrowSquareOut className="size-3" />
+                          </a>
+                        ) : (
+                          "-"
+                        )}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Dibuat</p>
+                      <p className="text-sm font-medium text-foreground">
+                        {station.createdAt.toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    </div>
+                    <div className="col-span-2">
+                      <p className="text-xs text-muted-foreground">Diperbarui</p>
+                      <p className="text-sm font-medium text-foreground">
+                        {station.updatedAt.toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </section>
+
+                <DeviceAssignmentSection
+                  stationId={station.id}
+                  devices={devices}
+                  isActive={isActive}
+                />
+
+                <AdminAssignmentSection
+                  stationId={station.id}
+                  admins={admins}
+                />
+              </div>
+
+              <div className="xl:col-span-2 space-y-4 lg:space-y-5">
+            <section className="rounded-xl border bg-card p-5 md:p-6">
+              <h2 className="font-semibold font-heading text-foreground mb-4">
+                Statistik
+              </h2>
+              <div className="space-y-3">
+                {stats.map((stat) => (
+                  <div key={stat.label} className="flex items-center gap-3">
+                    <div className={`p-2 rounded-lg ${stat.color}`}>
+                      <stat.icon className="size-4" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">{stat.label}</p>
+                      <p className="text-lg font-semibold">{stat.value}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 border-t pt-4">
+                <StationDetailActions
+                  stationId={station.id}
+                  name={station.name}
+                  currentStatus={station.status}
+                  deviceCount={station._count.devices}
+                  adminCount={station._count.admins}
+                />
+              </div>
+            </section>
+
+            <section className="rounded-xl border bg-card p-5 md:p-6">
+              <h2 className="font-semibold font-heading text-foreground mb-3 flex items-center gap-2">
+                <MapPin className="size-4" />
+                Lokasi Stasiun
+              </h2>
+              <StationMapLoader
+                name={station.name}
+                kabupaten={station.kabupaten}
+                provinsi={station.provinsi}
+                latitude={station.latitude}
+                longitude={station.longitude}
+                mapsLink={station.mapsLink}
+              />
+            </section>
+          </div>
+        </div>
+        )}
+
+        {validTab === "ai" && (
+          <section className="rounded-xl border bg-card p-5 md:p-6">
             <h2 className="font-semibold font-heading text-foreground mb-4 flex items-center gap-2">
-              <Heartbeat className="size-4" />
-              Informasi Stasiun
+              <TrendUp className="size-4" />
+              AI Insight
             </h2>
-            <dl className="space-y-3">
-              {infoRows.map((row) => (
-                <div key={row.label} className="flex items-start gap-4">
-                  <dt className="w-32 shrink-0 text-sm text-muted-foreground">
-                    {row.label}
-                  </dt>
-                  <dd className="text-sm font-medium text-foreground">
-                    {row.value}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-
-          {/* Devices Section */}
-          <DeviceAssignmentSection
-            stationId={station.id}
-            devices={devices}
-            isActive={isActive}
-          />
-
-          {/* Admins Section */}
-          <AdminAssignmentSection
-            stationId={station.id}
-            admins={admins}
-          />
-        </div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Stats */}
-          <div className="rounded-xl border bg-card p-6">
-            <h2 className="font-semibold font-heading text-foreground mb-4">
-              Statistik
-            </h2>
-            <div className="space-y-3">
-              {stats.map((stat) => (
-                <div key={stat.label} className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${stat.color}`}>
-                    <stat.icon className="size-4" />
+            {perDeviceInsight.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Belum ada snapshot prediksi untuk stasiun ini. Snapshot tersimpan
+                otomatis setiap kali prediksi berhasil dimuat.
+              </p>
+            ) : (
+              <div className="grid gap-3 md:grid-cols-2">
+                {perDeviceInsight.map((row) => (
+                  <div
+                    key={row.key}
+                    className="p-3 rounded-lg border"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">
+                          {row.deviceName}
+                        </p>
+                        <p className="text-xs text-muted-foreground font-mono truncate">
+                          {row.deviceId}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {row.at
+                            ? row.at.toLocaleString("id-ID", {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })
+                            : "-"}
+                        </p>
+                        {row.methodSummary && (
+                          <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                            {row.methodSummary}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${insightBadge(row.availability)}`}
+                        >
+                          {row.availability}
+                        </span>
+                        {row.detailId && (
+                          <Link
+                            href={`/dashboard/management/devices/${row.detailId}`}
+                            className="text-xs text-primary hover:underline whitespace-nowrap"
+                          >
+                            Detail
+                          </Link>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{stat.label}</p>
-                    <p className="text-lg font-semibold">{stat.value}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="rounded-xl border bg-card p-6">
-            <h2 className="font-semibold font-heading text-foreground mb-4">
-              Aksi
-            </h2>
-            <StationDetailActions
-              stationId={station.id}
-              name={station.name}
-              currentStatus={station.status}
-              deviceCount={station._count.devices}
-              adminCount={station._count.admins}
-            />
-          </div>
-        </div>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
       </div>
     </div>
   );
