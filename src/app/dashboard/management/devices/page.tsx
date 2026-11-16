@@ -4,9 +4,9 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { DeviceActions } from "./_components/device-actions";
 import { DeviceFormModal } from "./_components/device-form-modal";
-import { Cpu, Power, MapPin } from "@/components/icons";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getStatusBadge, getStatusLabel } from "@/lib/badge-helpers";
+import { Cpu, Power, MapPin } from "@/components/icons";
 
 export default async function DevicesPage({
   searchParams,
@@ -30,15 +30,19 @@ export default async function DevicesPage({
 
   const params = await searchParams;
 
-  const status = params.status || "";
+  const rawStatus = params.status || "";
   const search = params.search || "";
   const prefill = params.prefill || "";
   const page = parseInt(params.page || "1", 10);
   const perPage = 15;
 
-  // Build where clause
+  // Build where clause. The "UNASSIGNED" tab maps to devices without a station.
   const where: Record<string, unknown> = {};
-  if (status) where.status = status;
+  if (rawStatus === "UNASSIGNED") {
+    where.stationId = null;
+  } else if (rawStatus) {
+    where.status = rawStatus;
+  }
   if (search) {
     where.OR = [
       { deviceName: { contains: search, mode: "insensitive" } },
@@ -58,29 +62,19 @@ export default async function DevicesPage({
         _count: {
           select: { readings: true },
         },
-        readings: {
-          select: { dateTime: true },
-          orderBy: { dateTime: "desc" },
-          take: 1,
-        },
       },
     }),
     prisma.device.count({ where }),
-    // Global stats
     Promise.all([
       prisma.device.count(),
-      prisma.device.count({ where: { status: "BEROPERASI" } }),
-      prisma.device.count({ where: { status: "MAINTENANCE" } }),
       prisma.device.count({ where: { status: "MATI" } }),
       prisma.device.count({ where: { stationId: null } }),
     ]),
-    // Fetch stations for the form
     prisma.station.findMany({
       where: { status: "AKTIF" },
       select: { id: true, name: true, provinsi: true, kabupaten: true },
       orderBy: { name: "asc" },
     }),
-    // Recent rejected senders for the unclaimed inbox (latest 200, grouped below)
     prisma.rejectedReading.findMany({
       orderBy: { receivedAt: "desc" },
       take: 200,
@@ -88,13 +82,7 @@ export default async function DevicesPage({
     }),
   ]);
 
-  const [
-    totalDevices,
-    operatingDevices,
-    maintenanceDevices,
-    offlineDevices,
-    unassignedDevices,
-  ] = statsData;
+  const [totalDevices, offlineDevices, unassignedDevices] = statsData;
   const totalPages = Math.ceil(total / perPage);
 
   // Group rejected senders: unknown IDs with hit count + last seen.
@@ -115,18 +103,28 @@ export default async function DevicesPage({
     .sort((a, b) => b.lastSeen.getTime() - a.lastSeen.getTime())
     .slice(0, 10);
 
+  const statusOptions = [
+    { value: "", label: "Semua Status" },
+    { value: "BEROPERASI", label: "Beroperasi" },
+    { value: "MAINTENANCE", label: "Maintenance" },
+    { value: "MATI", label: "Mati" },
+    { value: "UNASSIGNED", label: "Belum Terpasang" },
+  ];
+
   const stats = [
     { label: "Total Perangkat", value: totalDevices, icon: Cpu, color: "bg-blue-50 text-blue-600" },
     { label: "Mati/Offline", value: offlineDevices, icon: Power, color: "bg-red-50 text-red-600", urgent: offlineDevices > 0 },
     { label: "Belum Terpasang", value: unassignedDevices, icon: MapPin, color: "bg-orange-50 text-orange-600" },
   ];
 
-  const statusOptions = [
-    { value: "", label: "Semua Status" },
-    { value: "BEROPERASI", label: "Beroperasi" },
-    { value: "MAINTENANCE", label: "Maintenance" },
-    { value: "MATI", label: "Mati" },
-  ];
+  function pageHref(targetPage: number) {
+    const qs = new URLSearchParams();
+    if (targetPage > 1) qs.set("page", String(targetPage));
+    if (rawStatus) qs.set("status", rawStatus);
+    if (search) qs.set("search", search);
+    const s = qs.toString();
+    return `/dashboard/management/devices${s ? `?${s}` : ""}`;
+  }
 
   return (
     <div>
@@ -142,48 +140,8 @@ export default async function DevicesPage({
         <DeviceFormModal stations={stations} prefillDeviceId={prefill} />
       </div>
 
-      {/* Unclaimed senders inbox */}
-      {unclaimedList.length > 0 && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-4 mb-6">
-          <h2 className="text-sm font-semibold text-amber-800 mb-1">
-            ID Tak Dikenal ({unclaimedList.length})
-          </h2>
-          <p className="text-xs text-amber-700 mb-3">
-            Perangkat ini mengirim data tapi belum terdaftar — kemungkinan salah
-            ketik ID atau hardware baru.
-          </p>
-          <div className="space-y-2">
-            {unclaimedList.map((u) => (
-              <div
-                key={u.deviceId}
-                className="flex items-center justify-between gap-3 rounded-lg border bg-card px-3 py-2"
-              >
-                <div>
-                  <p className="text-sm font-mono font-medium">{u.deviceId}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {u.count}x ditolak · terakhir{" "}
-                    {u.lastSeen.toLocaleString("id-ID", {
-                      day: "numeric",
-                      month: "short",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
-                </div>
-                <Link
-                  href={`/dashboard/management/devices?prefill=${encodeURIComponent(u.deviceId)}`}
-                  className="shrink-0 px-3 py-1.5 text-xs font-medium bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
-                >
-                  Daftarkan
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
         {stats.map((stat) => (
           <div
             key={stat.label}
@@ -202,19 +160,50 @@ export default async function DevicesPage({
         ))}
       </div>
 
-      {/* Filters */}
-      <form className="flex flex-wrap items-center gap-3 mb-6">
+      {/* Unclaimed senders banner */}
+      {unclaimedList.length > 0 && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50/60 px-3 py-2 mb-4">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+            <span className="font-medium text-amber-800">
+              ID Tak Dikenal ({unclaimedList.length})
+            </span>
+            <div className="flex flex-wrap items-center gap-1 text-xs">
+              {unclaimedList.slice(0, 5).map((u, i, arr) => (
+                <span key={u.deviceId} className="inline-flex items-center gap-1">
+                  <Link
+                    href={`/dashboard/management/devices?prefill=${encodeURIComponent(u.deviceId)}`}
+                    className="font-mono font-medium text-amber-700 hover:text-amber-900 hover:underline"
+                  >
+                    {u.deviceId}
+                  </Link>
+                  {i < arr.length - 1 && (
+                    <span className="text-amber-400">·</span>
+                  )}
+                </span>
+              ))}
+              {unclaimedList.length > 5 && (
+                <span className="text-amber-600">
+                  +{unclaimedList.length - 5} lainnya
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toolbar */}
+      <form className="flex flex-wrap items-center gap-2 mb-4">
         <input
           name="search"
           type="text"
-          placeholder="Cari nama, ID perangkat, atau stasiun..."
+          placeholder="Cari nama, ID, atau stasiun..."
           defaultValue={search}
-          className="flex-1 min-w-50 px-3 py-2 text-sm border rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring"
+          className="flex-1 min-w-[12rem] px-2.5 py-1.5 text-sm border rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring"
         />
         <select
           name="status"
-          defaultValue={status}
-          className="px-3 py-2 text-sm border rounded-lg bg-background"
+          defaultValue={rawStatus}
+          className="px-2.5 py-1.5 text-sm border rounded-lg bg-background"
         >
           {statusOptions.map((o) => (
             <option key={o.value} value={o.value}>
@@ -222,16 +211,17 @@ export default async function DevicesPage({
             </option>
           ))}
         </select>
+        <input type="hidden" name="page" value="1" />
         <button
           type="submit"
-          className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
+          className="px-3 py-1.5 text-xs font-medium bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
         >
           Filter
         </button>
-        {(search || status) && (
+        {(search || rawStatus) && (
           <Link
             href="/dashboard/management/devices"
-            className="px-4 py-2 text-sm font-medium border rounded-lg hover:bg-accent transition-colors"
+            className="px-3 py-1.5 text-xs font-medium border rounded-lg hover:bg-accent transition-colors"
           >
             Reset
           </Link>
@@ -244,25 +234,19 @@ export default async function DevicesPage({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b bg-muted/50 text-left">
-                <th className="px-4 py-3 font-medium text-muted-foreground">
-                  Nama Perangkat
+                <th className="px-3 py-2 font-medium text-muted-foreground">
+                  Alat
                 </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
-                  ID Perangkat
-                </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
-                  Status
-                </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
+                <th className="px-3 py-2 font-medium text-muted-foreground">
                   Stasiun
                 </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
-                  Interval (detik)
+                <th className="px-3 py-2 font-medium text-muted-foreground">
+                  Status
                 </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
-                  Data
+                <th className="px-3 py-2 font-medium text-muted-foreground">
+                  Bacaan
                 </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
+                <th className="px-3 py-2 font-medium text-muted-foreground">
                   Aksi
                 </th>
               </tr>
@@ -273,11 +257,31 @@ export default async function DevicesPage({
                   key={device.id}
                   className="border-b last:border-0 hover:bg-muted/30 transition-colors"
                 >
-                  <td className="px-4 py-3 font-medium">{device.deviceName}</td>
-                  <td className="px-4 py-3 text-muted-foreground text-xs font-mono">
-                    {device.deviceId}
+                  <td className="px-3 py-2.5">
+                    <div className="font-medium text-foreground">
+                      {device.deviceName}
+                    </div>
+                    <div className="text-xs font-mono text-muted-foreground">
+                      {device.deviceId}
+                    </div>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-3 py-2.5">
+                    {device.station ? (
+                      <div>
+                        <div className="font-medium text-foreground">
+                          {device.station.name}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {device.station.kabupaten}, {device.station.provinsi}
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-xs text-amber-600">
+                        Belum terpasang
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2.5">
                     {(() => {
                       const statusBadge = getStatusBadge(device.status);
                       const label = getStatusLabel(device.status);
@@ -288,42 +292,18 @@ export default async function DevicesPage({
                       );
                     })()}
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">
-                    {device.station ? (
-                      <span>{device.station.name}</span>
-                    ) : (
-                      <span className="text-amber-600">Belum terpasang</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground">
-                    {device.samplingInterval}s
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground">
+                  <td className="px-3 py-2.5">
                     {device._count.readings === 0 ? (
                       <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-sky-100 text-sky-700">
-                        Menunggu data pertama
+                        Menunggu
                       </span>
                     ) : (
-                      <>
+                      <span className="text-muted-foreground">
                         {device._count.readings.toLocaleString()}
-                        {(() => {
-                          const lastSeen = device.readings[0]?.dateTime;
-                          if (!lastSeen) return null;
-                          const intervalMs =
-                            (device.samplingInterval || 300) * 1000 * 2;
-                          if (Date.now() - lastSeen.getTime() <= intervalMs) {
-                            return null;
-                          }
-                          return (
-                            <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
-                              Offline? Tidak ada data baru
-                            </span>
-                          );
-                        })()}
-                      </>
+                      </span>
                     )}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-3 py-2.5">
                     <DeviceActions device={device} stations={stations} />
                   </td>
                 </tr>
@@ -331,8 +311,8 @@ export default async function DevicesPage({
               {devices.length === 0 && (
                 <tr>
                   <td
-                    colSpan={7}
-                    className="px-4 py-8 text-center text-muted-foreground"
+                    colSpan={5}
+                    className="px-3 py-6 text-center text-muted-foreground"
                   >
                     Tidak ada perangkat ditemukan.
                   </td>
@@ -346,22 +326,22 @@ export default async function DevicesPage({
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between mt-4">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             Halaman {page} dari {totalPages}
           </p>
           <div className="flex gap-2">
             {page > 1 && (
               <Link
-                href={`/dashboard/management/devices?page=${page - 1}${status ? `&status=${status}` : ""}${search ? `&search=${search}` : ""}`}
-                className="px-3 py-1.5 text-sm border rounded-lg hover:bg-accent transition-colors"
+                href={pageHref(page - 1)}
+                className="px-2.5 py-1 text-xs border rounded-lg hover:bg-accent transition-colors"
               >
                 Sebelumnya
               </Link>
             )}
             {page < totalPages && (
               <Link
-                href={`/dashboard/management/devices?page=${page + 1}${status ? `&status=${status}` : ""}${search ? `&search=${search}` : ""}`}
-                className="px-3 py-1.5 text-sm border rounded-lg hover:bg-accent transition-colors"
+                href={pageHref(page + 1)}
+                className="px-2.5 py-1 text-xs border rounded-lg hover:bg-accent transition-colors"
               >
                 Selanjutnya
               </Link>
