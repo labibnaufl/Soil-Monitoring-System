@@ -82,11 +82,11 @@ export function DeviceAssignmentSection({
   }
 
   return (
-    <div className="rounded-xl border bg-card p-6">
+    <div className="rounded-xl border bg-card p-5 md:p-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-semibold font-heading text-foreground flex items-center gap-2">
           <Radio className="size-4" />
-          Perangkat Tertugas
+          Perangkat Terhubung
         </h2>
         {isActive && (
           <Button
@@ -112,7 +112,7 @@ export function DeviceAssignmentSection({
       {devices.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
           <Radio className="size-12 mx-auto mb-3 opacity-20" />
-          <p>Belum ada perangkat tertugas</p>
+          <p>Belum ada perangkat terhubung</p>
           {isActive && (
             <p className="text-sm mt-1">
               Klik "Tambah Perangkat" untuk menugaskan perangkat
