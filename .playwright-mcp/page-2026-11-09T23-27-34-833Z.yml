@@ -1,0 +1,237 @@
+- generic [active] [ref=f28e1]:
+  - generic [ref=f28e2]:
+    - generic [ref=f28e5]:
+      - list [ref=f28e7]:
+        - listitem [ref=f28e8]:
+          - link "NYAWIT Logo NYAWIT Admin Panel" [ref=f28e9] [cursor=pointer]:
+            - /url: /dashboard
+            - img "NYAWIT Logo" [ref=f28e11]
+            - generic [ref=f28e12]:
+              - generic [ref=f28e13]: NYAWIT
+              - generic [ref=f28e14]: Admin Panel
+      - generic [ref=f28e15]:
+        - generic [ref=f28e16]:
+          - generic [ref=f28e17]: Utama
+          - list [ref=f28e19]:
+            - listitem [ref=f28e20]:
+              - link "Dashboard" [ref=f28e21] [cursor=pointer]:
+                - /url: /dashboard
+        - generic [ref=f28e26]:
+          - generic [ref=f28e27]: Management
+          - list [ref=f28e29]:
+            - listitem [ref=f28e30]:
+              - link "Stasiun" [ref=f28e31] [cursor=pointer]:
+                - /url: /dashboard/management/stations
+            - listitem [ref=f28e36]:
+              - link "Alat" [ref=f28e37] [cursor=pointer]:
+                - /url: /dashboard/management/devices
+            - listitem [ref=f28e42]:
+              - link "Notifikasi 6" [ref=f28e147] [cursor=pointer]:
+                - /url: /dashboard/alerts
+                - generic [ref=f28e44]: Notifikasi
+                - generic [ref=f28e148]: "6"
+            - listitem [ref=f28e48]:
+              - link "Kelola Pengguna" [ref=f28e49] [cursor=pointer]:
+                - /url: /dashboard/management/users
+        - generic [ref=f28e54]:
+          - generic [ref=f28e55]: Monitoring
+          - list [ref=f28e57]:
+            - listitem [ref=f28e58]:
+              - link "Tingkat Air" [ref=f28e59] [cursor=pointer]:
+                - /url: /dashboard/monitoring/water-level
+            - listitem [ref=f28e64]:
+              - link "Curah Hujan" [ref=f28e65] [cursor=pointer]:
+                - /url: /dashboard/monitoring/curah-hujan
+            - listitem [ref=f28e70]:
+              - link "Monitoring Tanah" [ref=f28e71] [cursor=pointer]:
+                - /url: /dashboard/monitoring/soil-monitoring
+            - listitem [ref=f28e76]:
+              - link "Prediksi AI" [ref=f28e77] [cursor=pointer]:
+                - /url: /dashboard/monitoring/prediksi-ai
+        - generic [ref=f28e82]:
+          - generic [ref=f28e83]: Sistem
+          - list [ref=f28e85]:
+            - listitem [ref=f28e86]:
+              - link "Log Aktivitas" [ref=f28e87] [cursor=pointer]:
+                - /url: /dashboard/logs
+      - list [ref=f28e93]:
+        - listitem [ref=f28e94]:
+          - button "SA Super Admin LPA superadmin@lpa.id" [ref=f28e95]:
+            - generic [ref=f28e96]: SA
+            - generic [ref=f28e98]:
+              - generic [ref=f28e99]: Super Admin LPA
+              - generic [ref=f28e100]: superadmin@lpa.id
+    - main [ref=f28e103]:
+      - generic [ref=f28e104]:
+        - button "Toggle Sidebar" [ref=f28e105]
+        - navigation "breadcrumb" [ref=f28e107]:
+          - list [ref=f28e108]:
+            - listitem [ref=f28e109]:
+              - link "Dashboard" [disabled] [ref=f28e110]
+      - generic [ref=f28e149]:
+        - generic [ref=f28e150]:
+          - generic [ref=f28e151]:
+            - heading "Kelola Pengguna" [level=1] [ref=f28e152]
+            - paragraph [ref=f28e153]: Manajemen admin lokasi dan hak akses sistem
+          - button "Tambah Pengguna" [ref=f28e154]
+        - generic [ref=f28e155]:
+          - generic [ref=f28e156]:
+            - paragraph [ref=f28e161]: "13"
+            - paragraph [ref=f28e162]: Total Pengguna
+          - generic [ref=f28e163]:
+            - paragraph [ref=f28e168]: "13"
+            - paragraph [ref=f28e169]: Pengguna Aktif
+          - generic [ref=f28e170]:
+            - paragraph [ref=f28e175]: "12"
+            - paragraph [ref=f28e176]: Admin Lokasi
+        - generic [ref=f28e177]:
+          - textbox "Cari nama, email, atau stasiun..." [ref=f28e178]
+          - combobox [ref=f28e179]:
+            - option "Semua Status" [selected]
+            - option "Aktif"
+            - option "Nonaktif"
+          - button "Filter" [ref=f28e180]
+        - table [ref=f28e183]:
+          - rowgroup [ref=f28e184]:
+            - row [ref=f28e185]:
+              - columnheader "Nama" [ref=f28e186]
+              - columnheader "Email" [ref=f28e187]
+              - columnheader "Role" [ref=f28e188]
+              - columnheader "Status" [ref=f28e189]
+              - columnheader "Lokasi Stasiun" [ref=f28e190]
+              - columnheader "Tgl Daftar" [ref=f28e191]
+              - columnheader "Aksi" [ref=f28e192]
+          - rowgroup [ref=f28e193]:
+            - row [ref=f28e194]:
+              - cell "Admin Lokasi Asmat" [ref=f28e195]
+              - cell "admin.asmat@lpa.id" [ref=f28e196]
+              - cell "Admin Lokasi" [ref=f28e197]
+              - cell "Aktif" [ref=f28e202]
+              - cell "Stasiun Gambut Asmat" [ref=f28e207]
+              - cell "9 Nov 2026" [ref=f28e208]
+              - cell [ref=f28e209]:
+                - button "Buka aksi pengguna" [ref=f28e210]:
+                  - generic [ref=f28e213]: Aksi
+            - row [ref=f28e214]:
+              - cell "Admin Lokasi Mempawah" [ref=f28e215]
+              - cell "admin.mempawah@lpa.id" [ref=f28e216]
+              - cell "Admin Lokasi" [ref=f28e217]
+              - cell "Aktif" [ref=f28e222]
+              - cell "Stasiun Gambut Mempawah" [ref=f28e227]
+              - cell "9 Nov 2026" [ref=f28e228]
+              - cell [ref=f28e229]:
+                - button "Buka aksi pengguna" [ref=f28e230]:
+                  - generic [ref=f28e233]: Aksi
+            - row [ref=f28e234]:
+              - cell "Admin Lokasi Katingan" [ref=f28e235]
+              - cell "admin.katingan@lpa.id" [ref=f28e236]
+              - cell "Admin Lokasi" [ref=f28e237]
+              - cell "Aktif" [ref=f28e242]
+              - cell "Stasiun Gambut Katingan" [ref=f28e247]
+              - cell "9 Nov 2026" [ref=f28e248]
+              - cell [ref=f28e249]:
+                - button "Buka aksi pengguna" [ref=f28e250]:
+                  - generic [ref=f28e253]: Aksi
+            - row [ref=f28e254]:
+              - cell "Admin Lokasi Ogan" [ref=f28e255]
+              - cell "admin.ogan@lpa.id" [ref=f28e256]
+              - cell "Admin Lokasi" [ref=f28e257]
+              - cell "Aktif" [ref=f28e262]
+              - cell "Stasiun Gambut Ogan Komering" [ref=f28e267]
+              - cell "9 Nov 2026" [ref=f28e268]
+              - cell [ref=f28e269]:
+                - button "Buka aksi pengguna" [ref=f28e270]:
+                  - generic [ref=f28e273]: Aksi
+            - row [ref=f28e274]:
+              - cell "Admin Lokasi Indragiri" [ref=f28e275]
+              - cell "admin.indragiri@lpa.id" [ref=f28e276]
+              - cell "Admin Lokasi" [ref=f28e277]
+              - cell "Aktif" [ref=f28e282]
+              - cell "Stasiun Gambut Indragiri" [ref=f28e287]
+              - cell "9 Nov 2026" [ref=f28e288]
+              - cell [ref=f28e289]:
+                - button "Buka aksi pengguna" [ref=f28e290]:
+                  - generic [ref=f28e293]: Aksi
+            - row [ref=f28e294]:
+              - cell "Admin Lokasi Kubu Raya" [ref=f28e295]
+              - cell "admin.kuburaya@lpa.id" [ref=f28e296]
+              - cell "Admin Lokasi" [ref=f28e297]
+              - cell "Aktif" [ref=f28e302]
+              - cell "Stasiun Gambut Kubu Raya" [ref=f28e307]
+              - cell "9 Nov 2026" [ref=f28e308]
+              - cell [ref=f28e309]:
+                - button "Buka aksi pengguna" [ref=f28e310]:
+                  - generic [ref=f28e313]: Aksi
+            - row [ref=f28e314]:
+              - cell "Admin Lokasi Jambi" [ref=f28e315]
+              - cell "admin.jambi@lpa.id" [ref=f28e316]
+              - cell "Admin Lokasi" [ref=f28e317]
+              - cell "Aktif" [ref=f28e322]
+              - cell "Stasiun Gambut Jambi" [ref=f28e327]
+              - cell "9 Nov 2026" [ref=f28e328]
+              - cell [ref=f28e329]:
+                - button "Buka aksi pengguna" [ref=f28e330]:
+                  - generic [ref=f28e333]: Aksi
+            - row [ref=f28e334]:
+              - cell "Admin Lokasi Malinau" [ref=f28e335]
+              - cell "admin.malinau@lpa.id" [ref=f28e336]
+              - cell "Admin Lokasi" [ref=f28e337]
+              - cell "Aktif" [ref=f28e342]
+              - cell "Stasiun Gambut Malinau" [ref=f28e347]
+              - cell "9 Nov 2026" [ref=f28e348]
+              - cell [ref=f28e349]:
+                - button "Buka aksi pengguna" [ref=f28e350]:
+                  - generic [ref=f28e353]: Aksi
+            - row [ref=f28e354]:
+              - cell "Admin Lokasi Siak" [ref=f28e355]
+              - cell "admin.siak@lpa.id" [ref=f28e356]
+              - cell "Admin Lokasi" [ref=f28e357]
+              - cell "Aktif" [ref=f28e362]
+              - cell "Stasiun Gambut Siak" [ref=f28e367]
+              - cell "9 Nov 2026" [ref=f28e368]
+              - cell [ref=f28e369]:
+                - button "Buka aksi pengguna" [ref=f28e370]:
+                  - generic [ref=f28e373]: Aksi
+            - row [ref=f28e374]:
+              - cell "Admin Lokasi Merauke" [ref=f28e375]
+              - cell "admin.merauke@lpa.id" [ref=f28e376]
+              - cell "Admin Lokasi" [ref=f28e377]
+              - cell "Aktif" [ref=f28e382]
+              - cell "Stasiun Pemantauan Gambut Merauke" [ref=f28e387]
+              - cell "24 Apr 2026" [ref=f28e388]
+              - cell [ref=f28e389]:
+                - button "Buka aksi pengguna" [ref=f28e390]:
+                  - generic [ref=f28e393]: Aksi
+            - row [ref=f28e394]:
+              - cell "Admin Lokasi Kampar" [ref=f28e395]
+              - cell "admin.kampar@lpa.id" [ref=f28e396]
+              - cell "Admin Lokasi" [ref=f28e397]
+              - cell "Aktif" [ref=f28e402]
+              - cell "Stasiun Pemantauan Gambut Kampar" [ref=f28e407]
+              - cell "24 Apr 2026" [ref=f28e408]
+              - cell [ref=f28e409]:
+                - button "Buka aksi pengguna" [ref=f28e410]:
+                  - generic [ref=f28e413]: Aksi
+            - row [ref=f28e414]:
+              - cell "Admin Lokasi Sebangau" [ref=f28e415]
+              - cell "admin.sebangau@lpa.id" [ref=f28e416]
+              - cell "Admin Lokasi" [ref=f28e417]
+              - cell "Aktif" [ref=f28e422]
+              - cell "Stasiun Pemantauan Lahan Gambut Sebangau" [ref=f28e427]
+              - cell "22 Apr 2026" [ref=f28e428]
+              - cell [ref=f28e429]:
+                - button "Buka aksi pengguna" [ref=f28e430]:
+                  - generic [ref=f28e433]: Aksi
+            - row [ref=f28e434]:
+              - cell "Super Admin LPA" [ref=f28e435]
+              - cell "superadmin@lpa.id" [ref=f28e436]
+              - cell "Super Admin" [ref=f28e437]
+              - cell "Aktif" [ref=f28e442]
+              - cell "-" [ref=f28e447]
+              - cell "22 Apr 2026" [ref=f28e448]
+              - cell [ref=f28e449]:
+                - button "Buka aksi pengguna" [ref=f28e450]:
+                  - generic [ref=f28e453]: Aksi
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f28e454] [cursor=pointer]
+  - alert [ref=f28e146]

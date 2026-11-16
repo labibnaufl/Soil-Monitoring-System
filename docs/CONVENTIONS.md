@@ -397,14 +397,14 @@ revalidatePath(`/dashboard/management/users/${userId}`);
 
 ## Icon Usage
 
-- **Library**: Lucide React (`lucide-react`)
+- **Library**: Phosphor Icons (`@phosphor-icons/react`)
 - **Sizing**: Use `className="size-4"` (Tailwind shorthand for w-4 h-4)
 - **Common icons**:
-  - Navigation: `LayoutDashboard`, `MapPin`, `Cpu`, `Bell`, `ScrollText`
-  - Monitoring: `Droplets`, `Activity`, `Brain`, `CloudRain`
-  - Status: `CheckCircle2`, `XCircle`, `AlertTriangle`, `Clock`
-  - Actions: `Plus`, `Pencil`, `Trash2`, `Eye`, `MoreHorizontal`
-  - Users: `Users`, `UserCheck`, `UserX`, `Shield`
+  - Navigation: `SquaresFour`, `MapPin`, `Cpu`, `Bell`, `Scroll`
+  - Monitoring: `Drop`, `Heartbeat`, `Brain`, `CloudRain`
+  - Status: `CheckCircle`, `XCircle`, `Warning`, `Clock`
+  - Actions: `Plus`, `PencilSimple`, `Trash`, `Eye`, `DotsThree`
+  - Users: `Users`, `UserCheck`, `UserMinus`, `Shield`
 
 ---
 

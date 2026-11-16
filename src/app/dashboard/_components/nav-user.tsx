@@ -1,7 +1,8 @@
 "use client";
 
-import { ChevronsUpDown, LogOut, Shield } from "lucide-react";
+import { CaretUpDown, SignOut } from "@phosphor-icons/react";
 import { signOut } from "next-auth/react";
+import { StatusBadge, getRoleBadge, getRoleLabel } from "@/components/ui/status-badge";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -26,17 +27,6 @@ function getInitials(name: string) {
     .join("")
     .toUpperCase()
     .slice(0, 2);
-}
-
-function getRoleBadge(role: string) {
-  switch (role) {
-    case "SUPER_ADMIN":
-      return { label: "Super Admin", color: "text-red-500" };
-    case "ADMIN_LOCATION":
-      return { label: "Admin Lokasi", color: "text-blue-500" };
-    default:
-      return { label: role, color: "text-muted-foreground" };
-  }
 }
 
 export function NavUser({
@@ -73,7 +63,7 @@ export function NavUser({
                   {user.email}
                 </span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
+              <CaretUpDown weight="regular" className="ml-auto size-4" aria-hidden="true" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -102,8 +92,9 @@ export function NavUser({
             {user.role && (
               <>
                 <DropdownMenuItem disabled className="gap-2">
-                  <Shield className="size-4" />
-                  <span className={roleBadge.color}>{roleBadge.label}</span>
+                  <StatusBadge intent={roleBadge.intent} title={roleBadge.label}>
+                    {getRoleLabel(user.role)}
+                  </StatusBadge>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
@@ -113,7 +104,7 @@ export function NavUser({
                 onClick={() => signOut({ callbackUrl: "/auth/login" })}
                 className="flex w-full items-center gap-2 cursor-pointer"
               >
-                <LogOut className="size-4" />
+                <SignOut weight="regular" className="size-4" aria-hidden="true" />
                 Keluar
               </button>
             </DropdownMenuItem>

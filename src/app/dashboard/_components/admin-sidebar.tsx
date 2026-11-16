@@ -5,17 +5,17 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  LayoutDashboard,
-  Droplets,
-  Activity,
+  SquaresFour,
+  Drop,
+  Heartbeat,
   Users,
-  ScrollText,
+  Scroll,
   MapPin,
   Cpu,
   Bell,
   Brain,
   CloudRain,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 
 import { NavUser } from "./nav-user";
 import {
@@ -30,11 +30,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { useEffect, useState } from "react";
 import { getAlertCounts } from "../alerts/_components/actions/alert";
 
 const mainNav = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Dashboard", url: "/dashboard", icon: SquaresFour },
 ];
 
 const managementNavSuperAdmin = [
@@ -48,14 +49,14 @@ const managementNavAdminLokasi = [
 ];
 
 const monitoringNav = [
-  { title: "Tingkat Air", url: "/dashboard/monitoring/water-level", icon: Droplets },
+  { title: "Tingkat Air", url: "/dashboard/monitoring/water-level", icon: Drop },
   { title: "Curah Hujan", url: "/dashboard/monitoring/curah-hujan", icon: CloudRain },
-  { title: "Monitoring Tanah", url: "/dashboard/monitoring/soil-monitoring", icon: Activity },
+  { title: "Monitoring Tanah", url: "/dashboard/monitoring/soil-monitoring", icon: Heartbeat },
   { title: "Prediksi AI", url: "/dashboard/monitoring/prediksi-ai", icon: Brain },
 ];
 
 const systemNav = [
-  { title: "Log Aktivitas", url: "/dashboard/logs", icon: ScrollText },
+  { title: "Log Aktivitas", url: "/dashboard/logs", icon: Scroll },
 ];
 
 export function AdminSidebar({
@@ -141,23 +142,41 @@ function NavGroup({
   pathname: string;
   alertCounts?: { open: number; high: number; total: number };
 }) {
+  const matches = (url: string) =>
+    url === "/dashboard"
+      ? pathname === "/dashboard"
+      : pathname === url || pathname.startsWith(`${url}/`);
+  const activeUrl = items
+    .filter((item) => matches(item.url))
+    .sort((a, b) => b.url.length - a.url.length)[0]?.url;
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{label}</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => {
-            const isActive =
-              item.url === "/dashboard"
-                ? pathname === "/dashboard"
-                : pathname.startsWith(item.url);
+            const isActive = item.url === activeUrl;
 
             return (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild isActive={isActive}>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isActive}
+                  tooltip={item.title}
+                  className={
+                    isActive
+                      ? "bg-emerald-100 text-emerald-900 hover:bg-emerald-200 data-[active=true]:bg-emerald-100 data-[active=true]:text-emerald-900 dark:bg-emerald-900 dark:text-emerald-100 dark:hover:bg-emerald-800"
+                      : undefined
+                  }
+                >
                   <Link href={item.url} className="flex items-center justify-between">
                     <span className="flex items-center gap-2">
-                      <item.icon />
+                      <item.icon
+                        weight={isActive ? "fill" : "regular"}
+                        className="size-4"
+                        aria-hidden="true"
+                      />
                       <span>{item.title}</span>
                     </span>
                     {item.showBadge && alertCounts && alertCounts.open > 0 && (

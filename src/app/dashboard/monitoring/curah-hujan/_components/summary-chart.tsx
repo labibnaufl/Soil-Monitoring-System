@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { CloudRain } from "lucide-react";
+import { CloudRain } from "@phosphor-icons/react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
 
 import {

@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { createDevice } from "./actions/device";
+import { createDevice, generateDeviceIdAction } from "./actions/device";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, X, Cpu } from "lucide-react";
+import { Plus, X, Cpu, ArrowCounterClockwise } from "@phosphor-icons/react";
 
 type Station = {
   id: string;
@@ -14,15 +14,38 @@ type Station = {
   kabupaten: string;
 };
 
-export function DeviceFormModal({ stations }: { stations: Station[] }) {
-  const [isOpen, setIsOpen] = useState(false);
+export function DeviceFormModal({
+  stations,
+  prefillDeviceId,
+}: {
+  stations: Station[];
+  prefillDeviceId?: string;
+}) {
+  const [isOpen, setIsOpen] = useState(!!prefillDeviceId);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [deviceId, setDeviceId] = useState(prefillDeviceId ?? "");
+
+  function closeModal() {
+    setIsOpen(false);
+    setDeviceId("");
+    setError(null);
+  }
+
+  function handleGenerate() {
+    setError(null);
+    startTransition(async () => {
+      try {
+        setDeviceId(await generateDeviceIdAction());
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Gagal generate ID");
+      }
+    });
+  }
 
   async function handleSubmit(formData: FormData) {
     setError(null);
-    
-    const deviceId = formData.get("deviceId") as string;
+
     const deviceName = formData.get("deviceName") as string;
     const stationId = formData.get("stationId") as string;
     const description = formData.get("description") as string;
@@ -30,12 +53,13 @@ export function DeviceFormModal({ stations }: { stations: Station[] }) {
     const batteryWarning = parseFloat(formData.get("batteryWarning") as string) || 20;
     const batteryCritical = parseFloat(formData.get("batteryCritical") as string) || 10;
 
-    if (!deviceId || !deviceName) {
-      setError("ID Perangkat dan Nama Perangkat wajib diisi");
+    if (!deviceName) {
+      setError("Nama Perangkat wajib diisi");
       return;
     }
 
-    if (deviceId.length < 5) {
+    // Empty ID is allowed: the server mints one (vice-versa provisioning).
+    if (deviceId && deviceId.length < 5) {
       setError("ID Perangkat minimal 5 karakter");
       return;
     }
@@ -43,7 +67,7 @@ export function DeviceFormModal({ stations }: { stations: Station[] }) {
     startTransition(async () => {
       try {
         await createDevice({
-          deviceId: deviceId.toUpperCase(),
+          deviceId: deviceId ? deviceId.toUpperCase() : undefined,
           deviceName,
           stationId: stationId || undefined,
           description: description || undefined,
@@ -51,7 +75,7 @@ export function DeviceFormModal({ stations }: { stations: Station[] }) {
           batteryWarning,
           batteryCritical,
         });
-        setIsOpen(false);
+        closeModal();
       } catch (err: any) {
         setError(err.message || "Gagal membuat perangkat");
       }
@@ -62,7 +86,7 @@ export function DeviceFormModal({ stations }: { stations: Station[] }) {
     <>
       {/* Trigger Button */}
       <Button onClick={() => setIsOpen(true)} className="gap-2">
-        <Plus className="size-4" />
+        <Plus weight="regular" className="size-4" aria-hidden="true" />
         Tambah Perangkat
       </Button>
 
@@ -74,7 +98,7 @@ export function DeviceFormModal({ stations }: { stations: Station[] }) {
             <div className="flex items-center justify-between p-6 border-b">
               <div className="flex items-center gap-3">
                 <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Cpu className="size-5 text-primary" />
+                  <Cpu weight="regular" className="size-5 text-primary" aria-hidden="true" />
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold">Tambah Perangkat</h2>
@@ -84,10 +108,11 @@ export function DeviceFormModal({ stations }: { stations: Station[] }) {
                 </div>
               </div>
               <button
-                onClick={() => setIsOpen(false)}
+                aria-label="Tutup dialog"
+                onClick={closeModal}
                 className="size-8 rounded-lg hover:bg-accent flex items-center justify-center transition-colors"
               >
-                <X className="size-4" />
+                <X weight="regular" className="size-4" aria-hidden="true" />
               </button>
             </div>
 
@@ -101,15 +126,31 @@ export function DeviceFormModal({ stations }: { stations: Station[] }) {
 
               <div className="space-y-2">
                 <Label htmlFor="deviceId">ID Perangkat (Hardware ID)</Label>
-                <Input
-                  id="deviceId"
-                  name="deviceId"
-                  placeholder="Contoh: LPA-ESP3201-P1234"
-                  required
-                  disabled={isPending}
-                />
+                <div className="flex gap-2">
+                  <Input
+                    id="deviceId"
+                    name="deviceId"
+                    placeholder="Contoh: LPA-ESP3201-P1234"
+                    value={deviceId}
+                    onChange={(e) => setDeviceId(e.target.value.toUpperCase())}
+                    disabled={isPending}
+                    className="font-mono"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleGenerate}
+                    disabled={isPending}
+                    className="gap-1.5 shrink-0"
+                    title="Buatkan ID dari website"
+                  >
+                    <ArrowCounterClockwise weight="regular" className="size-4" aria-hidden="true" />
+                    Generate
+                  </Button>
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  ID unik dari hardware perangkat
+                  Ketik ID dari hardware, Generate dari website, atau kosongkan
+                  agar server yang buatkan saat disimpan.
                 </p>
               </div>
 
@@ -203,7 +244,7 @@ export function DeviceFormModal({ stations }: { stations: Station[] }) {
                   type="button"
                   variant="outline"
                   className="flex-1"
-                  onClick={() => setIsOpen(false)}
+                  onClick={closeModal}
                   disabled={isPending}
                 >
                   Batal

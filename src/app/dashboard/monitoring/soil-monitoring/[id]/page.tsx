@@ -4,14 +4,14 @@ import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import { SoilDetailChart } from "../_components/soil-detail-chart";
 import Link from "next/link";
-import { ArrowLeft, MapPin, Cpu, Activity, Droplets, Thermometer, Zap, Beaker } from "lucide-react";
+import { ArrowLeft, MapPin, Cpu, Heartbeat, Drop, Thermometer, Lightning, TestTube } from "@/components/icons";
 import { SOIL_METRICS, type SoilMetricKey } from "../_components/soil-metrics";
 
-const iconMap: Record<SoilMetricKey, React.ComponentType<{ className?: string }>> = {
-  soilMoisture: Droplets,
+const iconMap: Record<SoilMetricKey, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
+  soilMoisture: Drop,
   soilTemperature: Thermometer,
-  soilConductivity: Zap,
-  phValue: Beaker,
+  soilConductivity: Lightning,
+  phValue: TestTube,
 };
 
 export async function generateMetadata({
@@ -62,7 +62,7 @@ export default async function StationDetailPage({
   const startDate = timeRangeMap[timeRange] ?? timeRangeMap.week;
 
   // Build the where clause for readings based on selected metric
-  const readingWhere: Record<string, { not: null } | undefined> = {
+  const readingWhere: Record<string, Record<string, { not: null }> | undefined> = {
     soilMoisture: { soilMoisture: { not: null } },
     soilTemperature: { soilTemperature: { not: null } },
     soilConductivity: { soilConductivity: { not: null } },
@@ -180,7 +180,7 @@ export default async function StationDetailPage({
             </span>
             {station.alerts.length > 0 && (
               <span className="flex items-center gap-1 bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded-full font-medium">
-                <Activity className="size-3" /> {station.alerts.length} alert aktif
+                <Heartbeat className="size-3" /> {station.alerts.length} alert aktif
               </span>
             )}
           </div>
@@ -226,7 +226,7 @@ export default async function StationDetailPage({
           { label: "Terendah",  value: `${min}${metricConfig.unit}`, sub: "periode dipilih", color: "text-green-600" },
         ].map((s) => (
           <div key={s.label} className="rounded-xl border bg-card p-4">
-            <p className="text-xl font-bold font-heading" style={{ color: s.color.startsWith("text-") ? undefined : s.color }} className={s.color.startsWith("text-") ? s.color : undefined}>{s.value}</p>
+            <p className={`text-xl font-bold font-heading ${s.color.startsWith("text-") ? s.color : ""}`} style={s.color.startsWith("text-") ? undefined : { color: s.color }}>{s.value}</p>
             <p className="text-xs font-medium text-foreground/70 mt-0.5">{s.label}</p>
             <p className="text-[10px] text-muted-foreground mt-0.5">{s.sub}</p>
           </div>

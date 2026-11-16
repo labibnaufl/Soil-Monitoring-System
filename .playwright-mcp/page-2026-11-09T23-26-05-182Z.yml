@@ -1,0 +1,263 @@
+- generic [active] [ref=f25e1]:
+  - generic [ref=f25e2]:
+    - generic [ref=f25e5]:
+      - list [ref=f25e7]:
+        - listitem [ref=f25e8]:
+          - link "NYAWIT Logo NYAWIT Admin Panel" [ref=f25e9] [cursor=pointer]:
+            - /url: /dashboard
+            - img "NYAWIT Logo" [ref=f25e11]
+            - generic [ref=f25e12]:
+              - generic [ref=f25e13]: NYAWIT
+              - generic [ref=f25e14]: Admin Panel
+      - generic [ref=f25e15]:
+        - generic [ref=f25e16]:
+          - generic [ref=f25e17]: Utama
+          - list [ref=f25e19]:
+            - listitem [ref=f25e20]:
+              - link "Dashboard" [ref=f25e21] [cursor=pointer]:
+                - /url: /dashboard
+        - generic [ref=f25e26]:
+          - generic [ref=f25e27]: Management
+          - list [ref=f25e29]:
+            - listitem [ref=f25e30]:
+              - link "Stasiun" [ref=f25e31] [cursor=pointer]:
+                - /url: /dashboard/management/stations
+            - listitem [ref=f25e36]:
+              - link "Alat" [ref=f25e37] [cursor=pointer]:
+                - /url: /dashboard/management/devices
+            - listitem [ref=f25e42]:
+              - link "Notifikasi 6" [ref=f25e43] [cursor=pointer]:
+                - /url: /dashboard/alerts
+                - generic [ref=f25e44]: Notifikasi
+                - generic [ref=f25e48]: "6"
+            - listitem [ref=f25e49]:
+              - link "Kelola Pengguna" [ref=f25e50] [cursor=pointer]:
+                - /url: /dashboard/management/users
+        - generic [ref=f25e55]:
+          - generic [ref=f25e56]: Monitoring
+          - list [ref=f25e58]:
+            - listitem [ref=f25e59]:
+              - link "Tingkat Air" [ref=f25e60] [cursor=pointer]:
+                - /url: /dashboard/monitoring/water-level
+            - listitem [ref=f25e65]:
+              - link "Curah Hujan" [ref=f25e66] [cursor=pointer]:
+                - /url: /dashboard/monitoring/curah-hujan
+            - listitem [ref=f25e71]:
+              - link "Monitoring Tanah" [ref=f25e72] [cursor=pointer]:
+                - /url: /dashboard/monitoring/soil-monitoring
+            - listitem [ref=f25e77]:
+              - link "Prediksi AI" [ref=f25e78] [cursor=pointer]:
+                - /url: /dashboard/monitoring/prediksi-ai
+        - generic [ref=f25e83]:
+          - generic [ref=f25e84]: Sistem
+          - list [ref=f25e86]:
+            - listitem [ref=f25e87]:
+              - link "Log Aktivitas" [ref=f25e88] [cursor=pointer]:
+                - /url: /dashboard/logs
+      - list [ref=f25e94]:
+        - listitem [ref=f25e95]:
+          - button "SA Super Admin LPA superadmin@lpa.id" [ref=f25e96]:
+            - generic [ref=f25e97]: SA
+            - generic [ref=f25e99]:
+              - generic [ref=f25e100]: Super Admin LPA
+              - generic [ref=f25e101]: superadmin@lpa.id
+    - main [ref=f25e104]:
+      - generic [ref=f25e105]:
+        - button "Toggle Sidebar" [ref=f25e106]
+        - navigation "breadcrumb" [ref=f25e108]:
+          - list [ref=f25e109]:
+            - listitem [ref=f25e110]:
+              - link "Dashboard" [disabled] [ref=f25e111]
+      - generic [ref=f25e115]:
+        - generic [ref=f25e116]:
+          - generic [ref=f25e117]:
+            - heading "Notifikasi & Peringatan" [level=1] [ref=f25e118]
+            - paragraph [ref=f25e119]: Kelola peringatan sistem dan respon insiden
+          - button "Notifikasi Uji Coba" [ref=f25e120]
+        - generic [ref=f25e121]:
+          - generic [ref=f25e122]:
+            - paragraph [ref=f25e127]: "5"
+            - paragraph [ref=f25e128]: Prioritas Tinggi
+          - generic [ref=f25e129]:
+            - paragraph [ref=f25e134]: "6"
+            - paragraph [ref=f25e135]: Prioritas Medium
+          - generic [ref=f25e136]:
+            - paragraph [ref=f25e141]: "2"
+            - paragraph [ref=f25e142]: Selesai
+        - generic [ref=f25e143]:
+          - combobox [ref=f25e144]:
+            - option "Semua Status" [selected]
+            - option "Baru"
+            - option "Pending"
+            - option "Sedang Dikerjakan"
+            - option "Selesai"
+          - combobox [ref=f25e145]:
+            - option "Semua Prioritas" [selected]
+            - option "Tinggi"
+            - option "Medium"
+            - option "Rendah"
+          - combobox [ref=f25e146]:
+            - option "Semua Tipe" [selected]
+            - option "Kelembapan Tanah"
+            - option "Baterai Rendah"
+            - option "Masa Hidup Gambut"
+          - button "Filter" [ref=f25e147]
+        - table [ref=f25e152]:
+          - rowgroup [ref=f25e153]:
+            - row [ref=f25e154]:
+              - columnheader "Tipe" [ref=f25e155]
+              - columnheader "Prioritas" [ref=f25e156]
+              - columnheader "Status" [ref=f25e157]
+              - columnheader "Pesan" [ref=f25e158]
+              - columnheader "Stasiun" [ref=f25e159]
+              - columnheader "Perangkat" [ref=f25e160]
+              - columnheader "Waktu" [ref=f25e161]
+              - columnheader "Aksi" [ref=f25e162]
+          - rowgroup [ref=f25e163]:
+            - row [ref=f25e164]:
+              - cell "Baterai Rendah" [ref=f25e165]
+              - cell "Medium" [ref=f25e167]
+              - cell "Pending" [ref=f25e172]
+              - cell [ref=f25e177]:
+                - paragraph [ref=f25e178]: "Baterai perangkat Sensor Hutan Katingan rendah: 17.8%"
+              - cell "Stasiun Gambut Katingan" [ref=f25e179]
+              - cell "Sensor Hutan Katingan" [ref=f25e180]
+              - cell "9 Nov 2026, 06.53" [ref=f25e181]
+              - cell [ref=f25e182]:
+                - button "Buka aksi notifikasi" [ref=f25e183]:
+                  - generic [ref=f25e186]: Aksi
+            - row [ref=f25e187]:
+              - cell "Kelembapan Tanah" [ref=f25e188]
+              - cell "Tinggi" [ref=f25e190]
+              - cell "Baru" [ref=f25e195]
+              - cell [ref=f25e200]:
+                - paragraph [ref=f25e201]: "KRITIS - Kekeringan Ekstrem: Kelembapan tanah 9.1% (ambang batas: 10%)"
+              - cell "Stasiun Gambut Ogan Komering" [ref=f25e202]
+              - cell "Sensor Utama Ogan" [ref=f25e203]
+              - cell "9 Nov 2026, 06.53" [ref=f25e204]
+              - cell [ref=f25e205]:
+                - button "Buka aksi notifikasi" [ref=f25e206]:
+                  - generic [ref=f25e209]: Aksi
+            - row [ref=f25e210]:
+              - cell "Kelembapan Tanah" [ref=f25e211]
+              - cell "Medium" [ref=f25e213]
+              - cell "Baru" [ref=f25e218]
+              - cell [ref=f25e223]:
+                - paragraph [ref=f25e224]: Kelembapan tanah naik ke 99.2%, di atas ambang batas 80%
+              - cell "Stasiun Gambut Malinau" [ref=f25e225]
+              - cell "Sensor Utama Malinau" [ref=f25e226]
+              - cell "9 Nov 2026, 06.44" [ref=f25e227]
+              - cell [ref=f25e228]:
+                - button "Buka aksi notifikasi" [ref=f25e229]:
+                  - generic [ref=f25e232]: Aksi
+            - row [ref=f25e233]:
+              - cell "Baterai Rendah" [ref=f25e234]
+              - cell "Tinggi" [ref=f25e236]
+              - cell "Baru" [ref=f25e241]
+              - cell [ref=f25e246]:
+                - paragraph [ref=f25e247]: "Baterai perangkat Sensor Hutan Malinau kritis: 9.4%"
+              - cell "Stasiun Gambut Malinau" [ref=f25e248]
+              - cell "Sensor Hutan Malinau" [ref=f25e249]
+              - cell "9 Nov 2026, 06.44" [ref=f25e250]
+              - cell [ref=f25e251]:
+                - button "Buka aksi notifikasi" [ref=f25e252]:
+                  - generic [ref=f25e255]: Aksi
+            - row [ref=f25e256]:
+              - cell "Kelembapan Tanah" [ref=f25e257]
+              - cell "Medium" [ref=f25e259]
+              - cell "Sedang Dikerjakan" [ref=f25e264]
+              - cell [ref=f25e269]:
+                - paragraph [ref=f25e270]: Kelembapan tanah naik ke 88.7%, di atas ambang batas 80%
+              - cell "Stasiun Pemantauan Gambut Merauke" [ref=f25e271]
+              - cell "Sensor Utama Merauke" [ref=f25e272]
+              - cell "24 Apr 2026, 10.59" [ref=f25e273]
+              - cell [ref=f25e274]:
+                - button "Buka aksi notifikasi" [ref=f25e275]:
+                  - generic [ref=f25e278]: Aksi
+            - row [ref=f25e279]:
+              - cell "Baterai Rendah" [ref=f25e280]
+              - cell "Tinggi" [ref=f25e282]
+              - cell "Sedang Dikerjakan" [ref=f25e287]
+              - cell [ref=f25e292]:
+                - paragraph [ref=f25e293]: "Baterai perangkat Sensor Kanal Kampar kritis: 7.2%"
+              - cell "Stasiun Pemantauan Gambut Kampar" [ref=f25e294]
+              - cell "Sensor Kanal Kampar" [ref=f25e295]
+              - cell "24 Apr 2026, 10.59" [ref=f25e296]
+              - cell [ref=f25e297]:
+                - button "Buka aksi notifikasi" [ref=f25e298]:
+                  - generic [ref=f25e301]: Aksi
+            - row [ref=f25e302]:
+              - cell "Kelembapan Tanah" [ref=f25e303]
+              - cell "Medium" [ref=f25e305]
+              - cell "Selesai" [ref=f25e310]
+              - cell [ref=f25e315]:
+                - paragraph [ref=f25e316]: Kelembapan tanah turun ke 18.3%, di bawah ambang batas 20%
+              - cell "Stasiun Pemantauan Gambut Kampar" [ref=f25e317]
+              - cell "Sensor Utama Kampar" [ref=f25e318]
+              - cell "24 Apr 2026, 10.59" [ref=f25e319]
+              - cell [ref=f25e320]:
+                - button "Buka aksi notifikasi" [ref=f25e321]:
+                  - generic [ref=f25e324]: Aksi
+            - row [ref=f25e325]:
+              - cell "Baterai Rendah" [ref=f25e326]
+              - cell "Medium" [ref=f25e328]
+              - cell "Pending" [ref=f25e333]
+              - cell [ref=f25e338]:
+                - paragraph [ref=f25e339]: "Baterai perangkat Sensor Tepi Sungai Sebangau rendah: 18.5%"
+              - cell "Stasiun Pemantauan Lahan Gambut Sebangau" [ref=f25e340]
+              - cell "Sensor Tepi Sungai Sebangau" [ref=f25e341]
+              - cell "24 Apr 2026, 10.59" [ref=f25e342]
+              - cell [ref=f25e343]:
+                - button "Buka aksi notifikasi" [ref=f25e344]:
+                  - generic [ref=f25e347]: Aksi
+            - row [ref=f25e348]:
+              - cell "Kelembapan Tanah" [ref=f25e349]
+              - cell "Tinggi" [ref=f25e351]
+              - cell "Baru" [ref=f25e356]
+              - cell [ref=f25e361]:
+                - paragraph [ref=f25e362]: "KRITIS - Kekeringan Ekstrem: Kelembapan tanah 8.2% (ambang batas: 10%)"
+              - cell "Stasiun Pemantauan Lahan Gambut Sebangau" [ref=f25e363]
+              - cell "Sensor Utama Sebangau" [ref=f25e364]
+              - cell "24 Apr 2026, 10.59" [ref=f25e365]
+              - cell [ref=f25e366]:
+                - button "Buka aksi notifikasi" [ref=f25e367]:
+                  - generic [ref=f25e370]: Aksi
+            - row [ref=f25e371]:
+              - cell "Masa Hidup Gambut" [ref=f25e372]
+              - cell "Rendah" [ref=f25e374]
+              - cell "Selesai" [ref=f25e379]
+              - cell [ref=f25e384]:
+                - paragraph [ref=f25e385]: Masa Hidup Tanah Gambut
+              - cell "Stasiun Pemantauan Lahan Gambut Sebangau" [ref=f25e386]
+              - cell "-" [ref=f25e387]
+              - cell "23 Apr 2026, 09.36" [ref=f25e388]
+              - cell [ref=f25e389]:
+                - button "Buka aksi notifikasi" [ref=f25e390]:
+                  - generic [ref=f25e393]: Aksi
+            - row [ref=f25e394]:
+              - cell "Baterai Rendah" [ref=f25e395]
+              - cell "Medium" [ref=f25e397]
+              - cell "Baru" [ref=f25e402]
+              - cell [ref=f25e407]:
+                - paragraph [ref=f25e408]: Baterai Device Dalam Kondisi Melemah
+              - cell "Stasiun Pemantauan Lahan Gambut Sebangau" [ref=f25e409]
+              - cell "-" [ref=f25e410]
+              - cell "23 Apr 2026, 09.36" [ref=f25e411]
+              - cell [ref=f25e412]:
+                - button "Buka aksi notifikasi" [ref=f25e413]:
+                  - generic [ref=f25e416]: Aksi
+            - row [ref=f25e417]:
+              - cell "Kelembapan Tanah" [ref=f25e418]
+              - cell "Tinggi" [ref=f25e420]
+              - cell "Baru" [ref=f25e425]
+              - cell [ref=f25e430]:
+                - paragraph [ref=f25e431]: Kelembapan Tanah Rendah
+              - cell "Stasiun Pemantauan Lahan Gambut Sebangau" [ref=f25e432]
+              - cell "-" [ref=f25e433]
+              - cell "23 Apr 2026, 09.35" [ref=f25e434]
+              - cell [ref=f25e435]:
+                - button "Buka aksi notifikasi" [ref=f25e436]:
+                  - generic [ref=f25e439]: Aksi
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f25e445] [cursor=pointer]
+  - alert [ref=f25e449]

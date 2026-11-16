@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { publishDeviceConfig } from "@/lib/mqtt-config";
 
 async function requireSuperAdmin() {
   const session = await auth();
@@ -44,6 +45,8 @@ export async function assignDeviceToStation(stationId: string, deviceId: string)
     },
   });
 
+  await publishDeviceConfig(device.deviceId);
+
   revalidatePath(`/dashboard/management/stations/${stationId}`);
   revalidatePath("/dashboard/management/stations");
 }
@@ -72,6 +75,8 @@ export async function unassignDeviceFromStation(stationId: string, deviceId: str
       oldValues: { stationId },
     },
   });
+
+  await publishDeviceConfig(device.deviceId);
 
   revalidatePath(`/dashboard/management/stations/${stationId}`);
   revalidatePath("/dashboard/management/stations");

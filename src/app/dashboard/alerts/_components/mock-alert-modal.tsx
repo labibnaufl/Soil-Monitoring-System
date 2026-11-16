@@ -6,7 +6,7 @@ import { createMockAlert } from "./actions/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, X, Bell } from "lucide-react";
+import { Plus, X, Bell } from "@phosphor-icons/react";
 
 type Station = {
   id: string;
@@ -61,7 +61,7 @@ export function MockAlertModal({ stations, devices }: { stations: Station[]; dev
   return (
     <>
       <Button onClick={() => setIsOpen(true)} variant="outline" className="gap-2">
-        <Plus className="size-4" />
+        <Plus weight="regular" className="size-4" aria-hidden="true" />
         Notifikasi Uji Coba
       </Button>
 
@@ -71,7 +71,7 @@ export function MockAlertModal({ stations, devices }: { stations: Station[]; dev
             <div className="flex items-center justify-between p-6 border-b">
               <div className="flex items-center gap-3">
                 <div className="size-10 rounded-lg bg-amber-100 flex items-center justify-center">
-                  <Bell className="size-5 text-amber-600" />
+                  <Bell weight="regular" className="size-5 text-amber-600" aria-hidden="true" />
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold">Buat Notifikasi Uji Coba</h2>
@@ -81,10 +81,11 @@ export function MockAlertModal({ stations, devices }: { stations: Station[]; dev
                 </div>
               </div>
               <button
+                aria-label="Tutup dialog"
                 onClick={() => setIsOpen(false)}
                 className="size-8 rounded-lg hover:bg-accent flex items-center justify-center transition-colors"
               >
-                <X className="size-4" />
+                <X weight="regular" className="size-4" aria-hidden="true" />
               </button>
             </div>
 

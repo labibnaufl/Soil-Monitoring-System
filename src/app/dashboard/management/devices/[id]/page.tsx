@@ -4,7 +4,7 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { DeviceDetailActions } from "./device-detail-actions";
 import { EditDeviceModal } from "./_components/edit-device-modal";
-import { ArrowLeft, Cpu, Radio, Battery, Signal, Activity, Calendar, Clock, CheckCircle2, XCircle, Wrench, Power, MapPin, Settings, Hash } from "lucide-react";
+import { ArrowLeft, Cpu, Radio, BatteryFull, CellSignalHigh, Heartbeat, Calendar, Clock, CheckCircle, XCircle, Wrench, Power, MapPin, Gear, Hash } from "@/components/icons";
 
 export default async function DeviceDetailPage({
   params,
@@ -91,7 +91,7 @@ export default async function DeviceDetailPage({
   function getStatusIcon(status: string) {
     switch (status) {
       case "BEROPERASI":
-        return CheckCircle2;
+        return CheckCircle;
       case "MAINTENANCE":
         return Wrench;
       case "MATI":
@@ -118,7 +118,7 @@ export default async function DeviceDetailPage({
       ),
       icon: MapPin,
     },
-    { label: "Deskripsi", value: device.description || "-", icon: Settings },
+    { label: "Deskripsi", value: device.description || "-", icon: Gear },
     {
       label: "Interval Sampling",
       value: `${device.samplingInterval} detik (${(device.samplingInterval / 60).toFixed(0)} menit)`,
@@ -127,22 +127,22 @@ export default async function DeviceDetailPage({
     {
       label: "Threshold Baterai Warning",
       value: `${device.batteryWarning}%`,
-      icon: Battery,
+      icon: BatteryFull,
     },
     {
       label: "Threshold Baterai Kritis",
       value: `${device.batteryCritical}%`,
-      icon: Battery,
+      icon: BatteryFull,
     },
     {
       label: "Panjang Pipa (cm)",
       value: device.pipeLength ? `${device.pipeLength} cm` : "-",
-      icon: Settings,
+      icon: Gear,
     },
     {
       label: "Sisa Pipa (cm)",
       value: device.remainingPipe ? `${device.remainingPipe} cm` : "-",
-      icon: Settings,
+      icon: Gear,
     },
     {
       label: "Dibuat",
@@ -182,13 +182,13 @@ export default async function DeviceDetailPage({
     {
       label: "Total Data",
       value: device._count.readings.toLocaleString(),
-      icon: Activity,
+      icon: Heartbeat,
       color: "text-blue-600 bg-blue-50",
     },
     {
       label: "Notifikasi",
       value: device._count.alerts,
-      icon: Signal,
+      icon: CellSignalHigh,
       color: "text-purple-600 bg-purple-50",
     },
   ];
@@ -223,7 +223,7 @@ export default async function DeviceDetailPage({
           <span
             className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(device.status)}`}
           >
-            {device.status === "BEROPERASI" && <CheckCircle2 className="size-3 mr-1" />}
+            {device.status === "BEROPERASI" && <CheckCircle className="size-3 mr-1" />}
             {device.status === "MAINTENANCE" && <Wrench className="size-3 mr-1" />}
             {device.status === "MATI" && <Power className="size-3 mr-1" />}
             {device.status}
@@ -271,7 +271,7 @@ export default async function DeviceDetailPage({
           {/* Recent Readings */}
           <div className="rounded-xl border bg-card p-6">
             <h2 className="font-semibold font-heading text-foreground mb-4 flex items-center gap-2">
-              <Activity className="size-4" />
+              <Heartbeat className="size-4" />
               Data Terakhir (5 terbaru)
             </h2>
             {recentReadings.length > 0 ? (
@@ -326,7 +326,7 @@ export default async function DeviceDetailPage({
           {/* Recent Alerts */}
           <div className="rounded-xl border bg-card p-6">
             <h2 className="font-semibold font-heading text-foreground mb-4 flex items-center gap-2">
-              <Signal className="size-4" />
+              <CellSignalHigh className="size-4" />
               Notifikasi Terkait (5 terbaru)
             </h2>
             {recentAlerts.length > 0 ? (

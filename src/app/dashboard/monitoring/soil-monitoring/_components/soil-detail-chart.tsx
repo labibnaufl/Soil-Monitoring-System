@@ -29,6 +29,9 @@ export function SoilDetailChart({
   const router = useRouter();
   const searchParams = useSearchParams();
   const metricConfig = SOIL_METRICS[selectedMetric];
+  // Area chart shares the Suhu Tanah color with the bar chart,
+  // so all Monitoring Tanah graphs look consistent.
+  const areaColor = SOIL_METRICS.soilTemperature.color;
 
   const handleRange = (value: string) => {
     const p = new URLSearchParams(searchParams);
@@ -39,7 +42,7 @@ export function SoilDetailChart({
   const chartConfig = {
     value: {
       label: `${metricConfig.label} (${metricConfig.unit})`,
-      color: metricConfig.color,
+      color: areaColor,
     },
   } satisfies ChartConfig;
 
@@ -77,8 +80,8 @@ export function SoilDetailChart({
           >
             <defs>
               <linearGradient id="fillColor" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={metricConfig.color} stopOpacity={0.8} />
-                <stop offset="95%" stopColor={metricConfig.color} stopOpacity={0.1} />
+                <stop offset="5%" stopColor={areaColor} stopOpacity={0.8} />
+                <stop offset="95%" stopColor={areaColor} stopOpacity={0.1} />
               </linearGradient>
             </defs>
             <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -103,11 +106,11 @@ export function SoilDetailChart({
             <Area
               type="monotone"
               dataKey="value"
-              stroke={metricConfig.color}
+              stroke={areaColor}
               fill="url(#fillColor)"
               strokeWidth={2}
-              dot={{ r: 4, fill: metricConfig.color }}
-              activeDot={{ r: 6, fill: metricConfig.color }}
+              dot={{ r: 4, fill: areaColor }}
+              activeDot={{ r: 6, fill: areaColor }}
             />
           </AreaChart>
         </ChartContainer>

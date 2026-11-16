@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { UserDetailActions } from "./user-detail-actions";
-import { ArrowLeft, Shield, Activity, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, Shield, Heartbeat, CheckCircle, XCircle } from "@/components/icons";
 
 export default async function UserDetailPage({
   params,
@@ -144,7 +144,7 @@ export default async function UserDetailPage({
             className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(user.status)}`}
           >
             {isActive ? (
-              <CheckCircle2 className="size-3 mr-1" />
+              <CheckCircle className="size-3 mr-1" />
             ) : (
               <XCircle className="size-3 mr-1" />
             )}
@@ -163,7 +163,7 @@ export default async function UserDetailPage({
         {/* Info Card */}
         <div className="lg:col-span-2 rounded-xl border bg-card p-6">
           <h2 className="font-semibold font-heading text-foreground mb-4 flex items-center gap-2">
-            <Activity className="size-4" />
+            <Heartbeat className="size-4" />
             Informasi Pengguna
           </h2>
           <dl className="space-y-3">

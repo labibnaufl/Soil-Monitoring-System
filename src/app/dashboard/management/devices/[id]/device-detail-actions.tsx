@@ -4,7 +4,7 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 import { updateDeviceStatus, deleteDevice } from "../_components/actions/device";
 import { useState } from "react";
-import { CheckCircle2, Wrench, Power, Trash2 } from "lucide-react";
+import { CheckCircle, Wrench, Power, Trash } from "@phosphor-icons/react";
 
 export function DeviceDetailActions({
   deviceId,
@@ -79,7 +79,7 @@ export function DeviceDetailActions({
             onClick={handleSetOperating}
             className="w-full px-3 py-2 text-sm font-medium bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            <CheckCircle2 className="size-4" />
+            <CheckCircle className="size-4" />
             Set Beroperasi
           </button>
         )}
@@ -115,7 +115,7 @@ export function DeviceDetailActions({
               onClick={handleDelete}
               className="w-full px-3 py-2 text-sm font-medium bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              <Trash2 className="size-4" />
+              <Trash className="size-4" />
               Hapus Perangkat
             </button>
           </>

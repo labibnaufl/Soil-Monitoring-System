@@ -1,0 +1,283 @@
+- generic [active] [ref=f4e1]:
+  - generic [ref=f4e2]:
+    - generic [ref=f4e5]:
+      - list [ref=f4e7]:
+        - listitem [ref=f4e8]:
+          - link "NYAWIT Logo NYAWIT Admin Panel" [ref=f4e9] [cursor=pointer]:
+            - /url: /dashboard
+            - img "NYAWIT Logo" [ref=f4e11]
+            - generic [ref=f4e12]:
+              - generic [ref=f4e13]: NYAWIT
+              - generic [ref=f4e14]: Admin Panel
+      - generic [ref=f4e15]:
+        - generic [ref=f4e16]:
+          - generic [ref=f4e17]: Utama
+          - list [ref=f4e19]:
+            - listitem [ref=f4e20]:
+              - link "Dashboard" [ref=f4e21] [cursor=pointer]:
+                - /url: /dashboard
+        - generic [ref=f4e26]:
+          - generic [ref=f4e27]: Management
+          - list [ref=f4e29]:
+            - listitem [ref=f4e30]:
+              - link "Stasiun" [ref=f4e31] [cursor=pointer]:
+                - /url: /dashboard/management/stations
+            - listitem [ref=f4e36]:
+              - link "Alat" [ref=f4e37] [cursor=pointer]:
+                - /url: /dashboard/management/devices
+            - listitem [ref=f4e42]:
+              - link "Notifikasi 6" [ref=f4e43] [cursor=pointer]:
+                - /url: /dashboard/alerts
+                - generic [ref=f4e44]: Notifikasi
+                - generic [ref=f4e48]: "6"
+            - listitem [ref=f4e49]:
+              - link "Kelola Pengguna" [ref=f4e50] [cursor=pointer]:
+                - /url: /dashboard/management/users
+        - generic [ref=f4e55]:
+          - generic [ref=f4e56]: Monitoring
+          - list [ref=f4e58]:
+            - listitem [ref=f4e59]:
+              - link "Tingkat Air" [ref=f4e60] [cursor=pointer]:
+                - /url: /dashboard/monitoring/water-level
+            - listitem [ref=f4e65]:
+              - link "Curah Hujan" [ref=f4e66] [cursor=pointer]:
+                - /url: /dashboard/monitoring/curah-hujan
+            - listitem [ref=f4e71]:
+              - link "Monitoring Tanah" [ref=f4e72] [cursor=pointer]:
+                - /url: /dashboard/monitoring/soil-monitoring
+            - listitem [ref=f4e77]:
+              - link "Prediksi AI" [ref=f4e78] [cursor=pointer]:
+                - /url: /dashboard/monitoring/prediksi-ai
+        - generic [ref=f4e83]:
+          - generic [ref=f4e84]: Sistem
+          - list [ref=f4e86]:
+            - listitem [ref=f4e87]:
+              - link "Log Aktivitas" [ref=f4e88] [cursor=pointer]:
+                - /url: /dashboard/logs
+      - list [ref=f4e94]:
+        - listitem [ref=f4e95]:
+          - button "SA Super Admin LPA superadmin@lpa.id" [ref=f4e96]:
+            - generic [ref=f4e97]: SA
+            - generic [ref=f4e99]:
+              - generic [ref=f4e100]: Super Admin LPA
+              - generic [ref=f4e101]: superadmin@lpa.id
+    - main [ref=f4e104]:
+      - generic [ref=f4e105]:
+        - button "Toggle Sidebar" [ref=f4e106]
+        - navigation "breadcrumb" [ref=f4e108]:
+          - list [ref=f4e109]:
+            - listitem [ref=f4e110]:
+              - link "Dashboard" [disabled] [ref=f4e111]
+      - generic [ref=f4e144]:
+        - generic [ref=f4e145]:
+          - heading "Monitoring Curah Hujan" [level=1] [ref=f4e146]
+          - paragraph [ref=f4e147]: Pemantauan curah hujan — pilih stasiun untuk detail
+        - generic [ref=f4e148]:
+          - generic [ref=f4e150]:
+            - generic [ref=f4e151]:
+              - generic [ref=f4e152]:
+                - heading "Ringkasan Curah Hujan" [level=3] [ref=f4e153]
+                - paragraph [ref=f4e154]: 7 Hari · Total per stasiun
+              - generic [ref=f4e155]:
+                - button "7 Hari" [ref=f4e156]
+                - button "30 Hari" [ref=f4e157]
+                - button "Tahun Ini" [ref=f4e158]
+            - application [ref=f4e163]:
+              - generic [ref=f4e207]:
+                - generic [ref=f4e208]:
+                  - generic [ref=f4e209]: Asmat
+                  - generic [ref=f4e211]: Indragiri
+                  - generic [ref=f4e213]: Jambi
+                  - generic [ref=f4e215]: Katingan
+                  - generic [ref=f4e217]: Raya
+                  - generic [ref=f4e219]: Malinau
+                  - generic [ref=f4e221]: Komering
+                  - generic [ref=f4e223]: Siak
+                  - generic [ref=f4e225]: Kampar
+                  - generic [ref=f4e227]: Merauke
+                  - generic [ref=f4e229]: Sebangau
+                - generic [ref=f4e231]:
+                  - generic [ref=f4e232]: 0 mm
+                  - generic [ref=f4e234]: 65 mm
+                  - generic [ref=f4e236]: 130 mm
+                  - generic [ref=f4e238]: 195 mm
+                  - generic [ref=f4e240]: 260mm
+            - generic [ref=f4e242]:
+              - generic [ref=f4e243]: "Total curah hujan: 69349.1 mm"
+              - generic [ref=f4e246]: 12 stasiun · 5,675 pembacaan
+          - generic [ref=f4e247]:
+            - generic [ref=f4e248]:
+              - paragraph [ref=f4e250]: Active Devices
+              - paragraph [ref=f4e253]: "25"
+            - generic [ref=f4e254]:
+              - paragraph [ref=f4e256]: Location Points
+              - paragraph [ref=f4e259]: "12"
+        - generic [ref=f4e260]:
+          - paragraph [ref=f4e261]: 12 stasiun aktif
+          - generic [ref=f4e262]:
+            - link "Stasiun Gambut Asmat Normal Kabupaten Asmat, Papua Selatan 2 Devices 1 WTPs 151 mm 1 hari hujan" [ref=f4e263] [cursor=pointer]:
+              - /url: /dashboard/monitoring/curah-hujan/station-lpa-012
+              - generic [ref=f4e264]:
+                - paragraph [ref=f4e265]: Stasiun Gambut Asmat
+                - generic [ref=f4e266]: Normal
+              - paragraph [ref=f4e270]: Kabupaten Asmat, Papua Selatan
+              - generic [ref=f4e271]:
+                - generic [ref=f4e272]: 2 Devices
+                - generic [ref=f4e275]: 1 WTPs
+              - generic [ref=f4e278]:
+                - generic [ref=f4e279]: 151 mm
+                - generic [ref=f4e282]: 1 hari hujan
+            - link "Stasiun Gambut Indragiri Normal Kabupaten Indragiri Hilir, Riau 2 Devices 1 WTPs 132.9 mm 1 hari hujan" [ref=f4e285] [cursor=pointer]:
+              - /url: /dashboard/monitoring/curah-hujan/station-lpa-008
+              - generic [ref=f4e286]:
+                - paragraph [ref=f4e287]: Stasiun Gambut Indragiri
+                - generic [ref=f4e288]: Normal
+              - paragraph [ref=f4e292]: Kabupaten Indragiri Hilir, Riau
+              - generic [ref=f4e293]:
+                - generic [ref=f4e294]: 2 Devices
+                - generic [ref=f4e297]: 1 WTPs
+              - generic [ref=f4e300]:
+                - generic [ref=f4e301]: 132.9 mm
+                - generic [ref=f4e304]: 1 hari hujan
+            - link "Stasiun Gambut Jambi Normal Kabupaten Tanjung Jabung Timur, Jambi 2 Devices 1 WTPs 256.6 mm 2 hari hujan" [ref=f4e307] [cursor=pointer]:
+              - /url: /dashboard/monitoring/curah-hujan/station-lpa-006
+              - generic [ref=f4e308]:
+                - paragraph [ref=f4e309]: Stasiun Gambut Jambi
+                - generic [ref=f4e310]: Normal
+              - paragraph [ref=f4e314]: Kabupaten Tanjung Jabung Timur, Jambi
+              - generic [ref=f4e315]:
+                - generic [ref=f4e316]: 2 Devices
+                - generic [ref=f4e319]: 1 WTPs
+              - generic [ref=f4e322]:
+                - generic [ref=f4e323]: 256.6 mm
+                - generic [ref=f4e326]: 2 hari hujan
+            - link "Stasiun Gambut Katingan Medium Kabupaten Katingan, Kalimantan Tengah 2 Devices 1 WTPs 19.7 mm 1 hari hujan low_battery 11/9/2026, 6:53 AM" [ref=f4e329] [cursor=pointer]:
+              - /url: /dashboard/monitoring/curah-hujan/station-lpa-010
+              - generic [ref=f4e330]:
+                - paragraph [ref=f4e331]: Stasiun Gambut Katingan
+                - generic "Medium" [ref=f4e332]
+              - paragraph [ref=f4e336]: Kabupaten Katingan, Kalimantan Tengah
+              - generic [ref=f4e337]:
+                - generic [ref=f4e338]: 2 Devices
+                - generic [ref=f4e341]: 1 WTPs
+              - generic [ref=f4e344]:
+                - generic [ref=f4e345]: 19.7 mm
+                - generic [ref=f4e348]: 1 hari hujan
+              - generic [ref=f4e351]:
+                - generic [ref=f4e352]: low_battery
+                - paragraph [ref=f4e356]: 11/9/2026, 6:53 AM
+            - link "Stasiun Gambut Kubu Raya Normal Kabupaten Kubu Raya, Kalimantan Barat 2 Devices 1 WTPs 188.7 mm 2 hari hujan" [ref=f4e357] [cursor=pointer]:
+              - /url: /dashboard/monitoring/curah-hujan/station-lpa-007
+              - generic [ref=f4e358]:
+                - paragraph [ref=f4e359]: Stasiun Gambut Kubu Raya
+                - generic [ref=f4e360]: Normal
+              - paragraph [ref=f4e364]: Kabupaten Kubu Raya, Kalimantan Barat
+              - generic [ref=f4e365]:
+                - generic [ref=f4e366]: 2 Devices
+                - generic [ref=f4e369]: 1 WTPs
+              - generic [ref=f4e372]:
+                - generic [ref=f4e373]: 188.7 mm
+                - generic [ref=f4e376]: 2 hari hujan
+            - link "Stasiun Gambut Malinau Medium Kabupaten Malinau, Kalimantan Utara 2 Devices 1 WTPs 135.9 mm 1 hari hujan soil_moisture_low 11/9/2026, 6:44 AM" [ref=f4e379] [cursor=pointer]:
+              - /url: /dashboard/monitoring/curah-hujan/station-lpa-005
+              - generic [ref=f4e380]:
+                - paragraph [ref=f4e381]: Stasiun Gambut Malinau
+                - generic "Medium" [ref=f4e382]
+              - paragraph [ref=f4e386]: Kabupaten Malinau, Kalimantan Utara
+              - generic [ref=f4e387]:
+                - generic [ref=f4e388]: 2 Devices
+                - generic [ref=f4e391]: 1 WTPs
+              - generic [ref=f4e394]:
+                - generic [ref=f4e395]: 135.9 mm
+                - generic [ref=f4e398]: 1 hari hujan
+              - generic [ref=f4e401]:
+                - generic [ref=f4e402]: soil_moisture_low
+                - paragraph [ref=f4e406]: 11/9/2026, 6:44 AM
+            - link "Stasiun Gambut Mempawah Normal Kabupaten Mempawah, Kalimantan Barat 2 Devices 1 WTPs 144 mm 1 hari hujan" [ref=f4e407] [cursor=pointer]:
+              - /url: /dashboard/monitoring/curah-hujan/station-lpa-011
+              - generic [ref=f4e408]:
+                - paragraph [ref=f4e409]: Stasiun Gambut Mempawah
+                - generic [ref=f4e410]: Normal
+              - paragraph [ref=f4e414]: Kabupaten Mempawah, Kalimantan Barat
+              - generic [ref=f4e415]:
+                - generic [ref=f4e416]: 2 Devices
+                - generic [ref=f4e419]: 1 WTPs
+              - generic [ref=f4e422]:
+                - generic [ref=f4e423]: 144 mm
+                - generic [ref=f4e426]: 1 hari hujan
+            - link "Stasiun Gambut Ogan Komering Tinggi Kabupaten Ogan Komering Ilir, Sumatera Selatan 2 Devices 1 WTPs 55.9 mm 2 hari hujan soil_moisture_low 11/9/2026, 6:53 AM" [ref=f4e429] [cursor=pointer]:
+              - /url: /dashboard/monitoring/curah-hujan/station-lpa-009
+              - generic [ref=f4e430]:
+                - paragraph [ref=f4e431]: Stasiun Gambut Ogan Komering
+                - generic "Tinggi" [ref=f4e432]
+              - paragraph [ref=f4e436]: Kabupaten Ogan Komering Ilir, Sumatera Selatan
+              - generic [ref=f4e437]:
+                - generic [ref=f4e438]: 2 Devices
+                - generic [ref=f4e441]: 1 WTPs
+              - generic [ref=f4e444]:
+                - generic [ref=f4e445]: 55.9 mm
+                - generic [ref=f4e448]: 2 hari hujan
+              - generic [ref=f4e451]:
+                - generic [ref=f4e452]: soil_moisture_low
+                - paragraph [ref=f4e456]: 11/9/2026, 6:53 AM
+            - link "Stasiun Gambut Siak Normal Kabupaten Siak, Riau 2 Devices 1 WTPs 80.2 mm 2 hari hujan" [ref=f4e457] [cursor=pointer]:
+              - /url: /dashboard/monitoring/curah-hujan/station-lpa-004
+              - generic [ref=f4e458]:
+                - paragraph [ref=f4e459]: Stasiun Gambut Siak
+                - generic [ref=f4e460]: Normal
+              - paragraph [ref=f4e464]: Kabupaten Siak, Riau
+              - generic [ref=f4e465]:
+                - generic [ref=f4e466]: 2 Devices
+                - generic [ref=f4e469]: 1 WTPs
+              - generic [ref=f4e472]:
+                - generic [ref=f4e473]: 80.2 mm
+                - generic [ref=f4e476]: 2 hari hujan
+            - link "Stasiun Pemantauan Gambut Kampar Tinggi Kabupaten Pelalawan, Riau 2 Devices 1 WTPs 29 mm 1 hari hujan low_battery 4/24/2026, 10:59 AM" [ref=f4e479] [cursor=pointer]:
+              - /url: /dashboard/monitoring/curah-hujan/station-lpa-002
+              - generic [ref=f4e480]:
+                - paragraph [ref=f4e481]: Stasiun Pemantauan Gambut Kampar
+                - generic "Tinggi" [ref=f4e482]
+              - paragraph [ref=f4e486]: Kabupaten Pelalawan, Riau
+              - generic [ref=f4e487]:
+                - generic [ref=f4e488]: 2 Devices
+                - generic [ref=f4e491]: 1 WTPs
+              - generic [ref=f4e494]:
+                - generic [ref=f4e495]: 29 mm
+                - generic [ref=f4e498]: 1 hari hujan
+              - generic [ref=f4e501]:
+                - generic [ref=f4e502]: low_battery
+                - paragraph [ref=f4e506]: 4/24/2026, 10:59 AM
+            - link "Stasiun Pemantauan Gambut Merauke Medium Kabupaten Merauke, Papua Selatan 2 Devices 1 WTPs 259.5 mm 1 hari hujan soil_moisture_low 4/24/2026, 10:59 AM" [ref=f4e507] [cursor=pointer]:
+              - /url: /dashboard/monitoring/curah-hujan/station-lpa-003
+              - generic [ref=f4e508]:
+                - paragraph [ref=f4e509]: Stasiun Pemantauan Gambut Merauke
+                - generic "Medium" [ref=f4e510]
+              - paragraph [ref=f4e514]: Kabupaten Merauke, Papua Selatan
+              - generic [ref=f4e515]:
+                - generic [ref=f4e516]: 2 Devices
+                - generic [ref=f4e519]: 1 WTPs
+              - generic [ref=f4e522]:
+                - generic [ref=f4e523]: 259.5 mm
+                - generic [ref=f4e526]: 1 hari hujan
+              - generic [ref=f4e529]:
+                - generic [ref=f4e530]: soil_moisture_low
+                - paragraph [ref=f4e534]: 4/24/2026, 10:59 AM
+            - link "Stasiun Pemantauan Lahan Gambut Sebangau Medium Kota Palangka Raya, Kalimantan Tengah 3 Devices 1 WTPs 104.9 mm 1 hari hujan low_battery 4/24/2026, 10:59 AM" [ref=f4e535] [cursor=pointer]:
+              - /url: /dashboard/monitoring/curah-hujan/station-lpa-001
+              - generic [ref=f4e536]:
+                - paragraph [ref=f4e537]: Stasiun Pemantauan Lahan Gambut Sebangau
+                - generic "Medium" [ref=f4e538]
+              - paragraph [ref=f4e542]: Kota Palangka Raya, Kalimantan Tengah
+              - generic [ref=f4e543]:
+                - generic [ref=f4e544]: 3 Devices
+                - generic [ref=f4e547]: 1 WTPs
+              - generic [ref=f4e550]:
+                - generic [ref=f4e551]: 104.9 mm
+                - generic [ref=f4e554]: 1 hari hujan
+              - generic [ref=f4e557]:
+                - generic [ref=f4e558]: low_battery
+                - paragraph [ref=f4e562]: 4/24/2026, 10:59 AM
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f4e139] [cursor=pointer]
+  - alert [ref=f4e143]
+  - generic [aria-hidden] [ref=f4e563]: "0"

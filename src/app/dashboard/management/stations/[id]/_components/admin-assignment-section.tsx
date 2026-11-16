@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { assignAdminToStation, unassignAdminFromStation, getAvailableAdmins } from "../../actions/assignment";
 import { Button } from "@/components/ui/button";
-import { Plus, X, Users, UserCheck, UserX, Trash2 } from "lucide-react";
+import { Plus, X, Users, UserCheck, UserMinus, Trash } from "@phosphor-icons/react";
 
 type Admin = {
   id: string;
@@ -72,7 +72,7 @@ export function AdminAssignmentSection({
   }
 
   function getStatusIcon(status: string) {
-    return status === "AKTIF" ? <UserCheck className="size-3" /> : <UserX className="size-3" />;
+    return status === "AKTIF" ? <UserCheck className="size-3" /> : <UserMinus className="size-3" />;
   }
 
   return (
@@ -141,7 +141,7 @@ export function AdminAssignmentSection({
                   className="size-8 rounded-md hover:bg-red-100 flex items-center justify-center text-red-600 transition-colors disabled:opacity-50"
                   title="Hapus penugasan"
                 >
-                  <Trash2 className="size-4" />
+                  <Trash className="size-4" />
                 </button>
               </div>
             </div>

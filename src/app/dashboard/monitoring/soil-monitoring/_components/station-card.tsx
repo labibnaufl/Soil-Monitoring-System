@@ -1,15 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Cpu, MapPin, AlertTriangle, Activity, CheckCircle2, Droplets, Thermometer, Zap, Beaker } from "lucide-react";
-import { SOIL_METRICS, type SoilMetricKey } from "./soil-metrics";
-
-const iconMap: Record<SoilMetricKey, React.ComponentType<{ className?: string }>> = {
-  soilMoisture: Droplets,
-  soilTemperature: Thermometer,
-  soilConductivity: Zap,
-  phValue: Beaker,
-};
+import { Cpu, MapPin, Warning, Heartbeat, CheckCircle } from "@/components/icons";
+import { StatusBadge, getPriorityBadge, getPriorityLabel } from "@/components/ui/status-badge";
 
 interface StationCardProps {
   station: {
@@ -31,22 +24,6 @@ interface StationCardProps {
       phValue: number | null;
     };
   };
-}
-
-function AlertBadge({ priority }: { priority: string | null }) {
-  if (!priority) return null;
-  const config: Record<string, { label: string; className: string }> = {
-    HIGH:   { label: "urgent",  className: "bg-red-50 text-red-600 border border-red-200" },
-    MEDIUM: { label: "medium",  className: "bg-orange-50 text-orange-600 border border-orange-200" },
-    LOW:    { label: "low",     className: "bg-green-50 text-green-600 border border-green-200" },
-  };
-  const c = config[priority] ?? { label: priority.toLowerCase(), className: "bg-gray-100 text-gray-500 border border-gray-200" };
-  return (
-    <span className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full ${c.className}`}>
-      <AlertTriangle className="size-2.5" />
-      {c.label}
-    </span>
-  );
 }
 
 function formatAlertType(type: string | null) {
@@ -86,12 +63,23 @@ export function StationCard({ station }: StationCardProps) {
           {station.name}
         </p>
         {station.latestAlertPriority ? (
-          <AlertBadge priority={station.latestAlertPriority} />
+          (() => {
+            const priorityBadge = getPriorityBadge(station.latestAlertPriority);
+            return (
+              <StatusBadge
+                intent={priorityBadge.intent}
+                icon={Warning}
+                title={priorityBadge.label}
+                className="text-[11px]"
+              >
+                {priorityBadge.label}
+              </StatusBadge>
+            );
+          })()
         ) : (
-          <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-green-50 text-green-600 border border-green-200">
-            <CheckCircle2 className="size-2.5" />
-            normal
-          </span>
+          <StatusBadge intent="emerald" icon={CheckCircle} className="text-[11px]">
+            Normal
+          </StatusBadge>
         )}
       </div>
 
@@ -103,11 +91,11 @@ export function StationCard({ station }: StationCardProps) {
       {/* Counts row */}
       <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
         <span className="flex items-center gap-1">
-          <Cpu className="size-3" />
+          <Cpu weight="regular" className="size-3" aria-hidden="true" />
           {station.deviceCount} Devices
         </span>
         <span className="flex items-center gap-1">
-          <MapPin className="size-3" />
+          <MapPin weight="regular" className="size-3" aria-hidden="true" />
           {station.wtpCount} WTPs
         </span>
       </div>
@@ -117,7 +105,7 @@ export function StationCard({ station }: StationCardProps) {
       {alertLabel && alertDate && (
         <div className="border-t pt-2.5 mt-1">
           <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-            <Activity className="size-3 shrink-0" />
+            <Heartbeat weight="regular" className="size-3 shrink-0" aria-hidden="true" />
             <span className="font-medium text-foreground/70">{alertLabel}</span>
           </div>
           <p className="text-[11px] text-muted-foreground mt-0.5 pl-4.5">{alertDate}</p>

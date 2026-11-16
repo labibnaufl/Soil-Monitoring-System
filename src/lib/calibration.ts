@@ -89,12 +89,12 @@ export const DEFAULT_FORMULAS: DeviceCalibrationFormulas = {
  * Apply calibration formula to a raw value
  */
 export function applyCalibration(
-  rawValue: number,
+  rawValue: number | null | undefined,
   formula: CalibrationFormula | undefined,
   params: DeviceCalibrationParams = {}
-): number {
+): number | null {
   if (rawValue === null || rawValue === undefined) {
-    return rawValue;
+    return null;
   }
 
   if (!formula) {
@@ -176,12 +176,12 @@ export function calibrateAllReadings(
   params: DeviceCalibrationParams
 ): CalibratedReadings {
   return {
-    waterLevel: applyCalibration(raw.rawWaterLevel ?? 0, formulas.waterLevel, params),
-    rainMeter: applyCalibration(raw.rawRainMeter ?? 0, formulas.rainMeter, params),
-    soilMoisture: applyCalibration(raw.rawSoilMoisture ?? 0, formulas.soilMoisture, params),
-    soilTemperature: applyCalibration(raw.rawSoilTemperature ?? 0, formulas.soilTemperature, params),
-    soilConductivity: applyCalibration(raw.rawSoilConductivity ?? 0, formulas.soilConductivity, params),
-    phValue: applyCalibration(raw.rawPhValue ?? 0, formulas.phValue, params),
+    waterLevel: applyCalibration(raw.rawWaterLevel, formulas.waterLevel, params),
+    rainMeter: applyCalibration(raw.rawRainMeter, formulas.rainMeter, params),
+    soilMoisture: applyCalibration(raw.rawSoilMoisture, formulas.soilMoisture, params),
+    soilTemperature: applyCalibration(raw.rawSoilTemperature, formulas.soilTemperature, params),
+    soilConductivity: applyCalibration(raw.rawSoilConductivity, formulas.soilConductivity, params),
+    phValue: applyCalibration(raw.rawPhValue, formulas.phValue, params),
   };
 }
 

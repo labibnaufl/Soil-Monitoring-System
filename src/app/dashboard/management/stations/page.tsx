@@ -8,7 +8,7 @@ import {
   MapPin,
   Radio,
   Users,
-} from "lucide-react";
+} from "@/components/icons";
 
 const PEAT_TYPES = ["Fibric", "Hemic", "Sapric"] as const;
 

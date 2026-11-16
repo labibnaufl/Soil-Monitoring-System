@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { assignDeviceToStation, unassignDeviceFromStation, getAvailableDevices } from "../../actions/assignment";
 import { Button } from "@/components/ui/button";
-import { Plus, X, Radio, Trash2 } from "lucide-react";
+import { Plus, X, Radio, Trash } from "@phosphor-icons/react";
 
 type Device = {
   id: string;
@@ -150,7 +150,7 @@ export function DeviceAssignmentSection({
                   className="size-8 rounded-md hover:bg-red-100 flex items-center justify-center text-red-600 transition-colors disabled:opacity-50"
                   title="Hapus penugasan"
                 >
-                  <Trash2 className="size-4" />
+                  <Trash className="size-4" />
                 </button>
               </div>
             </div>

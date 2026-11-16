@@ -55,6 +55,36 @@ async function getDashboardData(userId: string, isSuperAdmin: boolean, userStati
   }
   const uniqueLatestReadings = Array.from(latestByDevice.values());
 
+  // Rainfall is cumulative, not instant: a single latest reading is ~always
+  // 0 (it only rains ~3% of the time). Aggregate the last 24h per station
+  // so the Curah Hujan chart has something real to show.
+  const dayAgo = new Date(Date.now() - 24 * 3600 * 1000);
+  const rainRows = await prisma.readings.findMany({
+    where: {
+      deviceId: { in: deviceIds },
+      dateTime: { gte: dayAgo },
+      rainMeter: { gt: 0 },
+    },
+    select: {
+      rainMeter: true,
+      device: { select: { station: { select: { name: true } } } },
+    },
+  });
+  const rainByStation = new Map<string, number>();
+  for (const row of rainRows) {
+    const stationName = row.device?.station?.name;
+    if (!stationName || row.rainMeter == null) continue;
+    rainByStation.set(
+      stationName,
+      (rainByStation.get(stationName) ?? 0) + row.rainMeter
+    );
+  }
+  const rain24h = [...rainByStation.entries()].map(([fullName, value]) => ({
+    name: fullName.split(" ").pop() || fullName,
+    fullName,
+    value: Math.round(value * 10) / 10,
+  }));
+
   // Get alert counts
   const stationFilter = { stationId: { in: stationIds } };
 
@@ -94,6 +124,7 @@ async function getDashboardData(userId: string, isSuperAdmin: boolean, userStati
 
   return {
     latestReadings: uniqueLatestReadings,
+    rain24h,
     resolvedAlerts,
     criticalAlerts,
     warningAlerts,

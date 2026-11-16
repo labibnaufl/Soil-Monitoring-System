@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { CartesianGrid, Area, AreaChart, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
-import { CloudRain } from "lucide-react";
+import { CloudRain } from "@phosphor-icons/react";
 
 interface StationDetailChartProps {
   chartData: { date: string; rainMeter: number }[];

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { TrendingUp } from "lucide-react";
+import { TrendUp } from "@phosphor-icons/react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
 
 import {
@@ -122,7 +122,7 @@ export function SummaryChart({
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm pt-4">
         <div className="flex gap-2 leading-none font-medium text-blue-600">
-          Rata-rata keseluruhan: {overallAverage} cm <TrendingUp className="h-4 w-4" />
+          Rata-rata keseluruhan: {overallAverage} cm <TrendUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
           {chartData.length} stasiun · {totalReadings.toLocaleString()} pembacaan

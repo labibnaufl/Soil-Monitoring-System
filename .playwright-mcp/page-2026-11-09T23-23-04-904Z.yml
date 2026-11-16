@@ -1,0 +1,73 @@
+- generic [active] [ref=f21e1]:
+  - generic [ref=f21e2]:
+    - generic [ref=f21e5]:
+      - list [ref=f21e7]:
+        - listitem [ref=f21e8]:
+          - link "NYAWIT Logo NYAWIT Admin Panel" [ref=f21e9] [cursor=pointer]:
+            - /url: /dashboard
+            - img "NYAWIT Logo" [ref=f21e11]
+            - generic [ref=f21e12]:
+              - generic [ref=f21e13]: NYAWIT
+              - generic [ref=f21e14]: Admin Panel
+      - generic [ref=f21e15]:
+        - generic [ref=f21e16]:
+          - generic [ref=f21e17]: Utama
+          - list [ref=f21e19]:
+            - listitem [ref=f21e20]:
+              - link "Dashboard" [ref=f21e21] [cursor=pointer]:
+                - /url: /dashboard
+        - generic [ref=f21e26]:
+          - generic [ref=f21e27]: Management
+          - list [ref=f21e29]:
+            - listitem [ref=f21e30]:
+              - link "Stasiun" [ref=f21e31] [cursor=pointer]:
+                - /url: /dashboard/management/stations
+            - listitem [ref=f21e36]:
+              - link "Alat" [ref=f21e37] [cursor=pointer]:
+                - /url: /dashboard/management/devices
+            - listitem [ref=f21e42]:
+              - link "Notifikasi 6" [ref=f21e43] [cursor=pointer]:
+                - /url: /dashboard/alerts
+                - generic [ref=f21e44]: Notifikasi
+                - generic [ref=f21e48]: "6"
+            - listitem [ref=f21e49]:
+              - link "Kelola Pengguna" [ref=f21e50] [cursor=pointer]:
+                - /url: /dashboard/management/users
+        - generic [ref=f21e55]:
+          - generic [ref=f21e56]: Monitoring
+          - list [ref=f21e58]:
+            - listitem [ref=f21e59]:
+              - link "Tingkat Air" [ref=f21e60] [cursor=pointer]:
+                - /url: /dashboard/monitoring/water-level
+            - listitem [ref=f21e65]:
+              - link "Curah Hujan" [ref=f21e66] [cursor=pointer]:
+                - /url: /dashboard/monitoring/curah-hujan
+            - listitem [ref=f21e71]:
+              - link "Monitoring Tanah" [ref=f21e72] [cursor=pointer]:
+                - /url: /dashboard/monitoring/soil-monitoring
+            - listitem [ref=f21e77]:
+              - link "Prediksi AI" [ref=f21e78] [cursor=pointer]:
+                - /url: /dashboard/monitoring/prediksi-ai
+        - generic [ref=f21e83]:
+          - generic [ref=f21e84]: Sistem
+          - list [ref=f21e86]:
+            - listitem [ref=f21e87]:
+              - link "Log Aktivitas" [ref=f21e88] [cursor=pointer]:
+                - /url: /dashboard/logs
+      - list [ref=f21e94]:
+        - listitem [ref=f21e95]:
+          - button "SA Super Admin LPA superadmin@lpa.id" [ref=f21e96]:
+            - generic [ref=f21e97]: SA
+            - generic [ref=f21e99]:
+              - generic [ref=f21e100]: Super Admin LPA
+              - generic [ref=f21e101]: superadmin@lpa.id
+    - main [ref=f21e104]:
+      - generic [ref=f21e105]:
+        - button "Toggle Sidebar" [ref=f21e106]
+        - navigation "breadcrumb" [ref=f21e108]:
+          - list [ref=f21e109]:
+            - listitem [ref=f21e110]:
+              - link "Dashboard" [disabled] [ref=f21e111]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f21e139] [cursor=pointer]
+  - alert [ref=f21e143]

@@ -4,7 +4,14 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { UserActions } from "./_components/user-actions";
 import { UserFormModal } from "./_components/user-form-modal";
-import { Users, UserCheck, UserX, Shield, MapPin } from "lucide-react";
+import { Users, UserCheck, MapPin } from "@/components/icons";
+import { StatusBadge } from "@/components/ui/status-badge";
+import {
+  getRoleBadge,
+  getRoleLabel,
+  getStatusBadge,
+  getStatusLabel,
+} from "@/lib/badge-helpers";
 
 export default async function UsersPage({
   searchParams,
@@ -83,17 +90,6 @@ export default async function UsersPage({
     { value: "AKTIF", label: "Aktif" },
     { value: "NONAKTIF", label: "Nonaktif" },
   ];
-
-  function getRoleBadge(r: string) {
-    switch (r) {
-      case "SUPER_ADMIN":
-        return "bg-indigo-100 text-indigo-700";
-      case "ADMIN_LOCATION":
-        return "bg-purple-100 text-purple-700";
-      default:
-        return "bg-gray-100 text-gray-600";
-    }
-  }
 
   return (
     <div>
@@ -202,20 +198,26 @@ export default async function UsersPage({
                     {user.email}
                   </td>
                   <td className="px-4 py-3">
-                    <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getRoleBadge(user.role)}`}
-                    >
-                      {user.role === "SUPER_ADMIN"
-                        ? "Super Admin"
-                        : "Admin Lokasi"}
-                    </span>
+                    {(() => {
+                      const roleBadge = getRoleBadge(user.role);
+                      const label = getRoleLabel(user.role);
+                      return (
+                        <StatusBadge intent={roleBadge.intent} title={label}>
+                          {label}
+                        </StatusBadge>
+                      );
+                    })()}
                   </td>
                   <td className="px-4 py-3">
-                    <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${user.status === "AKTIF" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}
-                    >
-                      {user.status === "AKTIF" ? "Aktif" : "Nonaktif"}
-                    </span>
+                    {(() => {
+                      const statusBadge = getStatusBadge(user.status);
+                      const label = getStatusLabel(user.status);
+                      return (
+                        <StatusBadge intent={statusBadge.intent} title={label}>
+                          {label}
+                        </StatusBadge>
+                      );
+                    })()}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {user.station ? user.station.name : "-"}

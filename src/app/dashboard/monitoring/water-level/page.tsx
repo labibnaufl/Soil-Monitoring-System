@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { StationCard } from "./_components/station-card";
 import { SummaryChart } from "./_components/summary-chart";
+import { Cpu, Heartbeat } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Monitoring Tingkat Air - NYAWIT",
@@ -37,7 +38,7 @@ export default async function WaterLevelPage({
     : { status: "AKTIF" as const, id: userStationId ?? "__none__" };
 
   // Run both queries in parallel
-  const [stations, allReadings] = await Promise.all([
+  const [stations, deviceAvgs] = await Promise.all([
     prisma.station.findMany({
       where: stationWhere,
       orderBy: { name: "asc" },
@@ -55,6 +56,7 @@ export default async function WaterLevelPage({
         },
         devices: {
           select: {
+            id: true,
             readings: {
               where: {
                 dateTime: { gte: startDate },
@@ -68,8 +70,10 @@ export default async function WaterLevelPage({
         },
       },
     }),
-    // Summary chart data
-    prisma.readings.findMany({
+    // Summary numbers: DB-side per-device averages (one row per device,
+    // not tens of thousands of readings shipped to the client).
+    prisma.readings.groupBy({
+      by: ["deviceId"],
       where: {
         dateTime: { gte: startDate },
         waterLevel: { not: null },
@@ -77,37 +81,45 @@ export default async function WaterLevelPage({
           ? {}
           : { device: { stationId: userStationId ?? "__none__" } }),
       },
-      select: { waterLevel: true, dateTime: true },
-      orderBy: { dateTime: "asc" },
+      _avg: { waterLevel: true },
+      _count: { _all: true },
     }),
   ]);
 
+  const deviceStation = new Map<string, string>();
+  for (const s of stations) {
+    for (const d of s.devices) deviceStation.set(d.id, s.id);
+  }
+  const stationAgg = new Map<string, { sum: number; count: number }>();
+  let grandSum = 0;
+  let grandCount = 0;
+  for (const g of deviceAvgs) {
+    const avg = g._avg.waterLevel ?? null;
+    const stationId = deviceStation.get(g.deviceId);
+    if (avg == null || !stationId) continue;
+    const entry = stationAgg.get(stationId) ?? { sum: 0, count: 0 };
+    entry.sum += avg * g._count._all;
+    entry.count += g._count._all;
+    stationAgg.set(stationId, entry);
+    grandSum += avg * g._count._all;
+    grandCount += g._count._all;
+  }
+
   // Build summary chart data (per station average)
   const chartData = stations.map((s) => {
-    const stationReadings = s.devices
-      .flatMap((d) => d.readings)
-      .filter((r) => r.waterLevel !== null);
+    const agg = stationAgg.get(s.id);
     const avg =
-      stationReadings.length > 0
-        ? Math.round(
-            (stationReadings.reduce((sum, r) => sum + (r.waterLevel as number), 0) / stationReadings.length) * 10
-          ) / 10
-        : 0;
+      agg && agg.count > 0 ? Math.round((agg.sum / agg.count) * 10) / 10 : 0;
     return {
       station: s.name.split(" ").pop() || s.name,
       fullName: s.name,
       average: avg,
-      readingCount: stationReadings.length,
+      readingCount: agg?.count ?? 0,
     };
   });
 
-  const validReadings = allReadings.filter((r) => r.waterLevel !== null);
   const overallAverage =
-    validReadings.length > 0
-      ? Math.round(
-          (validReadings.reduce((s, r) => s + (r.waterLevel as number), 0) / validReadings.length) * 10
-        ) / 10
-      : 0;
+    grandCount > 0 ? Math.round((grandSum / grandCount) * 10) / 10 : 0;
 
   // Build station cards
   const stationCards = stations.map((s) => {
@@ -155,7 +167,7 @@ export default async function WaterLevelPage({
           <SummaryChart
             chartData={chartData}
             overallAverage={overallAverage}
-            totalReadings={validReadings.length}
+            totalReadings={grandCount}
             timeRange={timeRange}
           />
         </div>
@@ -164,18 +176,7 @@ export default async function WaterLevelPage({
           <div className="rounded-xl border bg-card p-5 flex flex-col justify-center h-full">
             <div className="flex items-center justify-between mb-2">
               <p className="text-sm text-muted-foreground font-medium">Active Devices</p>
-              <svg className="size-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
-                <rect x="9" y="9" width="6" height="6"></rect>
-                <line x1="9" y1="1" x2="9" y2="4"></line>
-                <line x1="15" y1="1" x2="15" y2="4"></line>
-                <line x1="9" y1="20" x2="9" y2="23"></line>
-                <line x1="15" y1="20" x2="15" y2="23"></line>
-                <line x1="20" y1="9" x2="23" y2="9"></line>
-                <line x1="20" y1="14" x2="23" y2="14"></line>
-                <line x1="1" y1="9" x2="4" y2="9"></line>
-                <line x1="1" y1="14" x2="4" y2="14"></line>
-              </svg>
+              <Cpu weight="regular" className="size-4 text-muted-foreground" aria-hidden="true" />
             </div>
             <p className="text-3xl font-bold font-heading">{totalActiveDevices}</p>
           </div>
@@ -184,9 +185,7 @@ export default async function WaterLevelPage({
           <div className="rounded-xl border bg-card p-5 flex flex-col justify-center h-full">
             <div className="flex items-center justify-between mb-2">
               <p className="text-sm text-muted-foreground font-medium">Location Points</p>
-              <svg className="size-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-              </svg>
+              <Heartbeat weight="regular" className="size-4 text-muted-foreground" aria-hidden="true" />
             </div>
             <p className="text-3xl font-bold font-heading">{totalActiveStations}</p>
           </div>

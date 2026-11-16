@@ -5,7 +5,7 @@ import { createStation } from "../actions/station";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, X, MapPin, Link2 } from "lucide-react";
+import { Plus, X, MapPin, LinkSimple } from "@phosphor-icons/react";
 
 export function StationFormModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -121,7 +121,7 @@ export function StationFormModal() {
     <>
       {/* Trigger Button */}
       <Button onClick={() => setIsOpen(true)} className="gap-2">
-        <Plus className="size-4" />
+        <Plus weight="regular" className="size-4" aria-hidden="true" />
         Tambah Stasiun
       </Button>
 
@@ -133,7 +133,7 @@ export function StationFormModal() {
             <div className="flex items-center justify-between p-6 border-b">
               <div className="flex items-center gap-3">
                 <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <MapPin className="size-5 text-primary" />
+                  <MapPin weight="regular" className="size-5 text-primary" aria-hidden="true" />
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold">Tambah Stasiun</h2>
@@ -143,10 +143,11 @@ export function StationFormModal() {
                 </div>
               </div>
               <button
+                aria-label="Tutup dialog"
                 onClick={() => setIsOpen(false)}
                 className="size-8 rounded-lg hover:bg-accent flex items-center justify-center transition-colors"
               >
-                <X className="size-4" />
+                <X weight="regular" className="size-4" aria-hidden="true" />
               </button>
             </div>
 
@@ -216,7 +217,7 @@ export function StationFormModal() {
 
               <div className="border-t pt-4 mt-4 space-y-4">
                 <h3 className="text-sm font-medium flex items-center gap-2">
-                  <Link2 className="size-4" />
+                  <LinkSimple weight="regular" className="size-4" aria-hidden="true" />
                   Lokasi Maps
                 </h3>
                 

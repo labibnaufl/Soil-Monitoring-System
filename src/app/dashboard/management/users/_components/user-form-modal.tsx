@@ -5,7 +5,7 @@ import { createUser } from "../actions/user";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, X, UserPlus } from "lucide-react";
+import { Plus, X, UserPlus } from "@phosphor-icons/react";
 
 type Station = {
   id: string;
@@ -59,7 +59,7 @@ export function UserFormModal({ stations }: { stations: Station[] }) {
     <>
       {/* Trigger Button */}
       <Button onClick={() => setIsOpen(true)} className="gap-2">
-        <Plus className="size-4" />
+        <Plus weight="regular" className="size-4" aria-hidden="true" />
         Tambah Pengguna
       </Button>
 
@@ -71,7 +71,7 @@ export function UserFormModal({ stations }: { stations: Station[] }) {
             <div className="flex items-center justify-between p-6 border-b">
               <div className="flex items-center gap-3">
                 <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <UserPlus className="size-5 text-primary" />
+                  <UserPlus weight="regular" className="size-5 text-primary" aria-hidden="true" />
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold">Tambah Pengguna</h2>
@@ -81,10 +81,11 @@ export function UserFormModal({ stations }: { stations: Station[] }) {
                 </div>
               </div>
               <button
+                aria-label="Tutup dialog"
                 onClick={() => setIsOpen(false)}
                 className="size-8 rounded-lg hover:bg-accent flex items-center justify-center transition-colors"
               >
-                <X className="size-4" />
+                <X weight="regular" className="size-4" aria-hidden="true" />
               </button>
             </div>
 

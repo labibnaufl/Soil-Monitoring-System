@@ -1,30 +1,31 @@
-FROM node:18-alpine AS base
-
-# Install dependencies only when needed
-FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
+# Deps: Bun for fast, frozen installs (migrated from npm)
+FROM oven/bun:1-alpine AS deps
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
-COPY package.json package-lock.json* ./
+# Install dependencies only when needed
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+COPY package.json bun.lock ./
 COPY prisma ./prisma/
-RUN npm ci
+RUN bun install --frozen-lockfile
 
 # Rebuild the source code only when needed
-FROM base AS builder
+FROM oven/bun:1-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Generate Prisma client and build Next.js
 # We need to make sure Prisma generates client before building
-RUN npx prisma generate
-RUN npm run build
+RUN bunx prisma generate
+RUN bun run build
 
 # Production image, copy all the files and run next
-FROM base AS runner
+# Node 20+ required for React 19 / Next 16 (was node:18). Runtime stays Node:
+# Next standalone server.js + Prisma + Turbopack externals are Node-tested,
+# Bun is used only as package manager / build tool.
+FROM node:20-alpine AS runner
 WORKDIR /app
+RUN apk add --no-cache libc6-compat
 
 ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.

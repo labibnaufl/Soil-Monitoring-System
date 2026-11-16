@@ -1,0 +1,180 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e75]:
+    - generic [ref=e78]:
+      - list [ref=e80]:
+        - listitem [ref=e81]:
+          - link "NYAWIT Logo NYAWIT Admin Panel" [ref=e82] [cursor=pointer]:
+            - /url: /dashboard
+            - img "NYAWIT Logo" [ref=e84]
+            - generic [ref=e85]:
+              - generic [ref=e86]: NYAWIT
+              - generic [ref=e87]: Admin Panel
+      - generic [ref=e88]:
+        - generic [ref=e89]:
+          - generic [ref=e90]: Utama
+          - list [ref=e92]:
+            - listitem [ref=e93]:
+              - link "Dashboard" [ref=e94] [cursor=pointer]:
+                - /url: /dashboard
+        - generic [ref=e99]:
+          - generic [ref=e100]: Management
+          - list [ref=e102]:
+            - listitem [ref=e103]:
+              - link "Stasiun" [ref=e104] [cursor=pointer]:
+                - /url: /dashboard/management/stations
+            - listitem [ref=e109]:
+              - link "Alat" [ref=e110] [cursor=pointer]:
+                - /url: /dashboard/management/devices
+            - listitem [ref=e115]:
+              - link "Notifikasi 6" [ref=e116] [cursor=pointer]:
+                - /url: /dashboard/alerts
+                - generic [ref=e117]: Notifikasi
+                - generic [ref=e121]: "6"
+            - listitem [ref=e122]:
+              - link "Kelola Pengguna" [ref=e123] [cursor=pointer]:
+                - /url: /dashboard/management/users
+        - generic [ref=e128]:
+          - generic [ref=e129]: Monitoring
+          - list [ref=e131]:
+            - listitem [ref=e132]:
+              - link "Tingkat Air" [ref=e133] [cursor=pointer]:
+                - /url: /dashboard/monitoring/water-level
+            - listitem [ref=e138]:
+              - link "Curah Hujan" [ref=e139] [cursor=pointer]:
+                - /url: /dashboard/monitoring/curah-hujan
+            - listitem [ref=e144]:
+              - link "Monitoring Tanah" [ref=e145] [cursor=pointer]:
+                - /url: /dashboard/monitoring/soil-monitoring
+            - listitem [ref=e150]:
+              - link "Prediksi AI" [ref=e151] [cursor=pointer]:
+                - /url: /dashboard/monitoring/prediksi-ai
+        - generic [ref=e156]:
+          - generic [ref=e157]: Sistem
+          - list [ref=e159]:
+            - listitem [ref=e160]:
+              - link "Log Aktivitas" [ref=e161] [cursor=pointer]:
+                - /url: /dashboard/logs
+      - list [ref=e167]:
+        - listitem [ref=e168]:
+          - button "SA Super Admin LPA superadmin@lpa.id" [ref=e169]:
+            - generic [ref=e170]: SA
+            - generic [ref=e172]:
+              - generic [ref=e173]: Super Admin LPA
+              - generic [ref=e174]: superadmin@lpa.id
+    - main [ref=e177]:
+      - generic [ref=e178]:
+        - button "Toggle Sidebar" [ref=e179]
+        - navigation "breadcrumb" [ref=e181]:
+          - list [ref=e182]:
+            - listitem [ref=e183]:
+              - link "Dashboard" [disabled] [ref=e184]
+      - generic [ref=e188]:
+        - generic [ref=e189]:
+          - heading "Dashboard" [level=1] [ref=e190]
+          - paragraph [ref=e191]: Ringkasan kondisi terkini sistem monitoring gambut
+        - generic [ref=e192]:
+          - generic [ref=e193]:
+            - generic [ref=e194]:
+              - generic [ref=e199]:
+                - heading "Monitoring Data" [level=2] [ref=e200]
+                - paragraph [ref=e201]: Pembacaan terbaru per stasiun
+              - button "Kelembapan Tanah" [ref=e203]
+            - application [ref=e211]:
+              - generic [ref=e232]:
+                - generic [ref=e233]:
+                  - generic [ref=e234]: Raya
+                  - generic [ref=e236]: Jambi
+                  - generic [ref=e238]: Indragiri
+                  - generic [ref=e240]: Komering
+                  - generic [ref=e242]: Raya
+                  - generic [ref=e244]: Indragiri
+                  - generic [ref=e246]: Komering
+                  - generic [ref=e248]: Merauke
+                  - generic [ref=e250]: Kampar
+                  - generic [ref=e252]: Kampar
+                - generic [ref=e254]:
+                  - generic [ref=e255]: 0 %
+                  - generic [ref=e257]: 25 %
+                  - generic [ref=e259]: 50 %
+                  - generic [ref=e261]: 75 %
+                  - generic [ref=e263]: 100 %
+          - generic [ref=e265]:
+            - generic [ref=e266]:
+              - paragraph [ref=e271]: Stasiun Aktif
+              - paragraph [ref=e272]: 12/12
+              - paragraph [ref=e273]: 0 nonaktif
+            - generic [ref=e274]:
+              - paragraph [ref=e279]: Perangkat Aktif
+              - paragraph [ref=e280]: 25/25
+              - paragraph [ref=e281]: 0 offline
+            - generic [ref=e282]:
+              - paragraph [ref=e287]: Admin Lokasi
+              - paragraph [ref=e288]: "12"
+              - paragraph [ref=e289]: Pengguna aktif
+        - generic [ref=e290]:
+          - generic [ref=e291]:
+            - generic [ref=e292]:
+              - generic [ref=e297]:
+                - heading "Notifikasi Terbaru" [level=2] [ref=e298]
+                - paragraph [ref=e299]: 5 notifikasi terakhir
+              - link "Kelola" [ref=e300] [cursor=pointer]:
+                - /url: /dashboard/alerts
+            - generic [ref=e301]:
+              - generic [ref=e304]:
+                - generic [ref=e305]:
+                  - generic [ref=e306]: Baterai Rendah
+                  - generic [ref=e310]: Pending
+                - paragraph [ref=e314]: "Baterai perangkat Sensor Hutan Katingan rendah: 17.8%"
+                - paragraph [ref=e315]: Stasiun Gambut Katingan · 23 jam lalu
+              - generic [ref=e318]:
+                - generic [ref=e319]:
+                  - generic [ref=e320]: Kelembapan Tanah
+                  - generic [ref=e324]: Baru
+                - paragraph [ref=e328]: "KRITIS - Kekeringan Ekstrem: Kelembapan tanah 9.1% (ambang batas: 10%)"
+                - paragraph [ref=e329]: Stasiun Gambut Ogan Komering · 23 jam lalu
+              - generic [ref=e332]:
+                - generic [ref=e333]:
+                  - generic [ref=e334]: Kelembapan Tanah
+                  - generic [ref=e338]: Baru
+                - paragraph [ref=e342]: Kelembapan tanah naik ke 99.2%, di atas ambang batas 80%
+                - paragraph [ref=e343]: Stasiun Gambut Malinau · 23 jam lalu
+              - generic [ref=e346]:
+                - generic [ref=e347]:
+                  - generic [ref=e348]: Baterai Rendah
+                  - generic [ref=e352]: Baru
+                - paragraph [ref=e356]: "Baterai perangkat Sensor Hutan Malinau kritis: 9.4%"
+                - paragraph [ref=e357]: Stasiun Gambut Malinau · 23 jam lalu
+              - generic [ref=e360]:
+                - generic [ref=e361]:
+                  - generic [ref=e362]: Kelembapan Tanah
+                  - generic [ref=e366]: Sedang Dikerjakan
+                - paragraph [ref=e370]: Kelembapan tanah naik ke 88.7%, di atas ambang batas 80%
+                - paragraph [ref=e371]: Stasiun Pemantauan Gambut Merauke · 199 hari lalu
+          - generic [ref=e372]:
+            - heading "Persebaran Jenis Lahan Gambut" [level=2] [ref=e374]
+            - generic [ref=e375]:
+              - generic [ref=e376]:
+                - generic [ref=e377]:
+                  - generic [ref=e379]:
+                    - paragraph [ref=e380]: Fibric
+                    - paragraph [ref=e381]: Gambut mentah, serat tinggi
+                  - generic [ref=e382]: "7"
+                - generic [ref=e383]: 37%
+              - generic [ref=e387]:
+                - generic [ref=e388]:
+                  - generic [ref=e390]:
+                    - paragraph [ref=e391]: Hemic
+                    - paragraph [ref=e392]: Gambut setengah matang
+                  - generic [ref=e393]: "8"
+                - generic [ref=e394]: 42%
+              - generic [ref=e398]:
+                - generic [ref=e399]:
+                  - generic [ref=e401]:
+                    - paragraph [ref=e402]: Sapric
+                    - paragraph [ref=e403]: Gambut matang, serat rendah
+                  - generic [ref=e404]: "4"
+                - generic [ref=e405]: 21%
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e70] [cursor=pointer]
+  - alert [ref=e74]: Dashboard - NYAWIT
+  - generic [aria-hidden] [ref=e409]: "0"

@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect, notFound } from "next/navigation";
 import { StationDetailChart } from "../_components/rainfall-detail-chart";
 import Link from "next/link";
-import { ArrowLeft, MapPin, Cpu, Activity, CloudRain } from "lucide-react";
+import { ArrowLeft, MapPin, Cpu, Heartbeat } from "@/components/icons";
 
 export async function generateMetadata({
   params,
@@ -156,7 +156,7 @@ export default async function StationDetailPage({
             </span>
             {station.alerts.length > 0 && (
               <span className="flex items-center gap-1 bg-red-50 text-red-600 border border-red-200 px-2.5 py-1 rounded-full font-medium">
-                <Activity className="size-3" /> {station.alerts.length} alert aktif
+                <Heartbeat className="size-3" /> {station.alerts.length} alert aktif
               </span>
             )}
           </div>

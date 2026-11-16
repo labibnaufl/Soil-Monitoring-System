@@ -3,7 +3,7 @@
 import { useTransition } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { MoreHorizontal, Eye, ShieldCheck, ShieldX, UserCog, Trash2 } from "lucide-react";
+import { DotsThree, Eye, ShieldCheck, ShieldSlash, UserGear, Trash } from "@phosphor-icons/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -66,13 +66,14 @@ export function UserActions({ user }: { user: User }) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
+            aria-label="Buka aksi pengguna"
             className="inline-flex items-center justify-center size-8 rounded-md hover:bg-accent transition-colors disabled:opacity-50"
             disabled={isPending}
           >
             {isPending ? (
               <span className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
             ) : (
-              <MoreHorizontal className="size-4" />
+              <DotsThree weight="regular" className="size-4" aria-hidden="true" />
             )}
             <span className="sr-only">Aksi</span>
           </button>
@@ -86,7 +87,7 @@ export function UserActions({ user }: { user: User }) {
           {/* View Detail */}
           <DropdownMenuItem asChild>
             <Link href={`/dashboard/management/users/${user.id}`}>
-              <Eye className="size-4 mr-2" />
+              <Eye weight="regular" className="size-4 mr-2" aria-hidden="true" />
               Lihat Detail
             </Link>
           </DropdownMenuItem>
@@ -101,7 +102,7 @@ export function UserActions({ user }: { user: User }) {
                   onClick={handleDeactivate}
                   className="text-amber-600"
                 >
-                  <ShieldX className="size-4 mr-2" />
+                  <ShieldSlash weight="regular" className="size-4 mr-2" aria-hidden="true" />
                   Nonaktifkan
                 </DropdownMenuItem>
               ) : (
@@ -109,7 +110,7 @@ export function UserActions({ user }: { user: User }) {
                   onClick={handleActivate}
                   className="text-emerald-600"
                 >
-                  <ShieldCheck className="size-4 mr-2" />
+                  <ShieldCheck weight="regular" className="size-4 mr-2" aria-hidden="true" />
                   Aktifkan
                 </DropdownMenuItem>
               )}
@@ -119,7 +120,7 @@ export function UserActions({ user }: { user: User }) {
 
           {/* Role Info (read-only display) */}
           <DropdownMenuItem disabled className="text-muted-foreground">
-            <UserCog className="size-4 mr-2" />
+            <UserGear weight="regular" className="size-4 mr-2" aria-hidden="true" />
             Role: {user.role === "SUPER_ADMIN" ? "Super Admin" : "Admin Lokasi"}
           </DropdownMenuItem>
 
@@ -134,7 +135,7 @@ export function UserActions({ user }: { user: User }) {
               }}
               className="text-red-600"
             >
-              <Trash2 className="size-4 mr-2" />
+              <Trash weight="regular" className="size-4 mr-2" aria-hidden="true" />
               Hapus Pengguna
             </DropdownMenuItem>
           )}

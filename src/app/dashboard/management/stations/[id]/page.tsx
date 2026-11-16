@@ -6,7 +6,7 @@ import { StationDetailActions } from "./station-detail-actions";
 import { DeviceAssignmentSection } from "./_components/device-assignment-section";
 import { AdminAssignmentSection } from "./_components/admin-assignment-section";
 import { EditStationModal } from "../_components/edit-station-modal";
-import { ArrowLeft, MapPin, Radio, Users, Activity, CheckCircle2, XCircle, ExternalLink, Calendar, Clock } from "lucide-react";
+import { ArrowLeft, MapPin, Radio, Users, Heartbeat, CheckCircle, XCircle, ArrowSquareOut } from "@/components/icons";
 
 export default async function StationDetailPage({
   params,
@@ -89,7 +89,7 @@ export default async function StationDetailPage({
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 text-primary hover:underline"
         >
-          Buka di Maps <ExternalLink className="size-3" />
+          Buka di Maps <ArrowSquareOut className="size-3" />
         </a>
       ) : (
         "-"
@@ -121,7 +121,7 @@ export default async function StationDetailPage({
     {
       label: "Status",
       value: isActive ? "Aktif" : "Nonaktif",
-      icon: isActive ? CheckCircle2 : XCircle,
+      icon: isActive ? CheckCircle : XCircle,
       color: isActive ? "text-emerald-600 bg-emerald-50" : "text-red-600 bg-red-50",
     },
     {
@@ -168,7 +168,7 @@ export default async function StationDetailPage({
           <span
             className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(station.status)}`}
           >
-            {isActive ? <CheckCircle2 className="size-3 mr-1" /> : <XCircle className="size-3 mr-1" />}
+            {isActive ? <CheckCircle className="size-3 mr-1" /> : <XCircle className="size-3 mr-1" />}
             {station.status}
           </span>
           <EditStationModal 
@@ -192,7 +192,7 @@ export default async function StationDetailPage({
           {/* Basic Info */}
           <div className="rounded-xl border bg-card p-6">
             <h2 className="font-semibold font-heading text-foreground mb-4 flex items-center gap-2">
-              <Activity className="size-4" />
+              <Heartbeat className="size-4" />
               Informasi Stasiun
             </h2>
             <dl className="space-y-3">

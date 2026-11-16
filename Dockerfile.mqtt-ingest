@@ -1,0 +1,16 @@
+# MQTT ingest worker: subscribes to the telemetry topic and writes via Prisma.
+# Shares src/lib/* with the web app so HTTP and MQTT ingestion can't drift.
+FROM oven/bun:1-alpine AS deps
+WORKDIR /app
+COPY package.json bun.lock ./
+COPY prisma ./prisma/
+RUN bun install --frozen-lockfile
+
+FROM oven/bun:1-alpine AS runner
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY prisma ./prisma/
+COPY src ./src/
+COPY services ./services/
+RUN bunx prisma generate
+CMD ["bun", "services/mqtt-ingest/index.ts"]

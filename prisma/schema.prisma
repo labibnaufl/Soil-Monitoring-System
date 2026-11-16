@@ -225,6 +225,7 @@ enum AlertType {
   SOIL_MOISTURE
   LOW_BATTERY
   PEATLAND_LIFESPAN
+  DEVICE_OFFLINE
 }
 
 enum AlertPriority {
@@ -344,4 +345,22 @@ model SystemConfig {
   updatedBy         User?    @relation("SystemConfigUpdatedBy", fields: [updatedById], references: [id])
 
   @@map("system_config")
+}
+
+// ============================================
+// REJECTED READINGS (unclaimed sender inbox)
+// ============================================
+
+// One row per rejected ingest (unknown device_id). Surfaced in the
+// devices page so operators can spot typos and register the sender.
+// Pruned by the offline-check cron (older than 30 days).
+model RejectedReading {
+  id          String   @id @default(uuid())
+  deviceId    String   @map("device_id")
+  receivedAt  DateTime @default(now()) @map("received_at")
+  payload     Json?
+  ip          String?
+
+  @@index([deviceId, receivedAt])
+  @@map("rejected_readings")
 }

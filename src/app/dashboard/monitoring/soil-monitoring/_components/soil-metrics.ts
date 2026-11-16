@@ -4,7 +4,7 @@ export const SOIL_METRICS = {
     label: "Kelembaban Tanah",
     unit: "%",
     color: "#3b82f6", // blue-500
-    icon: "Droplets",
+    icon: "Drop",
     description: "Persentase kelembaban tanah",
     min: 0,
     max: 100,
@@ -24,7 +24,7 @@ export const SOIL_METRICS = {
     label: "Konduktivitas",
     unit: "µS/cm",
     color: "#8b5cf6", // violet-500
-    icon: "Zap",
+    icon: "Lightning",
     description: "Konduktivitas listrik tanah",
     min: 0,
     max: 2000,
@@ -34,7 +34,7 @@ export const SOIL_METRICS = {
     label: "pH Tanah",
     unit: "",
     color: "#10b981", // emerald-500
-    icon: "Beaker",
+    icon: "TestTube",
     description: "Tingkat keasaman tanah",
     min: 0,
     max: 14,

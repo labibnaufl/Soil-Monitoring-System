@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { MoreHorizontal, Eye, CheckCircle2, Clock, ArrowRight, RotateCcw } from "lucide-react";
+import { DotsThree, Eye, CheckCircle, Clock, ArrowRight, ArrowCounterClockwise } from "@phosphor-icons/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -90,13 +90,14 @@ export function AlertActions({ alert }: { alert: Alert }) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
+            aria-label="Buka aksi notifikasi"
             className="inline-flex items-center justify-center size-8 rounded-md hover:bg-accent transition-colors disabled:opacity-50"
             disabled={isPending}
           >
             {isPending ? (
               <span className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
             ) : (
-              <MoreHorizontal className="size-4" />
+              <DotsThree weight="regular" className="size-4" aria-hidden="true" />
             )}
             <span className="sr-only">Aksi</span>
           </button>
@@ -117,7 +118,7 @@ export function AlertActions({ alert }: { alert: Alert }) {
                   onClick={handleSetOpen}
                   className="text-blue-600"
                 >
-                  <RotateCcw className="size-4 mr-2" />
+                  <ArrowCounterClockwise weight="regular" className="size-4 mr-2" aria-hidden="true" />
                   Set Terbuka
                 </DropdownMenuItem>
               )}
@@ -127,7 +128,7 @@ export function AlertActions({ alert }: { alert: Alert }) {
                   onClick={handleSetPending}
                   className="text-amber-600"
                 >
-                  <Clock className="size-4 mr-2" />
+                  <Clock weight="regular" className="size-4 mr-2" aria-hidden="true" />
                   Set Pending
                 </DropdownMenuItem>
               )}
@@ -137,7 +138,7 @@ export function AlertActions({ alert }: { alert: Alert }) {
                   onClick={handleSetInProgress}
                   className="text-purple-600"
                 >
-                  <ArrowRight className="size-4 mr-2" />
+                  <ArrowRight weight="regular" className="size-4 mr-2" aria-hidden="true" />
                   Sedang Dikerjakan
                 </DropdownMenuItem>
               )}
@@ -155,7 +156,7 @@ export function AlertActions({ alert }: { alert: Alert }) {
               }}
               className="text-emerald-600"
             >
-              <CheckCircle2 className="size-4 mr-2" />
+              <CheckCircle weight="regular" className="size-4 mr-2" aria-hidden="true" />
               Tandai Selesai
             </DropdownMenuItem>
           )}
@@ -163,7 +164,7 @@ export function AlertActions({ alert }: { alert: Alert }) {
           {/* View Detail */}
           <DropdownMenuItem asChild>
             <a href={`/dashboard/alerts/${alert.id}`}>
-              <Eye className="size-4 mr-2" />
+              <Eye weight="regular" className="size-4 mr-2" aria-hidden="true" />
               Lihat Detail
             </a>
           </DropdownMenuItem>

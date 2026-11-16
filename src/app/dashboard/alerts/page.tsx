@@ -4,7 +4,14 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { AlertActions } from "./_components/alert-actions";
 import { MockAlertModal } from "./_components/mock-alert-modal";
-import { AlertTriangle, CheckCircle2, Clock, Filter } from "lucide-react";
+import { Warning, CheckCircle, Clock, Funnel } from "@/components/icons";
+import { StatusBadge } from "@/components/ui/status-badge";
+import {
+  getPriorityBadge,
+  getStatusBadge,
+  getPriorityLabel,
+  getStatusLabel,
+} from "@/lib/badge-helpers";
 
 export default async function AlertsPage({
   searchParams,
@@ -82,9 +89,9 @@ export default async function AlertsPage({
   const totalPages = Math.ceil(total / perPage);
 
   const stats = [
-    { label: "Prioritas Tinggi", value: highPriority, icon: AlertTriangle, color: "bg-red-50 text-red-600", urgent: highPriority > 0 },
+    { label: "Prioritas Tinggi", value: highPriority, icon: Warning, color: "bg-red-50 text-red-600", urgent: highPriority > 0 },
     { label: "Prioritas Medium", value: mediumPriority, icon: Clock, color: "bg-orange-50 text-orange-600" },
-    { label: "Selesai", value: resolvedAlerts, icon: CheckCircle2, color: "bg-green-50 text-green-600" },
+    { label: "Selesai", value: resolvedAlerts, icon: CheckCircle, color: "bg-green-50 text-green-600" },
   ];
 
   const statusOptions = [
@@ -108,62 +115,6 @@ export default async function AlertsPage({
     { value: "LOW_BATTERY", label: "Baterai Rendah" },
     { value: "PEATLAND_LIFESPAN", label: "Masa Hidup Gambut" },
   ];
-
-  function getStatusBadge(s: string) {
-    switch (s) {
-      case "OPEN":
-        return "bg-red-100 text-red-700";
-      case "PENDING":
-        return "bg-gray-100 text-gray-600";
-      case "IN_PROGRESS":
-        return "bg-orange-100 text-orange-700";
-      case "RESOLVED":
-        return "bg-green-100 text-green-700";
-      default:
-        return "bg-gray-100 text-gray-600";
-    }
-  }
-
-  function getStatusLabel(s: string) {
-    switch (s) {
-      case "OPEN":
-        return "Baru";
-      case "PENDING":
-        return "Pending";
-      case "IN_PROGRESS":
-        return "Sedang Dikerjakan";
-      case "RESOLVED":
-        return "Selesai";
-      default:
-        return s;
-    }
-  }
-
-  function getPriorityBadge(p: string) {
-    switch (p) {
-      case "HIGH":
-        return "bg-red-100 text-red-700";
-      case "MEDIUM":
-        return "bg-orange-100 text-orange-700";
-      case "LOW":
-        return "bg-green-100 text-green-700";
-      default:
-        return "bg-gray-100 text-gray-600";
-    }
-  }
-
-  function getPriorityLabel(p: string) {
-    switch (p) {
-      case "HIGH":
-        return "Tinggi";
-      case "MEDIUM":
-        return "Medium";
-      case "LOW":
-        return "Rendah";
-      default:
-        return p;
-    }
-  }
 
   function getTypeLabel(t: string) {
     switch (t) {
@@ -240,7 +191,7 @@ export default async function AlertsPage({
           type="submit"
           className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
         >
-          <Filter className="size-4 inline mr-1" />
+          <Funnel className="size-4 inline mr-1" />
           Filter
         </button>
         {(status || priority || type) && (
@@ -278,14 +229,36 @@ export default async function AlertsPage({
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getPriorityBadge(alert.priority)}`}>
-                      {getPriorityLabel(alert.priority)}
-                    </span>
+                    {(() => {
+                      const priorityBadge = getPriorityBadge(alert.priority);
+                      const label = getPriorityLabel(alert.priority);
+                      return (
+                        <StatusBadge
+                          intent={priorityBadge.intent}
+                          title={label}
+                          tabIndex={0}
+                          className="max-w-[180px]"
+                        >
+                          {label}
+                        </StatusBadge>
+                      );
+                    })()}
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getStatusBadge(alert.status)}`}>
-                      {getStatusLabel(alert.status)}
-                    </span>
+                    {(() => {
+                      const statusBadge = getStatusBadge(alert.status);
+                      const label = getStatusLabel(alert.status);
+                      return (
+                        <StatusBadge
+                          intent={statusBadge.intent}
+                          title={label}
+                          tabIndex={0}
+                          className="max-w-[180px]"
+                        >
+                          {label}
+                        </StatusBadge>
+                      );
+                    })()}
                   </td>
                   <td className="px-4 py-3 max-w-xs">
                     <p className="truncate" title={alert.message || "-"}>

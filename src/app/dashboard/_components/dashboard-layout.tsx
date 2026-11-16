@@ -5,6 +5,7 @@ import { AdminSidebar } from "./admin-sidebar";
 import { SiteHeader } from "./site-header";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { SessionProvider, useSession } from "next-auth/react";
+import { AutoRefresh } from "./auto-refresh";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -22,6 +23,7 @@ function DashboardLayoutContent({ children }: DashboardLayoutProps) {
 
   return (
     <SidebarProvider>
+      <AutoRefresh />
       <AdminSidebar user={user} />
       <SidebarInset>
         <SiteHeader />

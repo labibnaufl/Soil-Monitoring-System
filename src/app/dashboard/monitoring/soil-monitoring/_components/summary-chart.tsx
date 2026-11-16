@@ -1,15 +1,8 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { TrendingUp } from "lucide-react";
+import { TrendUp } from "@/components/icons";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import {
   Card,
@@ -64,6 +57,9 @@ export function SummaryChart({
   const router = useRouter();
   const searchParams = useSearchParams();
   const metricConfig = SOIL_METRICS[selectedMetric];
+  // Bar chart always uses the Suhu Tanah color for a consistent look
+  // across metrics; the label still follows the selected metric.
+  const barColor = SOIL_METRICS.soilTemperature.color;
 
   const handleRange = (value: string) => {
     const p = new URLSearchParams(searchParams);
@@ -82,7 +78,7 @@ export function SummaryChart({
   const chartConfig = {
     average: {
       label: `${metricConfig.label} (${metricConfig.unit})`,
-      color: metricConfig.color,
+      color: barColor,
     },
   } satisfies ChartConfig;
 
@@ -96,20 +92,22 @@ export function SummaryChart({
           </CardDescription>
         </div>
         <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3">
-          {/* Metric Selector Dropdown */}
-          <Select value={selectedMetric} onValueChange={handleMetricChange}>
-            <SelectTrigger className="w-45 h-8 text-xs">
-              <SelectValue placeholder="Parameter" />
-            </SelectTrigger>
-            <SelectContent>
-              {(Object.keys(SOIL_METRICS) as SoilMetricKey[]).map((key) => (
-                <SelectItem key={key} value={key} className="text-xs">
-                  {SOIL_METRICS[key].label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          
+          <div className="flex items-center gap-1 bg-muted rounded-lg p-0.5 text-xs">
+            {(Object.keys(SOIL_METRICS) as SoilMetricKey[]).map((key) => (
+              <button
+                key={key}
+                onClick={() => handleMetricChange(key)}
+                className={`px-3 py-1 rounded-md font-medium transition-all ${
+                  selectedMetric === key
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {SOIL_METRICS[key].label}
+              </button>
+            ))}
+          </div>
+
           {/* Time Filter */}
           <div className="flex items-center gap-1 bg-muted rounded-lg p-0.5 text-xs">
             {rangeOptions.map((opt) => (
@@ -152,7 +150,7 @@ export function SummaryChart({
             />
             <Bar
               dataKey="average"
-              fill={metricConfig.color}
+              fill={barColor}
               radius={[8, 8, 0, 0]}
               maxBarSize={48}
             />
@@ -160,9 +158,9 @@ export function SummaryChart({
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm pt-4">
-        <div className="flex gap-2 leading-none font-medium" style={{ color: metricConfig.color }}>
+        <div className="flex gap-2 leading-none font-medium" style={{ color: barColor }}>
           Rata-rata keseluruhan: {overallAverage} {metricConfig.unit}
-          <TrendingUp className="h-4 w-4" />
+          <TrendUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
           {chartData.length} stasiun · {totalReadings.toLocaleString()} pembacaan

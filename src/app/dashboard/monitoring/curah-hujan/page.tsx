@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { StationCard } from "./_components/station-card";
 import { SummaryChart } from "./_components/summary-chart";
+import { Cpu, Heartbeat } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Monitoring Curah Hujan - NYAWIT",
@@ -37,7 +38,7 @@ export default async function RainfallPage({
     : { status: "AKTIF" as const, id: userStationId ?? "__none__" };
 
   // Run both queries in parallel
-  const [stations, allReadings] = await Promise.all([
+  const [stations, rainSums] = await Promise.all([
     prisma.station.findMany({
       where: stationWhere,
       orderBy: { name: "asc" },
@@ -65,21 +66,32 @@ export default async function RainfallPage({
         },
       },
     }),
-    // Summary chart data
-    prisma.readings.findMany({
+    // Summary total: DB-side per-device sums (one row per device,
+    // not tens of thousands of readings shipped to the client).
+    prisma.readings.groupBy({
+      by: ["deviceId"],
       where: {
         dateTime: { gte: startDate },
-        rainMeter: { not: null },
+        rainMeter: { gt: 0 },
         ...(isSuperAdmin
           ? {}
           : { device: { stationId: userStationId ?? "__none__" } }),
       },
-      select: { rainMeter: true, dateTime: true },
-      orderBy: { dateTime: "asc" },
+      _sum: { rainMeter: true },
+      _count: { _all: true },
     }),
   ]);
 
-  // Build summary chart data (per station total rainfall)
+  let totalRainfall = 0;
+  let totalRainyReadings = 0;
+  for (const g of rainSums) {
+    totalRainfall += g._sum.rainMeter ?? 0;
+    totalRainyReadings += g._count._all;
+  }
+  totalRainfall = Math.round(totalRainfall * 10) / 10;
+
+  // Build summary chart data (per station total rainfall, last 100
+  // rainy readings per device — bounded, unlike the totals above)
   const chartData = stations.map((s) => {
     const stationReadings = s.devices
       .flatMap((d) => d.readings)
@@ -95,12 +107,6 @@ export default async function RainfallPage({
       readingCount: stationReadings.length,
     };
   });
-
-  const validReadings = allReadings.filter((r) => r.rainMeter !== null && r.rainMeter > 0);
-  const totalRainfall =
-    validReadings.length > 0
-      ? Math.round(validReadings.reduce((s, r) => s + (r.rainMeter || 0), 0) * 10) / 10
-      : 0;
 
   // Build station cards
   const stationCards = stations.map((s) => {
@@ -147,7 +153,7 @@ export default async function RainfallPage({
           <SummaryChart
             chartData={chartData}
             totalRainfall={totalRainfall}
-            totalReadings={validReadings.length}
+            totalReadings={totalRainyReadings}
             timeRange={timeRange}
           />
         </div>
@@ -156,18 +162,7 @@ export default async function RainfallPage({
           <div className="rounded-xl border bg-card p-5 flex flex-col justify-center h-full">
             <div className="flex items-center justify-between mb-2">
               <p className="text-sm text-muted-foreground font-medium">Active Devices</p>
-              <svg className="size-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
-                <rect x="9" y="9" width="6" height="6"></rect>
-                <line x1="9" y1="1" x2="9" y2="4"></line>
-                <line x1="15" y1="1" x2="15" y2="4"></line>
-                <line x1="9" y1="20" x2="9" y2="23"></line>
-                <line x1="15" y1="20" x2="15" y2="23"></line>
-                <line x1="20" y1="9" x2="23" y2="9"></line>
-                <line x1="20" y1="14" x2="23" y2="14"></line>
-                <line x1="1" y1="9" x2="4" y2="9"></line>
-                <line x1="1" y1="14" x2="4" y2="14"></line>
-              </svg>
+              <Cpu weight="regular" className="size-4 text-muted-foreground" aria-hidden="true" />
             </div>
             <p className="text-3xl font-bold font-heading">{totalActiveDevices}</p>
           </div>
@@ -176,9 +171,7 @@ export default async function RainfallPage({
           <div className="rounded-xl border bg-card p-5 flex flex-col justify-center h-full">
             <div className="flex items-center justify-between mb-2">
               <p className="text-sm text-muted-foreground font-medium">Location Points</p>
-              <svg className="size-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-              </svg>
+              <Heartbeat weight="regular" className="size-4 text-muted-foreground" aria-hidden="true" />
             </div>
             <p className="text-3xl font-bold font-heading">{totalActiveStations}</p>
           </div>

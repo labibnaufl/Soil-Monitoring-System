@@ -3,7 +3,7 @@
 import { useTransition } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { MoreHorizontal, Eye, CheckCircle2, Wrench, Power, Trash2, Pencil, MapPin, MapPinOff } from "lucide-react";
+import { DotsThree, Eye, CheckCircle, Wrench, Power, Trash, PencilSimple, MapPin, MapPinLine } from "@phosphor-icons/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -111,13 +111,14 @@ export function DeviceActions({ device, stations }: { device: Device; stations: 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
+            aria-label="Buka aksi perangkat"
             className="inline-flex items-center justify-center size-8 rounded-md hover:bg-accent transition-colors disabled:opacity-50"
             disabled={isPending}
           >
             {isPending ? (
               <span className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
             ) : (
-              <MoreHorizontal className="size-4" />
+              <DotsThree weight="regular" className="size-4" aria-hidden="true" />
             )}
             <span className="sr-only">Aksi</span>
           </button>
@@ -131,14 +132,14 @@ export function DeviceActions({ device, stations }: { device: Device; stations: 
           {/* View Detail */}
           <DropdownMenuItem asChild>
             <Link href={`/dashboard/management/devices/${device.id}`}>
-              <Eye className="size-4 mr-2" />
+              <Eye weight="regular" className="size-4 mr-2" aria-hidden="true" />
               Lihat Detail
             </Link>
           </DropdownMenuItem>
 
           <DropdownMenuItem asChild>
             <Link href={`/dashboard/management/devices/${device.id}?edit=true`}>
-              <Pencil className="size-4 mr-2" />
+              <PencilSimple weight="regular" className="size-4 mr-2" aria-hidden="true" />
               Edit Perangkat
             </Link>
           </DropdownMenuItem>
@@ -153,7 +154,7 @@ export function DeviceActions({ device, stations }: { device: Device; stations: 
                 onClick={handleSetOperating}
                 className="text-emerald-600"
               >
-                <CheckCircle2 className="size-4 mr-2" />
+                <CheckCircle weight="regular" className="size-4 mr-2" aria-hidden="true" />
                 Set Beroperasi
               </DropdownMenuItem>
             )}
@@ -162,7 +163,7 @@ export function DeviceActions({ device, stations }: { device: Device; stations: 
                 onClick={handleSetMaintenance}
                 className="text-amber-600"
               >
-                <Wrench className="size-4 mr-2" />
+                <Wrench weight="regular" className="size-4 mr-2" aria-hidden="true" />
                 Set Maintenance
               </DropdownMenuItem>
             )}
@@ -171,7 +172,7 @@ export function DeviceActions({ device, stations }: { device: Device; stations: 
                 onClick={handleSetOffline}
                 className="text-red-600"
               >
-                <Power className="size-4 mr-2" />
+                <Power weight="regular" className="size-4 mr-2" aria-hidden="true" />
                 Set Mati
               </DropdownMenuItem>
             )}
@@ -187,7 +188,7 @@ export function DeviceActions({ device, stations }: { device: Device; stations: 
                 onClick={handleUnassign}
                 className="text-amber-600"
               >
-                <MapPinOff className="size-4 mr-2" />
+                <MapPinLine weight="regular" className="size-4 mr-2" aria-hidden="true" />
                 Lepas dari Stasiun
               </DropdownMenuItem>
             ) : (
@@ -198,7 +199,7 @@ export function DeviceActions({ device, stations }: { device: Device; stations: 
                 }}
                 className="text-blue-600"
               >
-                <MapPin className="size-4 mr-2" />
+                <MapPin weight="regular" className="size-4 mr-2" aria-hidden="true" />
                 Pasang ke Stasiun
               </DropdownMenuItem>
             )}
@@ -222,8 +223,8 @@ export function DeviceActions({ device, stations }: { device: Device; stations: 
                 }}
                 className="text-red-600"
               >
-                <Trash2 className="size-4 mr-2" />
-                Hapus Perangkat
+              <Trash weight="regular" className="size-4 mr-2" aria-hidden="true" />
+              Hapus Perangkat
               </DropdownMenuItem>
             </>
           )}

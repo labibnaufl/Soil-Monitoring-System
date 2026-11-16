@@ -1,0 +1,44 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e6]:
+        - img "NYAWIT Logo" [ref=e7]
+        - generic [ref=e8]:
+          - generic [ref=e9]: NYAWIT
+          - text: by PT. Lestari Prima AgriTech
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - heading "Masuk ke akun Anda" [level=1] [ref=e12]
+          - paragraph [ref=e13]: Masukkan kredensial admin Anda
+        - generic [ref=e14]:
+          - generic [ref=e15]:
+            - generic [ref=e16]: Email
+            - textbox "Email" [ref=e21]:
+              - /placeholder: admin@nyawit.id
+              - text: superadmin@lpa.id
+          - generic [ref=e22]:
+            - generic [ref=e23]: Password
+            - generic [ref=e24]:
+              - textbox "Password" [ref=e28]:
+                - /placeholder: ••••••••
+                - text: SuperAdmin@LPA123
+              - button "Show password" [ref=e29]
+          - generic [ref=e32]:
+            - generic [ref=e33] [cursor=pointer]:
+              - checkbox "Ingat selama 30 hari" [ref=e35]
+              - generic [ref=e39]: Ingat selama 30 hari
+            - button "Lupa password?" [ref=e40]
+          - button "Memeriksa..." [disabled] [ref=e46]
+      - paragraph [ref=e44]:
+        - text: Dengan masuk, Anda menyetujui
+        - button "Ketentuan Penggunaan" [ref=e45]
+    - generic [ref=e56]:
+      - generic [ref=e57]:
+        - heading "Menghubungkan Teknologi dan Alam dalam Satu Sistem." [level=2] [ref=e58]
+        - paragraph [ref=e59]: Masuk untuk mengakses dashboard Anda dan mulai lakukan pemantauan.
+      - generic [ref=e60]:
+        - img "Dashboard monitoring data preview" [ref=e62]
+        - img "Dashboard rainfall chart preview" [ref=e64]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e70] [cursor=pointer]
+  - alert [ref=e74]

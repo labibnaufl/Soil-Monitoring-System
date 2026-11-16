@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { TrendingUp, CloudRain, Calendar, Droplets, MapPin } from "lucide-react";
+import { TrendUp } from "@phosphor-icons/react";
 import { CartesianGrid, Line, LineChart, XAxis, Bar, BarChart } from "recharts";
 import {
   Card,
@@ -200,7 +200,7 @@ export function RainfallChart({
         <CardFooter className="flex-col items-start gap-2 text-sm">
           <div className="flex gap-2 leading-none font-medium text-blue-600">
             Total curah hujan: {totalRainfall} mm
-            <TrendingUp className="h-4 w-4" />
+            <TrendUp className="h-4 w-4" />
           </div>
           <div className="leading-none text-muted-foreground">
             Menampilkan data dari {totalReadings.toLocaleString()} pembacaan sensor

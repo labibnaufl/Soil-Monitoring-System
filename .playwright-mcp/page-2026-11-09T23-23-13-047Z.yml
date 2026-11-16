@@ -1,0 +1,253 @@
+- generic [active] [ref=f21e1]:
+  - generic [ref=f21e2]:
+    - generic [ref=f21e5]:
+      - list [ref=f21e7]:
+        - listitem [ref=f21e8]:
+          - link "NYAWIT Logo NYAWIT Admin Panel" [ref=f21e9] [cursor=pointer]:
+            - /url: /dashboard
+            - img "NYAWIT Logo" [ref=f21e11]
+            - generic [ref=f21e12]:
+              - generic [ref=f21e13]: NYAWIT
+              - generic [ref=f21e14]: Admin Panel
+      - generic [ref=f21e15]:
+        - generic [ref=f21e16]:
+          - generic [ref=f21e17]: Utama
+          - list [ref=f21e19]:
+            - listitem [ref=f21e20]:
+              - link "Dashboard" [ref=f21e21] [cursor=pointer]:
+                - /url: /dashboard
+        - generic [ref=f21e26]:
+          - generic [ref=f21e27]: Management
+          - list [ref=f21e29]:
+            - listitem [ref=f21e30]:
+              - link "Stasiun" [ref=f21e31] [cursor=pointer]:
+                - /url: /dashboard/management/stations
+            - listitem [ref=f21e36]:
+              - link "Alat" [ref=f21e37] [cursor=pointer]:
+                - /url: /dashboard/management/devices
+            - listitem [ref=f21e42]:
+              - link "Notifikasi 6" [ref=f21e43] [cursor=pointer]:
+                - /url: /dashboard/alerts
+                - generic [ref=f21e44]: Notifikasi
+                - generic [ref=f21e48]: "6"
+            - listitem [ref=f21e49]:
+              - link "Kelola Pengguna" [ref=f21e50] [cursor=pointer]:
+                - /url: /dashboard/management/users
+        - generic [ref=f21e55]:
+          - generic [ref=f21e56]: Monitoring
+          - list [ref=f21e58]:
+            - listitem [ref=f21e59]:
+              - link "Tingkat Air" [ref=f21e60] [cursor=pointer]:
+                - /url: /dashboard/monitoring/water-level
+            - listitem [ref=f21e65]:
+              - link "Curah Hujan" [ref=f21e66] [cursor=pointer]:
+                - /url: /dashboard/monitoring/curah-hujan
+            - listitem [ref=f21e71]:
+              - link "Monitoring Tanah" [ref=f21e72] [cursor=pointer]:
+                - /url: /dashboard/monitoring/soil-monitoring
+            - listitem [ref=f21e77]:
+              - link "Prediksi AI" [ref=f21e78] [cursor=pointer]:
+                - /url: /dashboard/monitoring/prediksi-ai
+        - generic [ref=f21e83]:
+          - generic [ref=f21e84]: Sistem
+          - list [ref=f21e86]:
+            - listitem [ref=f21e87]:
+              - link "Log Aktivitas" [ref=f21e88] [cursor=pointer]:
+                - /url: /dashboard/logs
+      - list [ref=f21e94]:
+        - listitem [ref=f21e95]:
+          - button "SA Super Admin LPA superadmin@lpa.id" [ref=f21e96]:
+            - generic [ref=f21e97]: SA
+            - generic [ref=f21e99]:
+              - generic [ref=f21e100]: Super Admin LPA
+              - generic [ref=f21e101]: superadmin@lpa.id
+    - main [ref=f21e104]:
+      - generic [ref=f21e105]:
+        - button "Toggle Sidebar" [ref=f21e106]
+        - navigation "breadcrumb" [ref=f21e108]:
+          - list [ref=f21e109]:
+            - listitem [ref=f21e110]:
+              - link "Dashboard" [disabled] [ref=f21e111]
+      - generic [ref=f21e144]:
+        - generic [ref=f21e145]:
+          - heading "Monitoring Kondisi Tanah" [level=1] [ref=f21e146]
+          - paragraph [ref=f21e147]: Pemantauan parameter tanah — pilih stasiun untuk detail
+        - generic [ref=f21e148]:
+          - generic [ref=f21e150]:
+            - generic [ref=f21e151]:
+              - generic [ref=f21e152]:
+                - heading "Ringkasan Kelembaban Tanah" [level=3] [ref=f21e153]
+                - paragraph [ref=f21e154]: 7 Hari · Rata-rata per stasiun
+              - generic [ref=f21e155]:
+                - generic [ref=f21e156]:
+                  - button "Kelembaban Tanah" [ref=f21e157]
+                  - button "Suhu Tanah" [ref=f21e158]
+                  - button "Konduktivitas" [ref=f21e159]
+                  - button "pH Tanah" [ref=f21e160]
+                - generic [ref=f21e161]:
+                  - button "7 Hari" [ref=f21e162]
+                  - button "30 Hari" [ref=f21e163]
+                  - button "Tahun Ini" [ref=f21e164]
+            - application [ref=f21e169]:
+              - generic [ref=f21e213]:
+                - generic [ref=f21e214]:
+                  - generic [ref=f21e215]: Asmat
+                  - generic [ref=f21e217]: Indragiri
+                  - generic [ref=f21e219]: Jambi
+                  - generic [ref=f21e221]: Katingan
+                  - generic [ref=f21e223]: Raya
+                  - generic [ref=f21e225]: Malinau
+                  - generic [ref=f21e227]: Komering
+                  - generic [ref=f21e229]: Siak
+                  - generic [ref=f21e231]: Kampar
+                  - generic [ref=f21e233]: Merauke
+                  - generic [ref=f21e235]: Sebangau
+                - generic [ref=f21e237]:
+                  - generic [ref=f21e238]: 0 %
+                  - generic [ref=f21e240]: 25 %
+                  - generic [ref=f21e242]: 50 %
+                  - generic [ref=f21e244]: 75 %
+                  - generic [ref=f21e246]: 100 %
+            - generic [ref=f21e248]:
+              - generic [ref=f21e249]: "Rata-rata keseluruhan: 58.2 %"
+              - generic [ref=f21e252]: 12 stasiun · 79,018 pembacaan
+          - generic [ref=f21e253]:
+            - generic [ref=f21e254]:
+              - paragraph [ref=f21e256]: Active Devices
+              - paragraph [ref=f21e259]: "25"
+            - generic [ref=f21e260]:
+              - paragraph [ref=f21e262]: Location Points
+              - paragraph [ref=f21e265]: "12"
+        - generic [ref=f21e266]:
+          - paragraph [ref=f21e267]: 12 stasiun aktif
+          - generic [ref=f21e268]:
+            - link "Stasiun Gambut Asmat Normal Kabupaten Asmat, Papua Selatan 2 Devices 1 WTPs" [ref=f21e269] [cursor=pointer]:
+              - /url: /dashboard/monitoring/soil-monitoring/station-lpa-012
+              - generic [ref=f21e270]:
+                - paragraph [ref=f21e271]: Stasiun Gambut Asmat
+                - generic [ref=f21e272]: Normal
+              - paragraph [ref=f21e276]: Kabupaten Asmat, Papua Selatan
+              - generic [ref=f21e277]:
+                - generic [ref=f21e278]: 2 Devices
+                - generic [ref=f21e281]: 1 WTPs
+            - link "Stasiun Gambut Indragiri Normal Kabupaten Indragiri Hilir, Riau 2 Devices 1 WTPs" [ref=f21e284] [cursor=pointer]:
+              - /url: /dashboard/monitoring/soil-monitoring/station-lpa-008
+              - generic [ref=f21e285]:
+                - paragraph [ref=f21e286]: Stasiun Gambut Indragiri
+                - generic [ref=f21e287]: Normal
+              - paragraph [ref=f21e291]: Kabupaten Indragiri Hilir, Riau
+              - generic [ref=f21e292]:
+                - generic [ref=f21e293]: 2 Devices
+                - generic [ref=f21e296]: 1 WTPs
+            - link "Stasiun Gambut Jambi Normal Kabupaten Tanjung Jabung Timur, Jambi 2 Devices 1 WTPs" [ref=f21e299] [cursor=pointer]:
+              - /url: /dashboard/monitoring/soil-monitoring/station-lpa-006
+              - generic [ref=f21e300]:
+                - paragraph [ref=f21e301]: Stasiun Gambut Jambi
+                - generic [ref=f21e302]: Normal
+              - paragraph [ref=f21e306]: Kabupaten Tanjung Jabung Timur, Jambi
+              - generic [ref=f21e307]:
+                - generic [ref=f21e308]: 2 Devices
+                - generic [ref=f21e311]: 1 WTPs
+            - link "Stasiun Gambut Katingan Medium Kabupaten Katingan, Kalimantan Tengah 2 Devices 1 WTPs low_battery 11/9/2026, 6:53 AM" [ref=f21e314] [cursor=pointer]:
+              - /url: /dashboard/monitoring/soil-monitoring/station-lpa-010
+              - generic [ref=f21e315]:
+                - paragraph [ref=f21e316]: Stasiun Gambut Katingan
+                - generic "Medium" [ref=f21e317]
+              - paragraph [ref=f21e321]: Kabupaten Katingan, Kalimantan Tengah
+              - generic [ref=f21e322]:
+                - generic [ref=f21e323]: 2 Devices
+                - generic [ref=f21e326]: 1 WTPs
+              - generic [ref=f21e329]:
+                - generic [ref=f21e330]: low_battery
+                - paragraph [ref=f21e334]: 11/9/2026, 6:53 AM
+            - link "Stasiun Gambut Kubu Raya Normal Kabupaten Kubu Raya, Kalimantan Barat 2 Devices 1 WTPs" [ref=f21e335] [cursor=pointer]:
+              - /url: /dashboard/monitoring/soil-monitoring/station-lpa-007
+              - generic [ref=f21e336]:
+                - paragraph [ref=f21e337]: Stasiun Gambut Kubu Raya
+                - generic [ref=f21e338]: Normal
+              - paragraph [ref=f21e342]: Kabupaten Kubu Raya, Kalimantan Barat
+              - generic [ref=f21e343]:
+                - generic [ref=f21e344]: 2 Devices
+                - generic [ref=f21e347]: 1 WTPs
+            - link "Stasiun Gambut Malinau Medium Kabupaten Malinau, Kalimantan Utara 2 Devices 1 WTPs soil_moisture_low 11/9/2026, 6:44 AM" [ref=f21e350] [cursor=pointer]:
+              - /url: /dashboard/monitoring/soil-monitoring/station-lpa-005
+              - generic [ref=f21e351]:
+                - paragraph [ref=f21e352]: Stasiun Gambut Malinau
+                - generic "Medium" [ref=f21e353]
+              - paragraph [ref=f21e357]: Kabupaten Malinau, Kalimantan Utara
+              - generic [ref=f21e358]:
+                - generic [ref=f21e359]: 2 Devices
+                - generic [ref=f21e362]: 1 WTPs
+              - generic [ref=f21e365]:
+                - generic [ref=f21e366]: soil_moisture_low
+                - paragraph [ref=f21e370]: 11/9/2026, 6:44 AM
+            - link "Stasiun Gambut Mempawah Normal Kabupaten Mempawah, Kalimantan Barat 2 Devices 1 WTPs" [ref=f21e371] [cursor=pointer]:
+              - /url: /dashboard/monitoring/soil-monitoring/station-lpa-011
+              - generic [ref=f21e372]:
+                - paragraph [ref=f21e373]: Stasiun Gambut Mempawah
+                - generic [ref=f21e374]: Normal
+              - paragraph [ref=f21e378]: Kabupaten Mempawah, Kalimantan Barat
+              - generic [ref=f21e379]:
+                - generic [ref=f21e380]: 2 Devices
+                - generic [ref=f21e383]: 1 WTPs
+            - link "Stasiun Gambut Ogan Komering Tinggi Kabupaten Ogan Komering Ilir, Sumatera Selatan 2 Devices 1 WTPs soil_moisture_low 11/9/2026, 6:53 AM" [ref=f21e386] [cursor=pointer]:
+              - /url: /dashboard/monitoring/soil-monitoring/station-lpa-009
+              - generic [ref=f21e387]:
+                - paragraph [ref=f21e388]: Stasiun Gambut Ogan Komering
+                - generic "Tinggi" [ref=f21e389]
+              - paragraph [ref=f21e393]: Kabupaten Ogan Komering Ilir, Sumatera Selatan
+              - generic [ref=f21e394]:
+                - generic [ref=f21e395]: 2 Devices
+                - generic [ref=f21e398]: 1 WTPs
+              - generic [ref=f21e401]:
+                - generic [ref=f21e402]: soil_moisture_low
+                - paragraph [ref=f21e406]: 11/9/2026, 6:53 AM
+            - link "Stasiun Gambut Siak Normal Kabupaten Siak, Riau 2 Devices 1 WTPs" [ref=f21e407] [cursor=pointer]:
+              - /url: /dashboard/monitoring/soil-monitoring/station-lpa-004
+              - generic [ref=f21e408]:
+                - paragraph [ref=f21e409]: Stasiun Gambut Siak
+                - generic [ref=f21e410]: Normal
+              - paragraph [ref=f21e414]: Kabupaten Siak, Riau
+              - generic [ref=f21e415]:
+                - generic [ref=f21e416]: 2 Devices
+                - generic [ref=f21e419]: 1 WTPs
+            - link "Stasiun Pemantauan Gambut Kampar Tinggi Kabupaten Pelalawan, Riau 2 Devices 1 WTPs low_battery 4/24/2026, 10:59 AM" [ref=f21e422] [cursor=pointer]:
+              - /url: /dashboard/monitoring/soil-monitoring/station-lpa-002
+              - generic [ref=f21e423]:
+                - paragraph [ref=f21e424]: Stasiun Pemantauan Gambut Kampar
+                - generic "Tinggi" [ref=f21e425]
+              - paragraph [ref=f21e429]: Kabupaten Pelalawan, Riau
+              - generic [ref=f21e430]:
+                - generic [ref=f21e431]: 2 Devices
+                - generic [ref=f21e434]: 1 WTPs
+              - generic [ref=f21e437]:
+                - generic [ref=f21e438]: low_battery
+                - paragraph [ref=f21e442]: 4/24/2026, 10:59 AM
+            - link "Stasiun Pemantauan Gambut Merauke Medium Kabupaten Merauke, Papua Selatan 2 Devices 1 WTPs soil_moisture_low 4/24/2026, 10:59 AM" [ref=f21e443] [cursor=pointer]:
+              - /url: /dashboard/monitoring/soil-monitoring/station-lpa-003
+              - generic [ref=f21e444]:
+                - paragraph [ref=f21e445]: Stasiun Pemantauan Gambut Merauke
+                - generic "Medium" [ref=f21e446]
+              - paragraph [ref=f21e450]: Kabupaten Merauke, Papua Selatan
+              - generic [ref=f21e451]:
+                - generic [ref=f21e452]: 2 Devices
+                - generic [ref=f21e455]: 1 WTPs
+              - generic [ref=f21e458]:
+                - generic [ref=f21e459]: soil_moisture_low
+                - paragraph [ref=f21e463]: 4/24/2026, 10:59 AM
+            - link "Stasiun Pemantauan Lahan Gambut Sebangau Medium Kota Palangka Raya, Kalimantan Tengah 3 Devices 1 WTPs low_battery 4/24/2026, 10:59 AM" [ref=f21e464] [cursor=pointer]:
+              - /url: /dashboard/monitoring/soil-monitoring/station-lpa-001
+              - generic [ref=f21e465]:
+                - paragraph [ref=f21e466]: Stasiun Pemantauan Lahan Gambut Sebangau
+                - generic "Medium" [ref=f21e467]
+              - paragraph [ref=f21e471]: Kota Palangka Raya, Kalimantan Tengah
+              - generic [ref=f21e472]:
+                - generic [ref=f21e473]: 3 Devices
+                - generic [ref=f21e476]: 1 WTPs
+              - generic [ref=f21e479]:
+                - generic [ref=f21e480]: low_battery
+                - paragraph [ref=f21e484]: 4/24/2026, 10:59 AM
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f21e139] [cursor=pointer]
+  - alert [ref=f21e143]
+  - generic [aria-hidden] [ref=f21e485]: "0"

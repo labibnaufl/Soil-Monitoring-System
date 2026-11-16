@@ -9,13 +9,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SOIL_METRICS, type SoilMetricKey } from "./soil-metrics";
-import { Droplets, Thermometer, Zap, Beaker } from "lucide-react";
+import { Drop, Thermometer, Lightning, TestTube } from "@/components/icons";
 
-const iconMap: Record<SoilMetricKey, React.ComponentType<{ className?: string }>> = {
-  soilMoisture: Droplets,
+const iconMap: Record<SoilMetricKey, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
+  soilMoisture: Drop,
   soilTemperature: Thermometer,
-  soilConductivity: Zap,
-  phValue: Beaker,
+  soilConductivity: Lightning,
+  phValue: TestTube,
 };
 
 interface SoilMetricSelectorProps {
@@ -45,7 +45,7 @@ export function SoilMetricSelector({ selectedMetric, timeRange }: SoilMetricSele
           className="w-10 h-10 rounded-lg flex items-center justify-center"
           style={{ backgroundColor: `${currentMetric.color}20` }}
         >
-          <Icon className="size-5" style={{ color: currentMetric.color }} />
+          <Icon className="size-5" style={{ color: currentMetric.color }} aria-hidden="true" />
         </div>
         <div>
           <p className="text-sm font-medium text-muted-foreground">Parameter Tanah</p>
@@ -69,7 +69,7 @@ export function SoilMetricSelector({ selectedMetric, timeRange }: SoilMetricSele
                       className="w-6 h-6 rounded flex items-center justify-center"
                       style={{ backgroundColor: `${metric.color}20` }}
                     >
-                      <MetricIcon className="size-3.5" style={{ color: metric.color }} />
+                      <MetricIcon className="size-4" style={{ color: metric.color }} aria-hidden="true" />
                     </div>
                     <div className="flex flex-col">
                       <span className="font-medium">{metric.label}</span>

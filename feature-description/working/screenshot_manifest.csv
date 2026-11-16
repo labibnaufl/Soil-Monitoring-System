@@ -1,0 +1,10 @@
+image_id,file_path,feature_id,role,route,viewport,state,caption,captured_with,verified_at,privacy_checked,notes
+IMG-001,output/images/01-auth-login.png,F-001,guest,/auth/login,1440x900,default,Gambar 2.8. Tampilan Halaman Login,Playwright MCP,2026-11-10,yes,Akun uji tidak ditampilkan di gambar
+IMG-002,output/images/02-admin-dashboard.png,F-002,SUPER_ADMIN,/dashboard,1440x900,default,Gambar 2.9. Tampilan Dashboard,Playwright MCP,2026-11-10,yes,
+IMG-003,output/images/03-admin-water-level.png,F-003,SUPER_ADMIN,/dashboard/monitoring/water-level,1440x900,default,Gambar 2.10. Tampilan Monitoring Tingkat Air,Playwright MCP,2026-11-10,yes,
+IMG-004,output/images/04-admin-curah-hujan.png,F-004,SUPER_ADMIN,/dashboard/monitoring/curah-hujan,1440x900,default,Gambar 2.11. Tampilan Monitoring Curah Hujan,Playwright MCP,2026-11-10,yes,
+IMG-005,output/images/05-admin-soil-monitoring.png,F-005,SUPER_ADMIN,/dashboard/monitoring/soil-monitoring,1440x900,default,Gambar 2.12. Tampilan Monitoring Kondisi Tanah,Playwright MCP,2026-11-10,yes,
+IMG-006,output/images/06-admin-alerts.png,F-006,SUPER_ADMIN,/dashboard/alerts,1440x900,default,Gambar 2.13. Tampilan Notifikasi & Peringatan,Playwright MCP,2026-11-10,yes,
+IMG-007,output/images/07-admin-stations.png,F-007,SUPER_ADMIN,/dashboard/management/stations,1440x900,default,Gambar 2.14. Tampilan Kelola Stasiun,Playwright MCP,2026-11-10,yes,
+IMG-008,output/images/08-admin-devices.png,F-008,SUPER_ADMIN,/dashboard/management/devices,1440x900,default,Gambar 2.15. Tampilan Kelola Perangkat,Playwright MCP,2026-11-10,yes,
+IMG-009,output/images/09-admin-users.png,F-009,SUPER_ADMIN,/dashboard/management/users,1440x900,default,Gambar 2.16. Tampilan Kelola Pengguna,Playwright MCP,2026-11-10,yes,

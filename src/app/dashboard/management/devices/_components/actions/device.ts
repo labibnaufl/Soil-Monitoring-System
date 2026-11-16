@@ -3,6 +3,13 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import {
+  assignDeviceRecord,
+  createDeviceRecord,
+  generateDeviceId,
+  listDeviceRecords,
+} from "@/lib/devices";
+import { publishDeviceConfig } from "@/lib/mqtt-config";
 
 async function requireSuperAdmin() {
   const session = await auth();
@@ -13,9 +20,15 @@ async function requireSuperAdmin() {
   return session;
 }
 
+// MINT A WEBSITE-SIDE DEVICE ID (vice-versa provisioning)
+export async function generateDeviceIdAction() {
+  await requireSuperAdmin();
+  return generateDeviceId();
+}
+
 // CREATE DEVICE
 export async function createDevice(data: {
-  deviceId: string;
+  deviceId?: string;
   deviceName: string;
   stationId?: string;
   description?: string;
@@ -25,45 +38,14 @@ export async function createDevice(data: {
 }) {
   const session = await requireSuperAdmin();
 
-  // Check if deviceId already exists
-  const existing = await prisma.device.findUnique({
-    where: { deviceId: data.deviceId },
-  });
-  if (existing) throw new Error("ID Perangkat sudah terdaftar");
-
-  // If stationId provided, verify station exists
-  if (data.stationId) {
-    const station = await prisma.station.findUnique({
-      where: { id: data.stationId },
-    });
-    if (!station) throw new Error("Stasiun tidak ditemukan");
-  }
-
-  const device = await prisma.device.create({
-    data: {
-      deviceId: data.deviceId,
-      deviceName: data.deviceName,
-      stationId: data.stationId || null,
-      description: data.description,
-      samplingInterval: data.samplingInterval || 300,
-      batteryWarning: data.batteryWarning ?? 20,
-      batteryCritical: data.batteryCritical ?? 10,
-      status: "BEROPERASI",
-    },
-  });
-
-  await prisma.adminLog.create({
-    data: {
-      action: "DEVICE_CREATED",
-      entityType: "DEVICE",
-      entityId: device.id,
-      userId: session.user.id,
-      newValues: {
-        deviceId: device.deviceId,
-        deviceName: device.deviceName,
-        stationId: device.stationId,
-      },
-    },
+  const device = await createDeviceRecord(session.user.id, {
+    deviceId: data.deviceId,
+    deviceName: data.deviceName,
+    stationId: data.stationId,
+    description: data.description,
+    samplingInterval: data.samplingInterval,
+    batteryWarning: data.batteryWarning,
+    batteryCritical: data.batteryCritical,
   });
 
   revalidatePath("/dashboard/management/devices");
@@ -112,6 +94,9 @@ export async function updateDevice(
     },
   });
 
+  // Push edited thresholds/intervals/geometry to the field device.
+  await publishDeviceConfig(existing.deviceId);
+
   revalidatePath("/dashboard/management/devices");
   revalidatePath(`/dashboard/management/devices/${deviceId}`);
   return device;
@@ -149,26 +134,7 @@ export async function updateDeviceStatus(deviceId: string, status: "BEROPERASI" 
 export async function assignDeviceToStation(deviceId: string, stationId: string) {
   const session = await requireSuperAdmin();
 
-  const device = await prisma.device.findUnique({ where: { id: deviceId } });
-  if (!device) throw new Error("Perangkat tidak ditemukan");
-
-  const station = await prisma.station.findUnique({ where: { id: stationId } });
-  if (!station) throw new Error("Stasiun tidak ditemukan");
-
-  const updated = await prisma.device.update({
-    where: { id: deviceId },
-    data: { stationId },
-  });
-
-  await prisma.adminLog.create({
-    data: {
-      action: "DEVICE_ASSIGNED",
-      entityType: "DEVICE",
-      entityId: deviceId,
-      userId: session.user.id,
-      newValues: { stationId, stationName: station.name },
-    },
-  });
+  const updated = await assignDeviceRecord(session.user.id, deviceId, stationId);
 
   revalidatePath("/dashboard/management/devices");
   revalidatePath("/dashboard/management/stations");
@@ -180,23 +146,7 @@ export async function assignDeviceToStation(deviceId: string, stationId: string)
 export async function unassignDevice(deviceId: string) {
   const session = await requireSuperAdmin();
 
-  const device = await prisma.device.findUnique({ where: { id: deviceId } });
-  if (!device) throw new Error("Perangkat tidak ditemukan");
-
-  const updated = await prisma.device.update({
-    where: { id: deviceId },
-    data: { stationId: null },
-  });
-
-  await prisma.adminLog.create({
-    data: {
-      action: "DEVICE_UNASSIGNED",
-      entityType: "DEVICE",
-      entityId: deviceId,
-      userId: session.user.id,
-      oldValues: { stationId: device.stationId },
-    },
-  });
+  const updated = await assignDeviceRecord(session.user.id, deviceId, null);
 
   revalidatePath("/dashboard/management/devices");
   revalidatePath("/dashboard/management/stations");
@@ -259,21 +209,10 @@ export async function getDevices(filters?: {
   status?: "BEROPERASI" | "MAINTENANCE" | "MATI";
   stationId?: string | null;
 }) {
-  await requireSuperAdmin();
+  const session = await requireSuperAdmin();
 
-  return prisma.device.findMany({
-    where: {
-      ...(filters?.status && { status: filters.status }),
-      ...(filters?.stationId !== undefined && { stationId: filters.stationId }),
-    },
-    include: {
-      station: {
-        select: { id: true, name: true },
-      },
-      _count: {
-        select: { readings: true },
-      },
-    },
-    orderBy: { createdAt: "desc" },
+  return listDeviceRecords(session, {
+    ...(filters?.status && { status: filters.status }),
+    ...(filters?.stationId !== undefined && { stationId: filters.stationId }),
   });
 }

@@ -15,15 +15,25 @@ import {
   Cpu,
   Users,
   Bell,
-  CheckCircle2,
-  ChevronDown,
-  TrendingUp,
-  Droplets,
+  CheckCircle,
+  CaretDown,
+  Drop,
+  CloudRain,
   Thermometer,
-  Zap,
-  Activity,
-} from "lucide-react";
+  Lightning,
+  Heartbeat,
+  TestTube,
+  TrendUp,
+} from "@phosphor-icons/react";
 import Link from "next/link";
+import {
+  StatusBadge,
+  getPriorityBadge,
+  getPriorityLabel,
+  getPriorityDotClass,
+  getStatusBadge,
+  getStatusLabel,
+} from "@/components/ui/status-badge";
 
 // ─── Types ───
 interface Reading {
@@ -56,6 +66,7 @@ interface RecentAlert {
 
 interface DashboardData {
   latestReadings: Reading[];
+  rain24h: { name: string; fullName: string; value: number }[];
   resolvedAlerts: number;
   criticalAlerts: number;
   warningAlerts: number;
@@ -70,12 +81,12 @@ interface DashboardData {
 
 // ─── Monitoring metric options ───
 const METRIC_OPTIONS = [
-  { value: "soilMoisture", label: "Kelembapan Tanah", unit: "%", icon: Droplets, color: "#10b981" },
-  { value: "soilTemperature", label: "Suhu Tanah", unit: "°C", icon: Thermometer, color: "#f59e0b" },
-  { value: "waterLevel", label: "Tingkat Air", unit: "cm", icon: Activity, color: "#3b82f6" },
-  { value: "soilConductivity", label: "Konduktivitas", unit: "µS/cm", icon: Zap, color: "#8b5cf6" },
-  { value: "phValue", label: "Nilai pH", unit: "", icon: TrendingUp, color: "#ef4444" },
-  { value: "rainMeter", label: "Curah Hujan", unit: "mm", icon: Droplets, color: "#06b6d4" },
+  { value: "soilMoisture", label: "Kelembapan Tanah", unit: "%", icon: Drop, color: "var(--metric-moisture)" },
+  { value: "soilTemperature", label: "Suhu Tanah", unit: "°C", icon: Thermometer, color: "var(--metric-temperature)" },
+  { value: "waterLevel", label: "Tingkat Air", unit: "cm", icon: Heartbeat, color: "var(--metric-water)" },
+  { value: "soilConductivity", label: "Konduktivitas", unit: "µS/cm", icon: Lightning, color: "var(--metric-conductivity)" },
+  { value: "phValue", label: "Nilai pH", unit: "", icon: TestTube, color: "var(--metric-ph)" },
+  { value: "rainMeter", label: "Curah Hujan", unit: "mm", icon: CloudRain, color: "var(--metric-rain)" },
 ] as const;
 
 type MetricKey = typeof METRIC_OPTIONS[number]["value"];
@@ -92,14 +103,14 @@ function getAlertTypeLabel(t: string) {
 
 function getPriorityStyle(p: string) {
   switch (p) {
-    case "HIGH": return { bg: "bg-red-100", text: "text-red-700", dot: "bg-red-500" };
-    case "MEDIUM": return { bg: "bg-amber-100", text: "text-amber-700", dot: "bg-amber-500" };
-    case "LOW": return { bg: "bg-green-100", text: "text-green-700", dot: "bg-green-500" };
-    default: return { bg: "bg-slate-100", text: "text-slate-600", dot: "bg-slate-400" };
+    case "HIGH": return { bg: "bg-[var(--status-danger-bg)]", text: "text-[var(--status-danger-fg)]", dot: "bg-[var(--status-danger)]" };
+    case "MEDIUM": return { bg: "bg-[var(--status-warning-bg)]", text: "text-[var(--status-warning-fg)]", dot: "bg-[var(--status-warning)]" };
+    case "LOW": return { bg: "bg-[var(--status-success-bg)]", text: "text-[var(--status-success-fg)]", dot: "bg-[var(--status-success)]" };
+    default: return { bg: "bg-muted", text: "text-muted-foreground", dot: "bg-muted-foreground" };
   }
 }
 
-function getStatusLabel(s: string) {
+function getAlertStatusLabel(s: string) {
   switch (s) {
     case "OPEN": return "Baru";
     case "PENDING": return "Pending";
@@ -126,9 +137,9 @@ function timeAgo(dateStr: string) {
 function ChartTooltip({ active, payload, label, unit }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white border border-slate-200 rounded-lg shadow-lg px-3 py-2 text-sm">
-      <p className="font-medium text-slate-900">{label}</p>
-      <p className="text-emerald-600 font-semibold">
+    <div className="bg-popover border border-border rounded-lg shadow-xl px-3 py-2 text-sm">
+      <p className="font-medium text-popover-foreground">{label}</p>
+      <p className="text-foreground font-semibold">
         {payload[0].value != null ? `${payload[0].value.toFixed(1)} ${unit}` : "N/A"}
       </p>
     </div>
@@ -143,18 +154,23 @@ export function DashboardContent({ data }: { data: DashboardData }) {
   const currentMetric = METRIC_OPTIONS.find((m) => m.value === selectedMetric)!;
   const MetricIcon = currentMetric.icon;
 
-  // Build chart data from latest readings
-  const chartData = data.latestReadings
-    .filter((r) => r[selectedMetric] != null)
-    .map((r) => ({
-      name: r.device?.station?.name
-        ? (r.device.station.name.split(" ").pop() || r.device.station.name)
-        : r.device?.deviceName || "Unknown",
-      value: r[selectedMetric] as number,
-      fullName: r.device?.station?.name || r.device?.deviceName || "Unknown",
-      device: r.device?.deviceName || "Unknown",
-    }))
-    .slice(0, 10);
+  // Build chart data from latest readings.
+  // Exception: rainfall is cumulative — one latest reading per device is
+  // ~always dry, so use the pre-aggregated 24h totals per station instead.
+  const chartData =
+    selectedMetric === "rainMeter"
+      ? data.rain24h.slice(0, 10)
+      : data.latestReadings
+          .filter((r) => r[selectedMetric] != null)
+          .map((r) => ({
+            name: r.device?.station?.name
+              ? (r.device.station.name.split(" ").pop() || r.device.station.name)
+              : r.device?.deviceName || "Unknown",
+            value: r[selectedMetric] as number,
+            fullName: r.device?.station?.name || r.device?.deviceName || "Unknown",
+            device: r.device?.deviceName || "Unknown",
+          }))
+          .slice(0, 10);
 
   // Summary stats cards
   const statCards = [
@@ -162,57 +178,57 @@ export function DashboardContent({ data }: { data: DashboardData }) {
       label: "Stasiun Aktif",
       value: `${data.activeStations}/${data.totalStations}`,
       icon: MapPin,
-      color: "bg-emerald-50 text-emerald-600",
-      ringColor: "ring-emerald-500/10",
+      color: "bg-[var(--status-success-bg)] text-[var(--status-success-fg)]",
+      ringColor: "ring-[var(--status-success)]/10",
       description: `${data.inactiveStations} nonaktif`,
     },
     {
       label: "Perangkat Aktif",
       value: `${data.activeDevices}/${data.totalDevices}`,
       icon: Cpu,
-      color: "bg-blue-50 text-blue-600",
-      ringColor: "ring-blue-500/10",
+      color: "bg-[var(--status-info-bg)] text-[var(--status-info-fg)]",
+      ringColor: "ring-[var(--status-info)]/10",
       description: `${data.totalDevices - data.activeDevices} offline`,
     },
     {
       label: "Admin Lokasi",
       value: data.totalAdminLokasi,
       icon: Users,
-      color: "bg-violet-50 text-violet-600",
-      ringColor: "ring-violet-500/10",
+      color: "bg-[var(--status-accent-bg)] text-[var(--status-accent-fg)]",
+      ringColor: "ring-[var(--status-accent)]/10",
       description: "Pengguna aktif",
     },
   ];
 
   // Peat land type distribution (front-end slicing)
-  const totalPeatStations = data.totalStations + 7; // include mock stations
+  const totalPeatStations = data.totalStations + 7;
   const peatDistribution = [
     {
       label: "Fibric",
       description: "Gambut mentah, serat tinggi",
       value: Math.round(totalPeatStations * 0.35) || 3,
-      color: "text-teal-600",
-      bg: "bg-teal-50",
-      barColor: "bg-teal-500",
-      dotColor: "bg-teal-500",
+      color: "text-[var(--status-success-fg)]",
+      bg: "bg-[var(--status-success-bg)]",
+      barColor: "bg-[var(--status-success)]",
+      dotColor: "bg-[var(--status-success)]",
     },
     {
       label: "Hemic",
       description: "Gambut setengah matang",
       value: Math.round(totalPeatStations * 0.4) || 4,
-      color: "text-amber-600",
-      bg: "bg-amber-50",
-      barColor: "bg-amber-500",
-      dotColor: "bg-amber-500",
+      color: "text-[var(--status-warning-fg)]",
+      bg: "bg-[var(--status-warning-bg)]",
+      barColor: "bg-[var(--status-warning)]",
+      dotColor: "bg-[var(--status-warning)]",
     },
     {
       label: "Sapric",
       description: "Gambut matang, serat rendah",
       value: totalPeatStations - (Math.round(totalPeatStations * 0.35) || 3) - (Math.round(totalPeatStations * 0.4) || 4),
-      color: "text-rose-800",
-      bg: "bg-rose-50",
-      barColor: "bg-rose-800",
-      dotColor: "bg-rose-800",
+      color: "text-[var(--status-danger-fg)]",
+      bg: "bg-[var(--status-danger-bg)]",
+      barColor: "bg-[var(--status-danger)]",
+      dotColor: "bg-[var(--status-danger)]",
     },
   ];
 
@@ -235,7 +251,10 @@ export function DashboardContent({ data }: { data: DashboardData }) {
           {/* Chart Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg`} style={{ backgroundColor: currentMetric.color + "15" }}>
+              <div
+                className="p-2 rounded-lg"
+                style={{ backgroundColor: `color-mix(in oklab, ${currentMetric.color} 10%, transparent)` }}
+              >
                 <MetricIcon className="size-5" style={{ color: currentMetric.color }} />
               </div>
               <div>
@@ -243,7 +262,9 @@ export function DashboardContent({ data }: { data: DashboardData }) {
                   Monitoring Data
                 </h2>
                 <p className="text-xs text-muted-foreground">
-                  Pembacaan terbaru per stasiun
+                  {selectedMetric === "rainMeter"
+                    ? "Akumulasi 24 jam terakhir per stasiun"
+                    : "Pembacaan terbaru per stasiun"}
                 </p>
               </div>
             </div>
@@ -252,17 +273,17 @@ export function DashboardContent({ data }: { data: DashboardData }) {
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-2 px-3 py-2 text-sm font-medium border rounded-lg bg-background hover:bg-accent transition-colors"
+                className="flex items-center gap-2 px-3 py-2 text-sm font-medium border rounded-lg bg-background hover:bg-accent motion-safe:transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden"
               >
                 <MetricIcon className="size-4" style={{ color: currentMetric.color }} />
                 <span>{currentMetric.label}</span>
-                <ChevronDown className={`size-4 text-muted-foreground transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
+                <CaretDown className={`size-4 text-muted-foreground motion-safe:transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
               </button>
 
               {dropdownOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
-                  <div className="absolute right-0 top-full mt-1 z-50 w-56 bg-white border rounded-xl shadow-lg py-1 animate-in fade-in slide-in-from-top-1 duration-150">
+                  <div className="absolute right-0 top-full mt-1 z-50 w-56 bg-popover border border-border rounded-xl shadow-xl py-1 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-1 motion-safe:duration-150">
                     {METRIC_OPTIONS.map((option) => {
                       const Icon = option.icon;
                       return (
@@ -272,11 +293,16 @@ export function DashboardContent({ data }: { data: DashboardData }) {
                             setSelectedMetric(option.value);
                             setDropdownOpen(false);
                           }}
-                          className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm hover:bg-slate-50 transition-colors ${
-                            selectedMetric === option.value ? "bg-slate-50 font-medium" : ""
+                          className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm hover:bg-muted motion-safe:transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden ${
+                            selectedMetric === option.value ? "bg-muted font-medium" : ""
                           }`}
                         >
-                          <Icon className="size-4" style={{ color: option.color }} />
+                          <span
+                            className="p-1 rounded"
+                            style={{ backgroundColor: `color-mix(in oklab, ${option.color} 10%, transparent)` }}
+                          >
+                            <Icon className="size-4" style={{ color: option.color }} />
+                          </span>
                           <span>{option.label}</span>
                           {option.unit && (
                             <span className="ml-auto text-xs text-muted-foreground">{option.unit}</span>
@@ -300,34 +326,36 @@ export function DashboardContent({ data }: { data: DashboardData }) {
                     <stop offset="95%" stopColor={currentMetric.color} stopOpacity={0.02} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                 <XAxis
                   dataKey="name"
-                  tick={{ fill: "#94a3b8", fontSize: 12 }}
+                  tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
                   tickLine={false}
-                  axisLine={{ stroke: "#e2e8f0" }}
+                  axisLine={{ stroke: "var(--border)" }}
                 />
                 <YAxis
-                  tick={{ fill: "#94a3b8", fontSize: 12 }}
+                  tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
                   tickLine={false}
                   axisLine={false}
                   unit={currentMetric.unit ? ` ${currentMetric.unit}` : ""}
                 />
-                <Tooltip content={<ChartTooltip unit={currentMetric.unit} />} cursor={{ stroke: "#e2e8f0", strokeWidth: 1 }} />
+                <Tooltip content={<ChartTooltip unit={currentMetric.unit} />} cursor={{ stroke: "var(--border)", strokeWidth: 1 }} />
                 <Area
                   type="monotone"
                   dataKey="value"
                   stroke={currentMetric.color}
                   fill="url(#dashboardGradient)"
                   strokeWidth={2.5}
-                  dot={{ r: 4, fill: currentMetric.color, strokeWidth: 2, stroke: "#fff" }}
-                  activeDot={{ r: 6, fill: currentMetric.color, strokeWidth: 2, stroke: "#fff" }}
+                  dot={{ r: 4, fill: currentMetric.color, strokeWidth: 2, stroke: "var(--background)" }}
+                  activeDot={{ r: 6, fill: currentMetric.color, strokeWidth: 2, stroke: "var(--background)" }}
                 />
               </AreaChart>
             </ResponsiveContainer>
           ) : (
             <div className="flex items-center justify-center h-80 text-muted-foreground text-sm">
-              Belum ada data untuk {currentMetric.label}
+              {selectedMetric === "rainMeter"
+                ? "Tidak ada hujan dalam 24 jam terakhir"
+                : `Belum ada data untuk ${currentMetric.label}`}
             </div>
           )}
         </div>
@@ -337,7 +365,7 @@ export function DashboardContent({ data }: { data: DashboardData }) {
           {statCards.map((card) => (
             <div
               key={card.label}
-              className="rounded-xl border bg-card p-5 ring-1 ring-transparent hover:ring-slate-200 transition-all"
+              className="rounded-xl border bg-card p-5 ring-1 ring-transparent hover:ring-border motion-safe:transition-all"
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className={`p-2.5 rounded-lg ${card.color}`}>
@@ -364,8 +392,8 @@ export function DashboardContent({ data }: { data: DashboardData }) {
         <div className="xl:col-span-2 rounded-xl border bg-card">
           <div className="flex items-center justify-between px-5 pt-5 pb-3">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-amber-50">
-                <Bell className="size-5 text-amber-600" />
+              <div className="p-2 rounded-lg bg-[var(--status-warning-bg)]">
+                <Bell weight="regular" className="size-5 text-[var(--status-warning-fg)]" aria-hidden="true" />
               </div>
               <div>
                 <h2 className="text-base font-semibold text-foreground">
@@ -378,7 +406,7 @@ export function DashboardContent({ data }: { data: DashboardData }) {
             </div>
             <Link
               href="/dashboard/alerts"
-              className="px-3 py-1.5 text-xs font-medium border rounded-lg hover:bg-accent transition-colors"
+              className="px-3 py-1.5 text-xs font-medium border rounded-lg hover:bg-accent motion-safe:transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-hidden"
             >
               Kelola
             </Link>
@@ -387,21 +415,22 @@ export function DashboardContent({ data }: { data: DashboardData }) {
           <div className="divide-y">
             {data.recentAlerts.length > 0 ? (
               data.recentAlerts.map((alert) => {
-                const priority = getPriorityStyle(alert.priority);
+                const priorityBadge = getPriorityBadge(alert.priority);
+                const statusBadge = getStatusBadge(alert.status);
                 return (
                   <div
                     key={alert.id}
                     className="flex items-start gap-3 px-5 py-3.5 hover:bg-muted/30 transition-colors"
                   >
-                    <div className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${priority.dot}`} />
+                    <div className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${getPriorityDotClass(priorityBadge.intent)}`} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
-                        <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-medium ${priority.bg} ${priority.text}`}>
+                        <StatusBadge intent={priorityBadge.intent} className="px-1.5 py-0.5 rounded text-[11px]">
                           {getAlertTypeLabel(alert.alertType)}
-                        </span>
-                        <span className="text-[11px] text-muted-foreground">
+                        </StatusBadge>
+                        <StatusBadge intent={statusBadge.intent} className="text-[11px]">
                           {getStatusLabel(alert.status)}
-                        </span>
+                        </StatusBadge>
                       </div>
                       <p className="text-sm text-foreground truncate">
                         {alert.message || "Tidak ada pesan"}
@@ -415,7 +444,7 @@ export function DashboardContent({ data }: { data: DashboardData }) {
               })
             ) : (
               <div className="px-5 py-10 text-center text-muted-foreground text-sm">
-                <CheckCircle2 className="size-8 mx-auto mb-2 text-emerald-400" />
+                <CheckCircle weight="regular" className="size-5 mx-auto mb-2 text-[var(--status-success-fg)]" aria-hidden="true" />
                 <p>Tidak ada notifikasi</p>
                 <p className="text-xs mt-1">Semua sistem berjalan normal</p>
               </div>
@@ -455,7 +484,7 @@ export function DashboardContent({ data }: { data: DashboardData }) {
                   <div className="flex items-center gap-2">
                     <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                       <div
-                        className={`h-full rounded-full ${peat.barColor} transition-all duration-500`}
+                        className={`h-full rounded-full ${peat.barColor} motion-safe:transition-all motion-safe:duration-500`}
                         style={{ width: `${percentage}%` }}
                       />
                     </div>

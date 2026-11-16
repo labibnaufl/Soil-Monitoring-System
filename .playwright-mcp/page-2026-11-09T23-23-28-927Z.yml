@@ -1,0 +1,43 @@
+- generic [ref=f22e1]:
+  - generic [active]:
+    - generic [ref=f22e4]:
+      - generic [ref=f22e5]:
+        - navigation [ref=f22e7]:
+          - button [disabled] [ref=f22e8]:
+            - img "previous" [ref=f22e9]
+          - generic [ref=f22e11]:
+            - generic [ref=f22e12]: 1/
+            - text: "1"
+          - button [disabled] [ref=f22e13]:
+            - img "next" [ref=f22e14]
+        - link "Next.js 16.2.4 (stale) Turbopack" [ref=f22e17] [cursor=pointer]:
+          - /url: https://nextjs.org/docs/messages/version-staleness
+          - generic "There is a newer version (16.4.6) available, upgrade recommended!" [ref=f22e20]: Next.js 16.2.4 (stale)
+          - generic [ref=f22e21]: Turbopack
+      - dialog "Runtime Error" [ref=f22e23]:
+        - generic [ref=f22e27]:
+          - generic [ref=f22e28]:
+            - generic [ref=f22e29]:
+              - generic [ref=f22e30]: Runtime Error
+              - generic [ref=f22e31]: Server
+            - generic [ref=f22e32]:
+              - button "Copy Error Info" [ref=f22e33] [cursor=pointer]
+              - button "No related documentation found" [disabled] [ref=f22e36]
+              - button "Attach Node.js inspector" [ref=f22e39] [cursor=pointer]
+          - generic [ref=f22e48]: Attempted to call getPriorityBadge() from the server but getPriorityBadge is on the client. It's not possible to invoke a client function from the server, it can only be rendered as a Component or passed to props of a Client Component.
+        - generic [ref=f22e50]: "1"
+        - generic [ref=f22e51]: "2"
+    - generic [ref=f22e56] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=f22e57]
+      - generic [ref=f22e61]:
+        - button "Open issues overlay" [ref=f22e62]:
+          - generic [ref=f22e63]:
+            - generic [aria-hidden] [ref=f22e64]: "0"
+            - generic [ref=f22e65]: "1"
+          - generic [ref=f22e66]: Issue
+        - button "Collapse issues badge" [ref=f22e67]
+  - generic [ref=f22e71]:
+    - heading "This page couldn’t load" [level=1] [ref=f22e74]
+    - paragraph [ref=f22e75]: A server error occurred. Reload to try again.
+    - button "Reload" [ref=f22e78] [cursor=pointer]
+  - paragraph [ref=f22e79]: ERROR 2922428843
