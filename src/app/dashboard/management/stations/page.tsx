@@ -4,114 +4,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { StationActions } from "./_components/station-actions";
 import { StationFormModal } from "./_components/station-form-modal";
-import {
-  MapPin,
-  Radio,
-  Users,
-} from "@/components/icons";
-
-const PEAT_TYPES = ["Fibric", "Hemic", "Sapric"] as const;
-
-function getPeatType(name: string): (typeof PEAT_TYPES)[number] {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return PEAT_TYPES[Math.abs(hash) % PEAT_TYPES.length];
-}
-
-function getPeatColor(type: string) {
-  switch (type) {
-    case "Fibric":
-      return "bg-teal-100 text-teal-700";
-    case "Hemic":
-      return "bg-amber-100 text-amber-700";
-    case "Sapric":
-      return "bg-rose-100 text-rose-800";
-    default:
-      return "bg-gray-100 text-gray-700";
-  }
-}
-
-const MOCK_STATIONS = [
-  {
-    id: "mock-1",
-    name: "Stasiun Gambut Siak",
-    kabupaten: "Siak",
-    provinsi: "Riau",
-    latitude: 1.3912,
-    longitude: 102.1458,
-    status: "AKTIF",
-    createdAt: new Date(),
-    _count: { devices: 4, admins: 2 },
-  },
-  {
-    id: "mock-2",
-    name: "Stasiun Gambut Kubu Raya",
-    kabupaten: "Kubu Raya",
-    provinsi: "Kalimantan Barat",
-    latitude: -0.1352,
-    longitude: 109.4813,
-    status: "AKTIF",
-    createdAt: new Date(),
-    _count: { devices: 3, admins: 1 },
-  },
-  {
-    id: "mock-3",
-    name: "Stasiun Gambut Pulang Pisau",
-    kabupaten: "Pulang Pisau",
-    provinsi: "Kalimantan Tengah",
-    latitude: -2.6932,
-    longitude: 114.1731,
-    status: "NONAKTIF",
-    createdAt: new Date(),
-    _count: { devices: 2, admins: 1 },
-  },
-  {
-    id: "mock-4",
-    name: "Stasiun Gambut Ogan Komering",
-    kabupaten: "Ogan Komering Ilir",
-    provinsi: "Sumatera Selatan",
-    latitude: -3.2156,
-    longitude: 105.2341,
-    status: "AKTIF",
-    createdAt: new Date(),
-    _count: { devices: 5, admins: 3 },
-  },
-  {
-    id: "mock-5",
-    name: "Stasiun Gambut Merauke",
-    kabupaten: "Merauke",
-    provinsi: "Papua Selatan",
-    latitude: -8.4932,
-    longitude: 140.4018,
-    status: "AKTIF",
-    createdAt: new Date(),
-    _count: { devices: 2, admins: 1 },
-  },
-  {
-    id: "mock-6",
-    name: "Stasiun Gambut Indragiri Hilir",
-    kabupaten: "Indragiri Hilir",
-    provinsi: "Riau",
-    latitude: -0.3261,
-    longitude: 103.1782,
-    status: "NONAKTIF",
-    createdAt: new Date(),
-    _count: { devices: 1, admins: 1 },
-  },
-  {
-    id: "mock-7",
-    name: "Stasiun Gambut Kayong Utara",
-    kabupaten: "Kayong Utara",
-    provinsi: "Kalimantan Barat",
-    latitude: -1.1073,
-    longitude: 109.9621,
-    status: "AKTIF",
-    createdAt: new Date(),
-    _count: { devices: 3, admins: 2 },
-  },
-];
+import { MapPin, Radio, Users } from "@/components/icons";
 
 export default async function StationsPage({
   searchParams,
@@ -163,25 +56,14 @@ export default async function StationsPage({
       },
     }),
     prisma.station.count({ where }),
-    // Global stats
     Promise.all([
       prisma.station.count(),
-      prisma.station.count({ where: { status: "AKTIF" } }),
-      prisma.station.count({ where: { status: "NONAKTIF" } }),
       prisma.device.count(),
       prisma.user.count({ where: { role: "ADMIN_LOCATION" } }),
     ]),
   ]);
 
-  const [
-    totalStations,
-    activeStations,
-    inactiveStations,
-    totalDevices,
-    totalAdmins,
-  ] = statsData;
-  // Merge mock stations for front-end slicing
-  const allStations = [...stations, ...MOCK_STATIONS];
+  const [totalStations, totalDevices, totalAdmins] = statsData;
 
   const totalPages = Math.ceil(total / perPage);
 
@@ -203,8 +85,21 @@ export default async function StationsPage({
       : "bg-red-100 text-red-700";
   }
 
+  function buildPageHref(targetPage: number) {
+    const qs = new URLSearchParams();
+    if (targetPage > 1) qs.set("page", String(targetPage));
+    if (status) qs.set("status", status);
+    if (search) qs.set("search", search);
+    const q = qs.toString();
+    return `/dashboard/management/stations${q ? `?${q}` : ""}`;
+  }
+
+  const startItem = total === 0 ? 0 : (page - 1) * perPage + 1;
+  const endItem = Math.min(page * perPage, total);
+
   return (
     <div>
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold font-heading text-foreground">
@@ -218,7 +113,7 @@ export default async function StationsPage({
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
         {stats.map((stat) => (
           <div key={stat.label} className="rounded-xl border bg-card p-4">
             <div className="flex items-center gap-2 mb-3">
@@ -234,14 +129,14 @@ export default async function StationsPage({
         ))}
       </div>
 
-      {/* Filters */}
-      <form className="flex flex-wrap items-center gap-3 mb-6">
+      {/* Toolbar */}
+      <form className="flex flex-wrap items-center gap-2 mb-4">
         <input
           name="search"
           type="text"
-          placeholder="Cari nama, provinsi, atau kabupaten..."
+          placeholder="Cari nama, provinsi, kabupaten..."
           defaultValue={search}
-          className="flex-1 min-w-50 px-3 py-2 text-sm border rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring"
+          className="flex-1 min-w-0 px-3 py-2 text-sm border rounded-lg bg-background outline-none focus:ring-2 focus:ring-ring"
         />
         <select
           name="status"
@@ -263,92 +158,93 @@ export default async function StationsPage({
         {(search || status) && (
           <Link
             href="/dashboard/management/stations"
-            className="px-4 py-2 text-sm font-medium border rounded-lg hover:bg-accent transition-colors"
+            className="px-3 py-2 text-sm font-medium border rounded-lg hover:bg-accent transition-colors"
           >
             Reset
           </Link>
         )}
       </form>
 
+      {/* Count line */}
+      <p className="text-sm text-muted-foreground mb-2">
+        {total} stasiun
+      </p>
+
       {/* Station Table */}
       <div className="rounded-xl border bg-card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm min-w-[44rem]">
             <thead>
               <tr className="border-b bg-muted/50 text-left">
-                <th className="px-4 py-3 font-medium text-muted-foreground">
+                <th className="px-3 py-2.5 font-medium text-muted-foreground whitespace-nowrap">
                   Nama
                 </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
-                  Lokasi
-                </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
+                <th className="px-3 py-2.5 font-medium text-muted-foreground whitespace-nowrap">
                   Koordinat
                 </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
-                  Status
-                </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
+                <th className="px-3 py-2.5 font-medium text-muted-foreground whitespace-nowrap">
                   Perangkat
                 </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
+                <th className="px-3 py-2.5 font-medium text-muted-foreground whitespace-nowrap">
                   Admin
                 </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
-                  Jenis Lahan Gambut
+                <th className="px-3 py-2.5 font-medium text-muted-foreground whitespace-nowrap">
+                  Status
                 </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
+                <th className="px-3 py-2.5 font-medium text-muted-foreground whitespace-nowrap">
                   Aksi
                 </th>
               </tr>
             </thead>
             <tbody>
-              {allStations.map((station) => {
-                const peatType = getPeatType(station.name);
-                return (
-                  <tr
-                    key={station.id}
-                    className="border-b last:border-0 hover:bg-muted/30 transition-colors"
-                  >
-                    <td className="px-4 py-3 font-medium">{station.name}</td>
-                    <td className="px-4 py-3 text-muted-foreground">
+              {stations.map((station) => (
+                <tr
+                  key={station.id}
+                  className="border-b last:border-0 hover:bg-muted/30 transition-colors"
+                >
+                  <td className="px-3 py-2.5">
+                    <div className="font-medium">{station.name}</div>
+                    <div className="text-xs text-muted-foreground">
                       {station.kabupaten}, {station.provinsi}
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground text-xs">
+                    </div>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <div className="text-xs font-mono text-muted-foreground">
                       {station.latitude.toFixed(6)},{" "}
                       {station.longitude.toFixed(6)}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(station.status)}`}
-                      >
-                        {station.status === "AKTIF" ? "Aktif" : "Nonaktif"}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {station._count.devices}
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {station._count.admins}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getPeatColor(peatType)}`}
-                      >
-                        {peatType}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <StationActions station={station} />
-                    </td>
-                  </tr>
-                );
-              })}
+                    </div>
+                    <a
+                      href={`https://maps.google.com/?q=${station.latitude},${station.longitude}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-primary hover:underline"
+                    >
+                      Lihat peta
+                    </a>
+                  </td>
+                  <td className="px-3 py-2.5 text-muted-foreground">
+                    {station._count.devices}
+                  </td>
+                  <td className="px-3 py-2.5 text-muted-foreground">
+                    {station._count.admins}
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(station.status)}`}
+                    >
+                      {station.status === "AKTIF" ? "Aktif" : "Nonaktif"}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <StationActions station={station} />
+                  </td>
+                </tr>
+              ))}
               {stations.length === 0 && (
                 <tr>
                   <td
-                    colSpan={8}
-                    className="px-4 py-8 text-center text-muted-foreground"
+                    colSpan={6}
+                    className="px-3 py-8 text-center text-muted-foreground"
                   >
                     Tidak ada stasiun ditemukan.
                   </td>
@@ -360,15 +256,15 @@ export default async function StationsPage({
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
+      {total > 0 && (
         <div className="flex items-center justify-between mt-4">
           <p className="text-sm text-muted-foreground">
-            Halaman {page} dari {totalPages}
+            {startItem}-{endItem} dari {total}
           </p>
           <div className="flex gap-2">
             {page > 1 && (
               <Link
-                href={`/dashboard/management/stations?page=${page - 1}${status ? `&status=${status}` : ""}${search ? `&search=${search}` : ""}`}
+                href={buildPageHref(page - 1)}
                 className="px-3 py-1.5 text-sm border rounded-lg hover:bg-accent transition-colors"
               >
                 Sebelumnya
@@ -376,7 +272,7 @@ export default async function StationsPage({
             )}
             {page < totalPages && (
               <Link
-                href={`/dashboard/management/stations?page=${page + 1}${status ? `&status=${status}` : ""}${search ? `&search=${search}` : ""}`}
+                href={buildPageHref(page + 1)}
                 className="px-3 py-1.5 text-sm border rounded-lg hover:bg-accent transition-colors"
               >
                 Selanjutnya
