@@ -23,6 +23,7 @@ export async function createStation(data: {
   latitude: number;
   longitude: number;
   imageUrl?: string;
+  peatType?: "FIBRIC" | "HEMIC" | "SAPRIC";
 }) {
   const session = await requireSuperAdmin();
 
@@ -71,6 +72,7 @@ export async function updateStation(
     latitude?: number;
     longitude?: number;
     imageUrl?: string;
+    peatType?: "FIBRIC" | "HEMIC" | "SAPRIC" | null;
   }
 ) {
   const session = await requireSuperAdmin();
