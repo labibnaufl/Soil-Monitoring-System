@@ -38,9 +38,13 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 // Custom tooltip for station bar chart
-function StationTooltip({ active, payload }: any) {
+function StationTooltip({ active, payload }: {
+  active?: boolean;
+  payload?: { payload?: { fullName?: string; total?: number; readingCount?: number } }[];
+}) {
   if (!active || !payload?.length) return null;
-  const data = payload[0].payload;
+  const data = payload[0]?.payload;
+  if (!data) return null;
   return (
     <div className="bg-white border border-slate-200 rounded-lg shadow-lg px-3 py-2 text-sm">
       <p className="font-medium text-slate-900">{data.fullName}</p>
@@ -71,7 +75,7 @@ export function SummaryChart({
 
   return (
     <Card className="h-full flex flex-col">
-      <CardHeader className="flex flex-row items-start justify-between pb-2">
+      <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between pb-2">
         <div>
           <CardTitle>Ringkasan Curah Hujan</CardTitle>
           <CardDescription>
