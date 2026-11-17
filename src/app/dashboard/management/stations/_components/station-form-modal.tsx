@@ -83,6 +83,10 @@ export function StationFormModal() {
     setError(null);
     
     const name = formData.get("name") as string;
+    const peatTypeRaw = formData.get("peatType") as string;
+    const peatType = (["FIBRIC", "HEMIC", "SAPRIC"] as const).includes(peatTypeRaw as "FIBRIC" | "HEMIC" | "SAPRIC")
+      ? (peatTypeRaw as "FIBRIC" | "HEMIC" | "SAPRIC")
+      : undefined;
     const provinsi = formData.get("provinsi") as string;
     const kabupaten = formData.get("kabupaten") as string;
     const kecamatan = formData.get("kecamatan") as string;
@@ -105,14 +109,15 @@ export function StationFormModal() {
           desa: desa || undefined,
           latitude: lat,
           longitude: lng,
+          peatType,
         });
         setIsOpen(false);
         // Reset form
         setLatitude("");
         setLongitude("");
         setMapsLink("");
-      } catch (err: any) {
-        setError(err.message || "Gagal membuat stasiun");
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Gagal membuat stasiun");
       }
     });
   }
@@ -120,9 +125,9 @@ export function StationFormModal() {
   return (
     <>
       {/* Trigger Button */}
-      <Button onClick={() => setIsOpen(true)} className="gap-2">
+      <Button onClick={() => setIsOpen(true)} size="sm" className="gap-1.5">
         <Plus weight="regular" className="size-4" aria-hidden="true" />
-        Tambah Stasiun
+        Tambah
       </Button>
 
       {/* Modal Overlay */}
@@ -170,7 +175,7 @@ export function StationFormModal() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="provinsi">Provinsi</Label>
                   <Input
@@ -193,7 +198,7 @@ export function StationFormModal() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="kecamatan">Kecamatan</Label>
                   <Input
@@ -213,6 +218,22 @@ export function StationFormModal() {
                     disabled={isPending}
                   />
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="peatType">Jenis Lahan Gambut</Label>
+                <select
+                  id="peatType"
+                  name="peatType"
+                  defaultValue=""
+                  disabled={isPending}
+                  className="h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2 text-base transition-colors outline-none focus-visible:border-ring disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30"
+                >
+                  <option value="">Pilih jenis lahan gambut (opsional)</option>
+                  <option value="FIBRIC">Fibric — gambut mentah, serat tinggi</option>
+                  <option value="HEMIC">Hemic — gambut setengah matang</option>
+                  <option value="SAPRIC">Sapric — gambut matang, serat rendah</option>
+                </select>
               </div>
 
               <div className="border-t pt-4 mt-4 space-y-4">
@@ -243,7 +264,7 @@ export function StationFormModal() {
                   <div className="h-px flex-1 bg-border" />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="latitude">Latitude</Label>
                     <Input
