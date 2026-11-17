@@ -93,7 +93,7 @@ export default async function UsersPage({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold font-heading text-foreground">
             Kelola Pengguna
@@ -164,25 +164,22 @@ export default async function UsersPage({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b bg-muted/50 text-left">
-                <th className="px-4 py-3 font-medium text-muted-foreground">
+                <th className="px-3 py-2 font-medium text-muted-foreground">
                   Nama
                 </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
+                <th className="px-3 py-2 font-medium text-muted-foreground">
                   Email
                 </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
+                <th className="px-3 py-2 font-medium text-muted-foreground">
                   Role
                 </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
+                <th className="px-3 py-2 font-medium text-muted-foreground">
                   Status
                 </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
+                <th className="px-3 py-2 font-medium text-muted-foreground">
                   Lokasi Stasiun
                 </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
-                  Tgl Daftar
-                </th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">
+                <th className="px-3 py-2 font-medium text-muted-foreground">
                   Aksi
                 </th>
               </tr>
@@ -193,11 +190,11 @@ export default async function UsersPage({
                   key={user.id}
                   className="border-b last:border-0 hover:bg-muted/30 transition-colors"
                 >
-                  <td className="px-4 py-3 font-medium">{user.name}</td>
-                  <td className="px-4 py-3 text-muted-foreground">
+                  <td className="px-3 py-2.5 font-medium">{user.name}</td>
+                  <td className="px-3 py-2.5 text-muted-foreground">
                     {user.email}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-3 py-2.5">
                     {(() => {
                       const roleBadge = getRoleBadge(user.role);
                       const label = getRoleLabel(user.role);
@@ -208,7 +205,7 @@ export default async function UsersPage({
                       );
                     })()}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-3 py-2.5">
                     {(() => {
                       const statusBadge = getStatusBadge(user.status);
                       const label = getStatusLabel(user.status);
@@ -219,17 +216,10 @@ export default async function UsersPage({
                       );
                     })()}
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">
+                  <td className="px-3 py-2.5 text-muted-foreground">
                     {user.station ? user.station.name : "-"}
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground text-xs">
-                    {user.createdAt.toLocaleDateString("id-ID", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </td>
-                  <td className="px-4 py-3">
+                  <td className="px-3 py-2.5">
                     <UserActions user={user} />
                   </td>
                 </tr>
@@ -237,8 +227,8 @@ export default async function UsersPage({
               {users.length === 0 && (
                 <tr>
                   <td
-                    colSpan={7}
-                    className="px-4 py-8 text-center text-muted-foreground"
+                    colSpan={6}
+                    className="px-3 py-6 text-center text-muted-foreground"
                   >
                     Tidak ada pengguna ditemukan.
                   </td>
