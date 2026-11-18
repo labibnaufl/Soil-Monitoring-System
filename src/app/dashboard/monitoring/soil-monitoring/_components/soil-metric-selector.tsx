@@ -55,7 +55,7 @@ export function SoilMetricSelector({ selectedMetric, timeRange }: SoilMetricSele
 
       <div className="sm:ml-auto">
         <Select value={selectedMetric} onValueChange={handleMetricChange}>
-          <SelectTrigger className="w-[280px]">
+          <SelectTrigger className="w-full sm:w-[280px]">
             <SelectValue placeholder="Pilih parameter" />
           </SelectTrigger>
           <SelectContent>
