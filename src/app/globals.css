@@ -170,6 +170,14 @@
   }
 }
 
+/* Page-level horizontal scroll guard: wide intrinsic content (e.g. auto-layout
+   data tables inside horizontal scrollers) must never create blank sideways
+   page scroll. Inner .overflow-x-auto regions keep working. */
+html,
+body {
+  overflow-x: clip;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
