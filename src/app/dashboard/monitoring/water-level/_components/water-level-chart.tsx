@@ -153,7 +153,7 @@ export function WaterLevelChart({
       <div className="flex items-center gap-4">
         <span className="text-sm font-medium text-muted-foreground">Periode:</span>
         <Select value={timeRange} onValueChange={handleRangeChange}>
-          <SelectTrigger className="w-[220px]">
+          <SelectTrigger className="w-full sm:w-[220px]">
             <SelectValue placeholder="Pilih periode" />
           </SelectTrigger>
           <SelectContent>
