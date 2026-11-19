@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Runs before routes are rendered (Edge Runtime compatible — no auth() import here).
-// Only gates redirects; real authorization happens via auth() inside
-// pages, server actions, and API routes.
+// Fast redirect gate only: cookie presence. Real 8h vs 30d expiry is enforced
+// in auth() jwt callback (returns null when expired), then pages redirect.
 export function proxy(req: NextRequest) {
   const { nextUrl, cookies } = req;
 
